@@ -1,0 +1,7 @@
+{
+  "resource" : "niot",
+  "operation": "set",
+  "content": {
+    "cmd": "AwayDefend"
+  }
+}
