@@ -9,16 +9,26 @@ function shouldExecute(input) {
     return true;
 }
 
+function deviceAdded(input) {
+}
+
 /**
- * 心跳包
- * @param input
+ * 设备与平台直接的心跳连接
+ * 返回的map格式要求如下
+ * <pre>
+ *   channel: 设备与平台之间的通道（即消息的topic）
+ *   clientIp: 设备的公网IP
+ * </pre>
+ *
+ * @param input 心跳的消息格式
+ * @return 设备的心跳属性
  */
 function heartbeat(input) {
     var map = new Map();
     print(input);
     var channel = input.head.from;
     map.channel = channel;
-    var clientIp = input.data.content.address;
+    var clientIp = input.data.content.data.address;
     map.ip = clientIp;
     return map;
 }
@@ -41,7 +51,9 @@ function controlPrimaryDevice(input) {
 
 
 /**
- * 主设备（网关）属性变化
+ *平台根据设备返回的消息，修改主设备属性
+ * @param input
+ * @return 主设备的map对象
  */
 function primaryDeviceChanged(input) {
     var outDelay = input.data.content.outDelay;
@@ -65,14 +77,18 @@ function primaryDeviceChanged(input) {
 }
 
 /**
- * 请求设备快照
+ * 平台向设备端查询快照，同一个设备可能会有多个查询协议
+ * @param input
+ * @return 协议的列表
  */
 function requestSnapshot(input) {
 
 }
 
 /**
- * 上报设备快照
+ * 设备向平台上报快照
+ * @param input
+ * @return 主设备的map对象
  */
 function reportSnapshot(input) {
 

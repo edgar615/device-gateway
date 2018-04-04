@@ -1,7 +1,5 @@
 package com.github.edgar615.device.gateway.core;
 
-import com.github.edgar615.device.gateway.core.MessageTransformer;
-
 /**
  * Created by Edgar on 2018/3/14.
  *
@@ -17,16 +15,16 @@ public class TransformerHolder {
   /**
    * 设备类型
    */
-  private final String deviceType;
+  private final String productType;
 
   /**
    * 协议转换类
    */
   private final MessageTransformer transformer;
 
-  public TransformerHolder(String registration, String deviceType, MessageTransformer transformer) {
+  public TransformerHolder(String registration, String productType, MessageTransformer transformer) {
     this.registration = registration;
-    this.deviceType = deviceType;
+    this.productType = productType;
     this.transformer = transformer;
   }
 
@@ -35,7 +33,7 @@ public class TransformerHolder {
   }
 
   public String deviceType() {
-    return deviceType;
+    return productType;
   }
 
   public MessageTransformer transformer() {

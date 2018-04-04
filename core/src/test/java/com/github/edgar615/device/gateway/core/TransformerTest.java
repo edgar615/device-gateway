@@ -46,8 +46,9 @@ public class TransformerTest {
 
     String scriptPath = "H:/dev/workspace/device-gateway/core/src/test/resources/script/keepalive.js";
     MessageTransformer transformer = compile(scriptPath);
-
-    System.out.println(transformer.heartbeat(input));
+    transformer.execute(input);
+//    System.out.println(transformer);
+//    System.out.println(transformer.heartbeat(input));
   }
 
   @Test
@@ -63,7 +64,7 @@ public class TransformerTest {
     String scriptPath = "H:/dev/workspace/device-gateway/core/src/test/resources/script/keepalive.js";
     MessageTransformer transformer = compile(scriptPath);
 
-    System.out.println(transformer.controlPrimaryDevice(input));
+    System.out.println(transformer.execute(input));
   }
 
   private MessageTransformer compile(String scriptPath) throws IOException, ScriptException {
