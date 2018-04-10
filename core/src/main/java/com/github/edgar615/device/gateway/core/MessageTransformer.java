@@ -12,7 +12,11 @@ public interface MessageTransformer {
 
   /**
    * 根据inboud消息判断是否应该执行
-   *
+   *消息格式　
+   * <pre>
+   *   type: 类型
+   *   command: 命令(消息)
+   * </pre>
    * @param input
    * @return
    */

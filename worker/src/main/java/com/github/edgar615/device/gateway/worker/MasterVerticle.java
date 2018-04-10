@@ -3,7 +3,7 @@ package com.github.edgar615.device.gateway.worker;
 import com.google.common.collect.ImmutableMap;
 
 import com.github.edgar615.device.gateway.core.Consts;
-import com.github.edgar615.device.gateway.core.DeviceBrokerMessage;
+import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.device.gateway.core.SequentialQueue;
 import com.github.edgar615.device.gateway.core.SequentialQueueHelper;
 import com.github.edgar615.util.event.Event;
@@ -45,6 +45,7 @@ public class MasterVerticle extends AbstractVerticle {
       String id = jsonObject.getString("id");
       Long time = jsonObject.getLong("time", Instant.now().getEpochSecond());
       EventHead eventHead = EventHead.create(Consts.LOCAL_DEVICE_ADDRESS, "message")
+              .addExt("type", MessageType.CONNECT)
               .addExt("__topic", Consts.LOCAL_DEVICE_ADDRESS);
       Message message = Message.create("device.online", ImmutableMap.of("id", id, "time", time));
       Event event = Event.create(eventHead, message);
@@ -64,7 +65,8 @@ public class MasterVerticle extends AbstractVerticle {
         String id = ids.getString(i);
         //包装为event
         EventHead eventHead = EventHead.create(Consts.LOCAL_DEVICE_ADDRESS, "message")
-                .addExt("topic", Consts.LOCAL_DEVICE_ADDRESS);
+                .addExt("type", MessageType.DIS_CONNECT)
+                .addExt("__topic", Consts.LOCAL_DEVICE_ADDRESS);
         Message message = Message.create("device.offline", ImmutableMap.of("id", id, "time", time));
         Event event = Event.create(eventHead, message);
         try {

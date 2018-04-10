@@ -26,4 +26,7 @@ public class Consts {
 
   public static final String LOCAL_DEVICE_DELETE_ADDRESS
           = "__com.github.edgar615.device.gateway.device.delete";
+
+  public static final String LOCAL_DEVICE_LOG_ADDRESS
+          = "__com.github.edgar615.device.gateway.device.log";
 }

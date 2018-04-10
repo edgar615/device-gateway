@@ -1,16 +1,16 @@
 package com.github.edgar615.device.gateway.worker;
 
-import com.github.edgar615.device.gateway.core.Consts;
 import com.github.edgar615.device.gateway.core.TransformerHolder;
+import com.github.edgar615.device.gateway.worker.result.DeviceLogResultHandler;
+import com.github.edgar615.device.gateway.worker.result.PingResultHandler;
+import com.github.edgar615.device.gateway.worker.result.TransformerResultHandler;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,6 +24,8 @@ public class EventHandler {
 
   private final List<TransformerHolder> transformers = new ArrayList<>();
 
+  private final List<TransformerResultHandler> transformerResultHandlers = new ArrayList<>();
+
   private final Vertx vertx;
 
   public EventHandler(Vertx vertx) {
@@ -31,32 +33,31 @@ public class EventHandler {
     transformers.add(new TransformerHolder("a", "*", new DeviceAddedTransformer()));
     transformers.add(new TransformerHolder("a", "*", new DeviceDeletedTransformer()));
     transformers.add(new TransformerHolder("a", "*", new KeepaliveTransformer()));
+    transformers.add(new TransformerHolder("a", "*", new ConnectTransformer()));
+    transformers.add(new TransformerHolder("a", "*", new F1DefendEventTransformer()));
+    transformerResultHandlers.add(new PingResultHandler(vertx));
+    transformerResultHandlers.add(new DeviceLogResultHandler(vertx));
   }
 
-  //  down 由平台发往网关
-//  control 由网关发往设备
-//  up 由设备发往网关
-//  reported 由网关发往平台
-  //AddDevice 新增设备
-//  DeleteDevice 删除设备
-//  keepalive 心跳
-  public void handle(Map<String, Object> message, Handler<AsyncResult<Void>> resultHandler) {
+  public void handle(Map<String, Object> input, Handler<AsyncResult<Void>> resultHandler) {
     //使用script的脚本
-    List<Map<String, Object>> messages = transformers.stream()
+    List<Map<String, Object>> output = transformers.stream()
 //            .filter(h -> "*".equals(h.deviceType()) || productType.equals(h.deviceType()))
             .map(h -> h.transformer())
-            .filter(h -> h.shouldExecute(message))
-            .map(t -> t.execute(message))
+            .filter(h -> h.shouldExecute(input))
+            .map(t -> t.execute(input))
             .filter(l -> l != null)
             .flatMap(l -> l.stream())
             .collect(Collectors.toList());
     //合并可以放在一起的消息
-//    Map<String, List<Map<String, Object>>> groupMessage = messages.stream()
+//    Map<String, List<Map<String, Object>>> groupMessage = output.stream()
 //            .collect(Collectors.groupingBy(m -> (String) m.get("type")));
-    List<Future> futures = new ArrayList<>();
-    futures.add(keepalive(messages));
-    futures.add(deviceAdded(messages));
-    futures.add(deviceDeleted(messages));
+    List<Future> futures = transformerResultHandlers.stream()
+            .map(h -> {
+              Future<Void> future = Future.future();
+              h.handle(input, output, future);
+              return future;
+            }).collect(Collectors.toList());
     CompositeFuture.all(futures)
             .setHandler(ar -> {
               if (ar.failed()) {
@@ -66,75 +67,6 @@ public class EventHandler {
               }
             });
 
-  }
-
-  private Future<Void> keepalive(List<Map<String, Object>> messages) {
-    Map<String, Object> keepalive = messages.stream()
-            .filter(m -> "keepalive".equals(m.get("type")))
-            .map(m -> (Map<String, Object>) m.get("data"))
-            .reduce(new HashMap<>(), (m1, m2) -> {
-              m1.putAll(m2);
-              return m1;
-            });
-    if (keepalive.isEmpty()) {
-      return Future.succeededFuture();
-    }
-    Future<Void> future = Future.future();
-    vertx.eventBus().send(Consts.LOCAL_DEVICE_HEARTBEAT_ADDRESS,
-                          new JsonObject(keepalive), ar -> {
-              if (ar.failed()) {
-                future.fail(ar.cause());
-                return;
-              }
-              future.complete();
-            });
-    return future;
-  }
-
-  private Future<Void> deviceAdded(List<Map<String, Object>> messages) {
-    Map<String, Object> device = messages.stream()
-            .filter(m -> "device.added".equals(m.get("type")))
-            .map(m -> (Map<String, Object>) m.get("data"))
-            .reduce(new HashMap<>(), (m1, m2) -> {
-              m1.putAll(m2);
-              return m1;
-            });
-    if (device.isEmpty()) {
-      return Future.succeededFuture();
-    }
-    Future<Void> future = Future.future();
-    vertx.eventBus().send(Consts.LOCAL_DEVICE_ADD_ADDRESS,
-                          new JsonObject(device), ar -> {
-              if (ar.failed()) {
-                future.fail(ar.cause());
-                return;
-              }
-              future.complete();
-            });
-    return future;
-  }
-
-  private Future<Void> deviceDeleted(List<Map<String, Object>> messages) {
-    Map<String, Object> device = messages.stream()
-            .filter(m -> "device.deleted".equals(m.get("type")))
-            .map(m -> (Map<String, Object>) m.get("data"))
-            .reduce(new HashMap<>(), (m1, m2) -> {
-              m1.putAll(m2);
-              return m1;
-            });
-    if (device.isEmpty()) {
-      return Future.succeededFuture();
-    }
-    Future<Void> future = Future.future();
-    vertx.eventBus().send(Consts.LOCAL_DEVICE_DELETE_ADDRESS,
-                          new JsonObject(device), ar -> {
-              if (ar.failed()) {
-                future.fail(ar.cause());
-                return;
-              }
-              future.complete();
-            });
-    return future;
   }
 
 }

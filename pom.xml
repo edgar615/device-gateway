@@ -15,6 +15,7 @@
         <module>worker</module>
         <module>script</module>
         <module>device-gateway-cache</module>
+        <module>log</module>
     </modules>
 
     <properties>

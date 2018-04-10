@@ -3,13 +3,14 @@ package com.github.edgar615.device.gateway.worker;
 import com.google.common.collect.Lists;
 
 import com.github.edgar615.device.gateway.core.MessageTransformer;
+import com.github.edgar615.device.gateway.core.MessageType;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Edgar on 2018/3/19.
+ * 设备添加到平台.
  *
  * @author Edgar  Date 2018/3/19
  */
@@ -18,7 +19,7 @@ public class DeviceAddedTransformer implements MessageTransformer {
   @Override
   public boolean shouldExecute(Map<String, Object> input) {
     return "device.added".equals(input.get("command"))
-           && "down".equals(input.get("type"));
+           && MessageType.DEVICE_ADDED.equals(input.get("type"));
   }
 
   @Override
@@ -39,7 +40,7 @@ public class DeviceAddedTransformer implements MessageTransformer {
 
     Map<String, Object> newMsg = new HashMap<>(input);
     newMsg.put("data", deviceMap);
-    newMsg.put("type", "device.added");
+    newMsg.put("type", MessageType.DEVICE_ADDED);
     return Lists.newArrayList(newMsg);
   }
 

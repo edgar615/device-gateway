@@ -4,22 +4,22 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import com.github.edgar615.device.gateway.core.MessageTransformer;
+import com.github.edgar615.device.gateway.core.MessageType;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Edgar on 2018/3/19.
- *
+ * 设备连上平台.
+ *todo 交由脚本处理
  * @author Edgar  Date 2018/3/19
  */
 public class ConnectTransformer implements MessageTransformer {
 
   @Override
   public boolean shouldExecute(Map<String, Object> input) {
-    return "connect".equals(input.get("command"))
-           && "up".equals(input.get("type"));
+    return MessageType.CONNECT.equals(input.get("type"));
   }
 
   @Override
@@ -30,8 +30,8 @@ public class ConnectTransformer implements MessageTransformer {
     Map<String, Object> deviceMap = new HashMap<>();
     deviceMap.put("clientIp", clientIp);
     Map<String, Object> message =
-            ImmutableMap.of("type", "reported", "command",
-                            "inquirePrimaryDevice", "data", data);
+            ImmutableMap.of("type", MessageType.CONTROL, "command",
+                            "inquiryF1Version", "data", data);
     return Lists.newArrayList(message);
   }
 

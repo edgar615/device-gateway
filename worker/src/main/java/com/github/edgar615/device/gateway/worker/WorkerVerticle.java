@@ -1,16 +1,13 @@
 package com.github.edgar615.device.gateway.worker;
 
-import com.github.edgar615.device.gateway.core.DeviceBrokerMessage;
 import com.github.edgar615.device.gateway.core.SequentialQueue;
 import com.github.edgar615.device.gateway.core.SequentialQueueHelper;
 import com.github.edgar615.util.base.Randoms;
 import com.github.edgar615.util.event.Event;
-import com.github.edgar615.util.event.Message;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 

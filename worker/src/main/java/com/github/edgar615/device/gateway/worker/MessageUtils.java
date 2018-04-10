@@ -1,5 +1,6 @@
 package com.github.edgar615.device.gateway.worker;
 
+import com.github.edgar615.device.gateway.core.Consts;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.Message;
 
@@ -23,6 +24,8 @@ public class MessageUtils {
       Map<String, Object> brokerMessage = new HashMap<>();
       brokerMessage.put("topic", topic);
       brokerMessage.put("traceId", event.head().id());
+      String deviceId = (String) data.get("id");
+      brokerMessage.put("deviceId", deviceId);
       brokerMessage.put("command", command);
       brokerMessage.put("data", data);
       brokerMessage.put("type", "down");
@@ -31,14 +34,31 @@ public class MessageUtils {
       //将下游服务向网关发送的消息转换为内部格式
       String topic = event.head().ext("__topic");
       Message message = (Message) event.action();
-      Map<String, Object> data = message.content();
+      Map<String, Object> content = message.content();
+      String deviceId = (String) content.get("id");
       String command = (String) message.content().get("cmd");
       Map<String, Object> brokerMessage = new HashMap<>();
       brokerMessage.put("topic", topic);
+      brokerMessage.put("deviceId", deviceId);
       brokerMessage.put("traceId", event.head().id());
       brokerMessage.put("command", command);
-      brokerMessage.put("data", data);
+      brokerMessage.put("data", content.get("data"));
       brokerMessage.put("type", "up");
+      //todo channel
+      return brokerMessage;
+    } else if (Consts.LOCAL_DEVICE_ADDRESS.equals(event.head().ext("__topic"))) {
+      String topic = event.head().ext("__topic");
+      Message message = (Message) event.action();
+      Map<String, Object> data = message.content();
+      String command = message.resource();
+      Map<String, Object> brokerMessage = new HashMap<>();
+      brokerMessage.put("topic", topic);
+      brokerMessage.put("traceId", event.head().id());
+      String deviceId = (String) data.get("id");
+      brokerMessage.put("deviceId", deviceId);
+      brokerMessage.put("command", command);
+      brokerMessage.put("data", data);
+      brokerMessage.put("type", event.head().ext("type"));
       //todo channel
       return brokerMessage;
     }
