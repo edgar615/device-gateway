@@ -23,6 +23,7 @@ public class DeviceAddOutboundHandler implements OutboundHandler {
     Map<String, Object> device = output.stream()
             .filter(m -> MessageType.DEVICE_ADDED.equals(m.get("type")))
             .map(m -> (Map<String, Object>) m.get("data"))
+            .filter(m -> m != null)
             .reduce(new HashMap<>(), (m1, m2) -> {
               m1.putAll(m2);
               return m1;

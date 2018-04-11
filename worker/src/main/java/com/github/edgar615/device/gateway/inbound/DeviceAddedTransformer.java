@@ -17,7 +17,7 @@ public class DeviceAddedTransformer implements MessageTransformer {
 
   @Override
   public boolean shouldExecute(Map<String, Object> input) {
-    return "device.added".equals(input.get("command"))
+    return "device".equals(input.get("command"))
            && MessageType.DEVICE_ADDED.equals(input.get("type"));
   }
 

@@ -51,6 +51,7 @@ public class EventHandler {
         if (transformer.shouldExecute(input)) {
           List<Map<String, Object>> result = transformer.execute(input);
           if (result != null) {
+            //todo 根据不同的类型检查result中的数据支付合法
             output.addAll(result);
           }
         }
@@ -68,7 +69,14 @@ public class EventHandler {
     List<Future> futures = outboundHandlers.stream()
             .map(h -> {
               Future<Void> future = Future.future();
-              h.handle(vertx, input, output, future);
+              try {
+                h.handle(vertx, input, output, future);
+              } catch (Exception e) {
+                //todo log
+                if (!future.isComplete()) {
+                  future.fail(e);
+                }
+              }
               return future;
             }).collect(Collectors.toList());
     CompositeFuture.all(futures)

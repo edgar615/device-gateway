@@ -23,16 +23,19 @@ public class PingOutboundHandler implements OutboundHandler {
     Map<String, Object> keepalive = output.stream()
             .filter(m -> MessageType.PING.equals(m.get("type")))
             .map(m -> (Map<String, Object>) m.get("data"))
+            .filter(m -> m != null)
             .reduce(new HashMap<>(), (m1, m2) -> {
               m1.putAll(m2);
               return m1;
             });
-    if (keepalive.isEmpty()) {
-      completeFuture.complete();
-      return;
-    }
+    String traceId = (String) input.get("traceId");
+    String deviceId = (String) input.get("deviceId");
+    JsonObject jsonObject = new JsonObject()
+            .put("traceId", traceId)
+            .put("id", deviceId)
+            .put("data", keepalive);
     vertx.eventBus().send(Consts.LOCAL_DEVICE_HEARTBEAT_ADDRESS,
-                          new JsonObject(keepalive));
+                          jsonObject);
 
     completeFuture.complete();
   }

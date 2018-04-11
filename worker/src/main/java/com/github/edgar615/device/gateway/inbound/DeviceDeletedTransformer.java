@@ -17,7 +17,7 @@ public class DeviceDeletedTransformer implements MessageTransformer {
 
   @Override
   public boolean shouldExecute(Map<String, Object> input) {
-    return "device.deleted".equals(input.get("command"))
+    return "device".equals(input.get("command"))
            && MessageType.DEVICE_DELETED.equals(input.get("type"));
   }
 
