@@ -1,0 +1,5 @@
+com.github.edgar615.device.gateway.inbound.DeviceAddedTransformer
+com.github.edgar615.device.gateway.inbound.DeviceDeletedTransformer
+com.github.edgar615.device.gateway.inbound.ConnectTransformer
+com.github.edgar615.device.gateway.inbound.DisConnectTransformer
+com.github.edgar615.device.gateway.inbound.KeepaliveTransformer

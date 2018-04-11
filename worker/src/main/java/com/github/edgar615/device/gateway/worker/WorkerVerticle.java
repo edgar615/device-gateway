@@ -1,5 +1,6 @@
 package com.github.edgar615.device.gateway.worker;
 
+import com.github.edgar615.device.gateway.core.MessageUtils;
 import com.github.edgar615.device.gateway.core.SequentialQueue;
 import com.github.edgar615.device.gateway.core.SequentialQueueHelper;
 import com.github.edgar615.util.base.Randoms;
@@ -60,6 +61,7 @@ public class WorkerVerticle extends AbstractVerticle {
     }
     EventHandler eventHandler = new EventHandler(vertx);
     eventHandler.handle(brokerMessage, ar -> {});
+    //todo
     //设置一个随机事件，测试等待
     long time = Long.parseLong(Randoms.randomNumber(3));
     vertx.setTimer(time, l -> {
