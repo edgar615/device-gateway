@@ -32,6 +32,8 @@ public class DeviceAddOutboundHandler implements OutboundHandler {
       completeFuture.complete();
       return;
     }
+    String deviceId = (String) input.get("deviceId");
+    device.put("deviceId", deviceId);
     vertx.eventBus().send(Consts.LOCAL_DEVICE_ADD_ADDRESS,
                           new JsonObject(device), ar -> {
               if (ar.failed()) {

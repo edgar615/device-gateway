@@ -1,0 +1,24 @@
+{
+  "eventbus.group": "device-test",
+  "eventbus.id": "device-msg-test-1",
+  "eventbus.servers": "test.ihorn.com.cn:9092",
+  "eventbus.auto.offset.reset": "latest",
+  "upgrade.topic" : "niot-ihorn-hanf",
+  "eventbus.topics": [
+    "DeviceControlEvent_1_3",
+    "DeviceControlEvent_1101_V2",
+    "DeviceControlEvent_2",
+    "DeviceControlEvent_4",
+    "DeviceChangeEvent",
+    "DeviceChangeEvent_1",
+    "DeviceChangeEvent_2",
+    "DeviceChangeEvent_3",
+    "DeviceChangeEvent_4",
+    "DeviceChangeEvent_1101",
+    "DeviceChangeEvent_1102",
+    "DeviceChangeEvent_1103",
+    "ProductEvent"
+  ],
+  "eventbus.pool.size": 1,
+  "mac.backlist" : ["18c8e7143628"]
+}

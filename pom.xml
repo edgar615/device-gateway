@@ -14,8 +14,8 @@
         <module>kafka</module>
         <module>worker</module>
         <module>script</module>
-        <module>device-gateway-cache</module>
         <module>log</module>
+        <module>cache</module>
     </modules>
 
     <properties>
@@ -60,6 +60,11 @@
             <dependency>
                 <groupId>io.vertx</groupId>
                 <artifactId>vertx-core</artifactId>
+                <version>${vertx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-redis-client</artifactId>
                 <version>${vertx.version}</version>
             </dependency>
 
