@@ -28,6 +28,7 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
   @Test
   public void testTransformer() throws ScriptException, IOException {
     EventHead head = EventHead.create("v1.event.device.up", "message")
+            .addExt("type", "up")
             .addExt("__topic", "v1.event.device.up");
     Map<String, Object> data = new HashMap<>();
     data.put("defend", 1);
@@ -50,6 +51,7 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
   @Test
   public void testUndefinedDefend() throws ScriptException, IOException {
     EventHead head = EventHead.create("v1.event.device.up", "message")
+            .addExt("type", "up")
             .addExt("__topic", "v1.event.device.up");
     Map<String, Object> data = new HashMap<>();
     data.put("defend", 6);

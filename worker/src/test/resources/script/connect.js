@@ -15,6 +15,8 @@ function shouldExecute(input) {
  * @returns {*}
  */
 function execute(input) {
+    stderr.accept("aaaaaaa");
+    logger.error(input.traceId, "test:{} {}", "foo", "bar");
     var inquiryF1Version = new Map();
     inquiryF1Version.type = "control";
     inquiryF1Version.command = "inquiryF1Version";

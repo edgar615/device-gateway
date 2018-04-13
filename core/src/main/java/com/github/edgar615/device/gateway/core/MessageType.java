@@ -40,7 +40,7 @@ public class MessageType {
   /**
    * 设备断开
    */
-  public static final String DIS_CONNECT = "dis_connect";
+  public static final String DIS_CONNECT = "disConnect";
 
   /**
    * 设备添加

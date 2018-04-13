@@ -12,6 +12,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -56,7 +57,7 @@ public class EventOutboundHandler implements OutboundHandler {
     for (Map<String, Object> map : mapList) {
       String command = (String) map.get("command");
       String id = traceId + "." + UUID.randomUUID().toString();
-      Map<String, Object> data = (Map<String, Object>) map.get("data");
+      Map<String, Object> data = new HashMap<>((Map<String, Object>) map.get("data"));
       if ("new".equalsIgnoreCase(command)) {
         data.putIfAbsent("originId", UUID.randomUUID().toString());
         data.putIfAbsent("time", Instant.now().getEpochSecond());

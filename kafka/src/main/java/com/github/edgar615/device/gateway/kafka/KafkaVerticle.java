@@ -12,6 +12,7 @@ import com.github.edgar615.util.eventbus.KafkaProducerOptions;
 import com.github.edgar615.util.vertx.JsonUtils;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
@@ -30,13 +31,12 @@ public class KafkaVerticle extends AbstractVerticle {
 
   @Override
   public void start(Future<Void> startFuture) throws Exception {
-    String eventbusGroup = config().getString("eventbus.group", "device-msg");
-    String eventbusServers = config().getString("eventbus.servers", "localhost:9092");
-    JsonArray topics = config().getJsonArray("eventbus.topics");
-    if (topics == null) {
-      topics = new JsonArray();
-    }
+    JsonObject eventbusConfig = config().getJsonObject("eventbus");
 
+    String eventbusGroup = eventbusConfig.getString("group", "device-msg");
+    String eventbusServers = eventbusConfig.getString("servers", "localhost:9092");
+    JsonArray upTopics = eventbusConfig.getJsonArray("up.topics", new JsonArray());
+    JsonArray downTopics = eventbusConfig.getJsonArray("down.topics", new JsonArray());
     KafkaProducerOptions producerOptions = new KafkaProducerOptions()
             .setServers(eventbusServers);
     EventProducer eventProducer = new KafkaEventProducer(producerOptions);
@@ -45,29 +45,23 @@ public class KafkaVerticle extends AbstractVerticle {
             .setGroup(eventbusGroup)
             .setWorkerPoolSize(1)
             .setServers(eventbusServers);
-    for (int i = 0; i < topics.size(); i++) {
-      consumerOptions.addTopic(topics.getString(i));
+    for (int i = 0; i < upTopics.size(); i++) {
+      consumerOptions.addTopic(upTopics.getString(i));
     }
-    //黑名单
-    JsonArray macBlackList = config().getJsonArray("mac.backlist", new JsonArray());
-    Set<String> macs = new HashSet<>();
-    for (int i = 0; i < macBlackList.size(); i++) {
-      macs.add(macBlackList.getString(i));
+    for (int i = 0; i < downTopics.size(); i++) {
+      consumerOptions.addTopic(downTopics.getString(i));
     }
-    consumerOptions.setBlackListFilter(e -> {
-      if (e.head().to().startsWith("DeviceControlEvent")
-          && e.action() instanceof Message) {
-        Message message = (Message) e.action();
-        String mac = (String) message.content().getOrDefault("id", "");
-        return macs.contains(mac);
-      }
-      return false;
-    });
     EventConsumer eventConsumer = new KafkaEventConsumer(consumerOptions);
     startFuture.complete();
 
     //通过eventbus，将消息转发到Master处理
     eventConsumer.consumer((t, r) -> true, event -> {
+      if (upTopics.contains(event.head().ext("__topic"))) {
+        event.head().addExt("type", "up");
+      }
+      if (downTopics.contains(event.head().ext("__topic"))) {
+        event.head().addExt("type", "down");
+      }
       vertx.eventBus().send(Consts.LOCAL_KAFKA_CONSUMER_ADDRESS, new JsonObject(event.toMap()));
     });
 

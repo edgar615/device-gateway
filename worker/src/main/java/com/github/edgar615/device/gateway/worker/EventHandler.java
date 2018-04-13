@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 
 import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.device.gateway.inbound.MessageTransformer;
+import com.github.edgar615.device.gateway.inbound.TransformerRegistry;
 import com.github.edgar615.device.gateway.outbound.OutboundHandler;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.CompositeFuture;
@@ -46,7 +47,11 @@ public class EventHandler {
     //将input转换为output
     // 因为在执行脚本的过程中，对于异常的脚本要记录日志，所以这里没有使用lambda表达式，而是使用传统的方式
     List<Map<String, Object>> output = new ArrayList<>();
-    for (MessageTransformer transformer : transformers) {
+    List<MessageTransformer> deviceTransformers = new ArrayList<>(transformers);
+    String productType = (String) input.get("productType");
+    //todo null判断
+    deviceTransformers.addAll(TransformerRegistry.instance().deviceTransformers(productType));
+    for (MessageTransformer transformer : deviceTransformers) {
       try {
         if (transformer.shouldExecute(input)) {
           List<Map<String, Object>> result = transformer.execute(input);

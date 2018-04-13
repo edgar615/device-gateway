@@ -40,6 +40,7 @@ public class KeepaliveTransformerTest extends AbstractTransformerTest {
   public void testTransformer(TestContext testContext) throws IOException, ScriptException {
     MessageTransformer transformer = new KeepaliveTransformer();
     EventHead head = EventHead.create("v1.event.device.up", "message")
+            .addExt("type", "up")
             .addExt("__topic", "v1.event.device.up");
     Map<String, Object> data = new HashMap<>();
     data.put("address", "127.0.0.1");

@@ -1,8 +1,10 @@
 package com.github.edgar615.device.gateway.inbound;
 
 import com.github.edgar615.device.gateway.core.MessageType;
-import com.github.edgar615.device.gateway.log.LogVerticle;
-import com.github.edgar615.device.gateway.worker.EventHandler;
+import com.github.edgar615.device.gateway.core.MessageUtils;
+import com.github.edgar615.util.event.Event;
+import com.github.edgar615.util.event.EventHead;
+import com.github.edgar615.util.event.Message;
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -27,24 +29,24 @@ public class DisConnectTransformerTest extends AbstractTransformerTest {
 
   private Vertx vertx;
 
-  private EventHandler eventHandler;
-
   @Before
   public void setUp() {
     vertx = Vertx.vertx();
-    eventHandler = new EventHandler(vertx);
-    vertx.deployVerticle(LogVerticle.class.getName());
   }
 
   @Test
   public void testTransformer(TestContext testContext) throws IOException, ScriptException {
+    EventHead head = EventHead.create("local", "message")
+            .addExt("type", "disConnect")
+            .addExt("__topic", "local");
+    Map<String, Object> data = new HashMap<>();
+    data.put("id", "123456789");
+    data.put("address", "127.0.0.1");
+    Message message = Message.create("connect", data);
+    Event event = Event.create(head, message);
+
     MessageTransformer transformer = new DisConnectTransformer();
-    Map<String, Object> input = new HashMap<>();
-    input.put("type", "dis_connect");
-    input.put("command", "disConnect");
-    input.put("id", "123456789");
-    input.put("data",new HashMap<>());
-    List<Map<String, Object>> output = transformer.execute(input);
+    List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event));
     System.out.println(output);
     Assert.assertEquals(2, output.size());
 
