@@ -2,6 +2,8 @@ package com.github.edgar615.device.gateway.inbound;
 
 import com.google.common.collect.ImmutableMap;
 
+import com.github.edgar615.device.gateway.core.ScriptLogger;
+import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.device.gateway.core.MessageUtils;
 import com.github.edgar615.util.event.Event;
@@ -37,11 +39,12 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
     Message message = Message.create("niot", ImmutableMap.of("id", "123456789", "cmd",
                                                              "alarmF1Event", "data", data));
     Event event = Event.create(head, message);
+    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
     Map<String, Object> input = MessageUtils.createMessage(event);
     String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
                         + "/alarmF1Event.js";
-    MessageTransformer transformer = compile(scriptPath);
-    List<Map<String, Object>> output = transformer.execute(input);
+    MessageTransformer transformer = compile(vertx, scriptPath);
+    List<Map<String, Object>> output = transformer.execute(input, logger);
     System.out.println(output);
     Assert.assertEquals(1, output.size());
     Map<String, Object> out1 = output.get(0);
@@ -60,15 +63,14 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
     Message message = Message.create("niot", ImmutableMap.of("id", "123456789", "cmd",
                                                              "alarmF1Event", "data", data));
     Event event = Event.create(head, message);
+    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
     Map<String, Object> input = MessageUtils.createMessage(event);
     String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
                         + "/alarmF1Event.js";
-    MessageTransformer transformer = compile(scriptPath);
-    List<Map<String, Object>> output = transformer.execute(input);
+    MessageTransformer transformer = compile(vertx, scriptPath);
+    List<Map<String, Object>> output = transformer.execute(input, logger);
     System.out.println(output);
-    Assert.assertEquals(1, output.size());
-    Map<String, Object> out1 = output.get(0);
-    Assert.assertEquals(MessageType.LOG, out1.get("type"));
+    Assert.assertEquals(0, output.size());
   }
 
 }

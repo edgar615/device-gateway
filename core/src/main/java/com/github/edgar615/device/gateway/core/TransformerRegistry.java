@@ -1,4 +1,4 @@
-package com.github.edgar615.device.gateway.inbound;
+package com.github.edgar615.device.gateway.core;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -32,15 +32,20 @@ public class TransformerRegistry {
             .collect(Collectors.toList());
   }
 
-  public void register(String registration, String deviceType, MessageTransformer transformer) {
+  public void register(String registration, String deviceType, String messageType, String command,
+                       MessageTransformer transformer) {
     remove(registration);
-    transformers.add(new TransformerHolder(registration, deviceType, transformer));
+    transformers.add(new TransformerHolder(registration, deviceType, messageType, command,
+                                           transformer));
   }
 
   public void remove(String registration) {
     transformers.removeIf(t -> t.registration().equals(registration));
   }
 
+  public int size() {
+    return transformers.size();
+  }
 
   public void clear() {
     transformers.clear();

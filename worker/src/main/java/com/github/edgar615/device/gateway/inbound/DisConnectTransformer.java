@@ -3,9 +3,10 @@ package com.github.edgar615.device.gateway.inbound;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import com.github.edgar615.device.gateway.core.ScriptLogger;
+import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageType;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,14 +24,12 @@ public class DisConnectTransformer implements MessageTransformer {
   }
 
   @Override
-  public List<Map<String, Object>> execute(Map<String, Object> input) {
-    Map<String, Object> log =
-            ImmutableMap.of("type", MessageType.LOG, "command",
-                            "disConnect", "data", new HashMap<>());
+  public List<Map<String, Object>> execute(Map<String, Object> input, ScriptLogger logger) {
+    logger.info("disConnect");
     Map<String, Object> report =
             ImmutableMap.of("type", MessageType.REPORT, "command",
                             "device.reported", "data", ImmutableMap.of("isOnline", false));
-    return Lists.newArrayList(report, log);
+    return Lists.newArrayList(report);
   }
 
 }

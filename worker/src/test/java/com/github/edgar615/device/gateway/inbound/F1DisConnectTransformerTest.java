@@ -1,5 +1,7 @@
 package com.github.edgar615.device.gateway.inbound;
 
+import com.github.edgar615.device.gateway.core.ScriptLogger;
+import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageUtils;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
@@ -43,10 +45,11 @@ public class F1DisConnectTransformerTest extends AbstractTransformerTest {
     data.put("address", "127.0.0.1");
     Message message = Message.create("disConnect", data);
     Event event = Event.create(head, message);
+    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
     String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
                         + "/disConnect.js";
-    MessageTransformer transformer = compile(scriptPath);
-    List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event));
+    MessageTransformer transformer = compile(vertx, scriptPath);
+    List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event), logger);
     System.out.println(output);
     Assert.assertEquals(0, output.size());
   }

@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableMap;
 
 import com.github.edgar615.device.gateway.core.MessageUtils;
 import com.github.edgar615.device.gateway.inbound.AbstractTransformerTest;
-import com.github.edgar615.device.gateway.inbound.MessageTransformer;
-import com.github.edgar615.device.gateway.inbound.TransformerRegistry;
+import com.github.edgar615.device.gateway.core.MessageTransformer;
+import com.github.edgar615.device.gateway.core.TransformerRegistry;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
 import com.github.edgar615.util.event.Message;
@@ -54,7 +54,7 @@ public class EventHandlerTest extends AbstractTransformerTest {
     Event event = Event.create(head, message);
     String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
                         + "/setF1DefendRespEvent.js";
-    MessageTransformer transformer = compile(scriptPath);
+    MessageTransformer transformer = compile(vertx, scriptPath);
     TransformerRegistry.instance().register("a", "LHF1", transformer);
     Map<String, Object> input = MessageUtils.createMessage(event);
     AtomicBoolean check = new AtomicBoolean();

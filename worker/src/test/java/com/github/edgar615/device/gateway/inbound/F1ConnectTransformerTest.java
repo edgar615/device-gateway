@@ -1,5 +1,8 @@
 package com.github.edgar615.device.gateway.inbound;
 
+import com.github.edgar615.device.gateway.core.ScriptLogger;
+import com.github.edgar615.device.gateway.core.Consts;
+import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.device.gateway.core.MessageUtils;
 import com.github.edgar615.util.event.Event;
@@ -8,6 +11,7 @@ import com.github.edgar615.util.event.Message;
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import org.awaitility.Awaitility;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.script.ScriptException;
 
 /**
@@ -36,6 +41,12 @@ public class F1ConnectTransformerTest extends AbstractTransformerTest {
 
   @Test
   public void testTransformer(TestContext testContext) throws IOException, ScriptException {
+    AtomicBoolean check = new AtomicBoolean();
+    vertx.eventBus().consumer(Consts.LOCAL_DEVICE_LOG_ADDRESS, msg -> {
+      System.out.println(msg.body());
+      check.set(true);
+    });
+
     EventHead head = EventHead.create("local", "message")
             .addExt("type", "connect")
             .addExt("__topic", "local");
@@ -45,14 +56,18 @@ public class F1ConnectTransformerTest extends AbstractTransformerTest {
     Message message = Message.create("connect", data);
     Event event = Event.create(head, message);
 
+    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
+
     String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
                         + "/connect.js";
-    MessageTransformer transformer = compile(scriptPath);
-    List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event));
+    MessageTransformer transformer = compile(vertx, scriptPath);
+    List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event), logger);
     System.out.println(output);
     Assert.assertEquals(1, output.size());
     Map<String, Object> out1 = output.get(0);
     Assert.assertEquals(MessageType.CONTROL, out1.get("type"));;
+
+    Awaitility.await().until(() -> check.get());
   }
 
 }

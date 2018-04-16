@@ -1,4 +1,4 @@
-package com.github.edgar615.device.gateway.inbound;
+package com.github.edgar615.device.gateway.core;
 
 import java.util.List;
 import java.util.Map;
@@ -20,8 +20,8 @@ public interface MessageTransformer {
    * @param input
    * @return
    */
-  boolean shouldExecute(Map<String, Object> input);
+//  boolean shouldExecute(Map<String, Object> input);
 
-  List<Map<String, Object>> execute(Map<String, Object> input);
+  List<Map<String, Object>> execute(Map<String, Object> input, ScriptLogger logger);
 
 }

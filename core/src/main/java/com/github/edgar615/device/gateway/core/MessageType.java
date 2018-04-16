@@ -60,5 +60,5 @@ public class MessageType {
   /**
    * 日志
    */
-  public static final String LOG = "log";
+//  public static final String LOG = "log";
 }

@@ -48,6 +48,7 @@ public class WorkerVerticleTest {
     for (int i = 0; i < 100; i++) {
       int rnd = Integer.parseInt(Randoms.randomNumber(2));
       EventHead head = EventHead.create("v1.event.device.up", "message")
+              .addExt("from", "niot")
               .addExt("__topic", "v1.event.device.up");
       Map<String, Object> data = new HashMap<>();
       data.put("defend", 1);

@@ -1,5 +1,7 @@
 package com.github.edgar615.device.gateway.inbound;
 
+import com.github.edgar615.device.gateway.core.ScriptLogger;
+import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.device.gateway.core.MessageUtils;
 import com.github.edgar615.util.event.Event;
@@ -44,20 +46,17 @@ public class DisConnectTransformerTest extends AbstractTransformerTest {
     data.put("address", "127.0.0.1");
     Message message = Message.create("connect", data);
     Event event = Event.create(head, message);
-
+    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
     MessageTransformer transformer = new DisConnectTransformer();
-    List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event));
+    List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event), logger);
     System.out.println(output);
-    Assert.assertEquals(2, output.size());
+    Assert.assertEquals(1, output.size());
 
     Map<String, Object> out1 = output.get(0);
     Assert.assertEquals(MessageType.REPORT, out1.get("type"));
     Map<String, Object> deviceMap = (Map<String, Object>) output.get(0).get("data");
     Assert.assertEquals(false, deviceMap.get("isOnline"));
 
-    Map<String, Object> out2 = output.get(1);
-    Assert.assertEquals(MessageType.LOG, out2.get("type"));
-    Assert.assertEquals("disConnect", out2.get("command"));
   }
 
 }

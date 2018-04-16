@@ -29,7 +29,7 @@ public class MessageUtils {
       brokerMessage.put("command", command);
       brokerMessage.put("data", content.get("data"));
       brokerMessage.put("type", "up");
-      //todo channel
+       brokerMessage.put("channel", event.head().ext("from"));
       return brokerMessage;
     }
     String topic = event.head().ext("__topic");

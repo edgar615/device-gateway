@@ -3,6 +3,8 @@ package com.github.edgar615.device.gateway.inbound;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import com.github.edgar615.device.gateway.core.ScriptLogger;
+import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageType;
 
 import java.util.HashMap;
@@ -22,19 +24,15 @@ public class ConnectTransformer implements MessageTransformer {
   }
 
   @Override
-  public List<Map<String, Object>> execute(Map<String, Object> input) {
+  public List<Map<String, Object>> execute(Map<String, Object> input, ScriptLogger logger) {
     Map<String, Object> data = (Map<String, Object>) input.getOrDefault("data", new HashMap<>());
     String clientIp = (String) data.get("address");
-    Map<String, Object> logData = new HashMap<>();
-    logData.put("clientIp", clientIp);
-    Map<String, Object> log =
-            ImmutableMap.of("type", MessageType.LOG, "command",
-                            "connect", "data", logData);
+    logger.info("connect, clientIp:" + clientIp);
     Map<String, Object> report =
             ImmutableMap.of("type", MessageType.REPORT, "command",
                             "device.reported", "data", ImmutableMap.of("isOnline", true,
                                                                        "clientIp", clientIp));
-    return Lists.newArrayList(report, log);
+    return Lists.newArrayList(report);
   }
 
 }

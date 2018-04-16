@@ -29,4 +29,10 @@ public class Consts {
 
   public static final String LOCAL_DEVICE_LOG_ADDRESS
           = "__com.github.edgar615.device.gateway.device.log";
+
+  public static final String LOCAL_SCRIPT_ADD_ADDRESS
+          = "__com.github.edgar615.device.gateway.script.add";
+
+  public static final String LOCAL_SCRIPT_LIST_ADDRESS
+          = "__com.github.edgar615.device.gateway.script.list";
 }

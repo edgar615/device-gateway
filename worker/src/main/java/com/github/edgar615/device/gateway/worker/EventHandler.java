@@ -1,11 +1,10 @@
 package com.github.edgar615.device.gateway.worker;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
-import com.github.edgar615.device.gateway.core.MessageType;
-import com.github.edgar615.device.gateway.inbound.MessageTransformer;
-import com.github.edgar615.device.gateway.inbound.TransformerRegistry;
+import com.github.edgar615.device.gateway.core.ScriptLogger;
+import com.github.edgar615.device.gateway.core.MessageTransformer;
+import com.github.edgar615.device.gateway.core.TransformerRegistry;
 import com.github.edgar615.device.gateway.outbound.OutboundHandler;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.CompositeFuture;
@@ -54,7 +53,10 @@ public class EventHandler {
     for (MessageTransformer transformer : deviceTransformers) {
       try {
         if (transformer.shouldExecute(input)) {
-          List<Map<String, Object>> result = transformer.execute(input);
+          String traceId = (String) input.get("traceId");
+          String deviceId = (String) input.get("deviceId");
+          ScriptLogger logger = new ScriptLogger(vertx, traceId, deviceId);
+          List<Map<String, Object>> result = transformer.execute(input, logger);
           if (result != null) {
             //todo 根据不同的类型检查result中的数据支付合法
             output.addAll(result);
@@ -64,10 +66,11 @@ public class EventHandler {
         LOGGER.error("transformer failed", e);
         Map<String, Object> logData = new HashMap<>();
         logData.put("message", e.getMessage());
-        Map<String, Object> log =
-                ImmutableMap.of("type", MessageType.LOG, "command",
-                                "error", "data", logData);
-        output.add(log);
+//        Map<String, Object> log =
+//                ImmutableMap.of("type", MessageType.LOG, "command",
+//                                "error", "data", logData);
+//        output.add(log);
+        // todo log
       }
     }
     //处理output

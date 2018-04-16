@@ -2,6 +2,8 @@ package com.github.edgar615.device.gateway.inbound;
 
 import com.google.common.collect.ImmutableMap;
 
+import com.github.edgar615.device.gateway.core.ScriptLogger;
+import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.device.gateway.core.MessageUtils;
 import com.github.edgar615.device.gateway.worker.EventHandler;
@@ -43,9 +45,9 @@ public class DeviceDeletedTransformerTest {
             .addExt("__topic", "v1.event.device.down");
     Message message = Message.create("device.deleted", ImmutableMap.of("id", "1234"));
     Event event = Event.create(head, message);
-
+    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
     MessageTransformer transformer = new DeviceDeletedTransformer();
-    List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event));
+    List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event), logger);
 
     System.out.println(output);
     Assert.assertEquals(1, output.size());
