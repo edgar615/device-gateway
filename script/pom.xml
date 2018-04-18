@@ -11,6 +11,12 @@
 
     <artifactId>device-gateway-script</artifactId>
 
+    <properties>
+        <jdbc.codegen.version>1.0.10</jdbc.codegen.version>
+        <mysql.version>6.0.6</mysql.version>
+        <vertx.jdbc.version>0.0.1</vertx.jdbc.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -26,7 +32,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
@@ -44,11 +49,30 @@
 
         <dependency>
             <groupId>com.github.edgar615</groupId>
+            <artifactId>util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.edgar615</groupId>
             <artifactId>vertx-util</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.edgar615</groupId>
-            <artifactId>eventbus-core</artifactId>
+            <artifactId>vertx-util-jdbc</artifactId>
+            <version>${vertx.jdbc.version}</version>
+        </dependency>
+
+        <!--持久层生成-->
+        <dependency>
+            <groupId>com.github.edgar615</groupId>
+            <artifactId>jdbc-codegen</artifactId>
+            <version>${jdbc.codegen.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

@@ -49,7 +49,7 @@ public class ScriptInsertTest {
             .put("productType", "LH201")
             .put("messageType", "up")
             .put("command", "alarmF1Event")
-            .put("content", script);
+            .put("scriptContent", script);
     AtomicBoolean check = new AtomicBoolean();
     vertx.eventBus().send(Consts.LOCAL_SCRIPT_ADD_ADDRESS, jsonObject, reply -> {
       if (reply.failed()) {

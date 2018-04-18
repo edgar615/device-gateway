@@ -4,18 +4,20 @@ import com.github.edgar615.device.gateway.core.Consts;
 import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.ScriptCompiler;
 import com.github.edgar615.device.gateway.core.TransformerRegistry;
+import com.github.edgar615.util.search.Example;
+import com.github.edgar615.util.vertx.jdbc.JdbcUtils;
+import com.github.edgar615.util.vertx.jdbc.VertxJdbc;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.asyncsql.AsyncSQLClient;
 import io.vertx.ext.asyncsql.MySQLClient;
-import io.vertx.ext.sql.ResultSet;
 import io.vertx.ext.sql.SQLConnection;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by Edgar on 2018/4/16.
@@ -23,14 +25,6 @@ import java.util.UUID;
  * @author Edgar  Date 2018/4/16
  */
 public class MySQLVerticle extends AbstractVerticle {
-
-  private static final String SQL_INSERT =
-          "insert into device_script(device_script_id, product_type, message_type, command, "
-          + "script_content, state, add_on, last_modify_on) "
-          + "values(?, ?, ?, ?, ?, ?, ?, ?)";
-
-  private static final String SQL_SELECT =
-          "select * from device_script";
 
   private AsyncSQLClient sqlClient;
 
@@ -45,16 +39,14 @@ public class MySQLVerticle extends AbstractVerticle {
   private void insertConsumer() {
     vertx.eventBus().<JsonObject>consumer(Consts.LOCAL_SCRIPT_ADD_ADDRESS, msg -> {
       JsonObject jsonObject = msg.body();
-      String productType = jsonObject.getString("productType");
-      String messageType = jsonObject.getString("messageType");
-      String command = jsonObject.getString("command");
-      String content = jsonObject.getString("content");
+      DeviceScript deviceScript = ScriptUtils.fromJson(jsonObject);
       String registration = UUID.randomUUID().toString();
+      deviceScript.setDeviceScriptId(registration);
       jsonObject.put("registration", registration);
       //编译content
       MessageTransformer transformer;
       try {
-        transformer = ScriptCompiler.compile(content);
+        transformer = ScriptCompiler.compile(deviceScript.getScriptContent());
       } catch (Exception e) {
         //todo 错误
         msg.fail(-1, e.getMessage());
@@ -63,28 +55,35 @@ public class MySQLVerticle extends AbstractVerticle {
       Future<Void> competeFuture = Future.future();
       competeFuture.setHandler(ar -> {
         if (ar.succeeded()) {
-          TransformerRegistry.instance().register(registration, productType,
-                                                  messageType, command, transformer);
+          TransformerRegistry.instance().register(registration, deviceScript.getProductType(),
+                                                  deviceScript.getMessageType(),
+                                                  deviceScript.getCommand(),
+                                                  transformer);
           msg.reply(new JsonObject().put("registration", registration));
         } else {
           msg.fail(-1, ar.cause().getMessage());
         }
       });
-      insertDb(sqlClient, jsonObject, competeFuture);
+      insertDb(deviceScript, competeFuture);
     });
   }
 
   private void listConsumer() {
     vertx.eventBus().<JsonObject>consumer(Consts.LOCAL_SCRIPT_LIST_ADDRESS, msg -> {
-      Future<List<JsonObject>> competeFuture = Future.future();
+      Future<List<DeviceScript>> competeFuture = Future.future();
       competeFuture.setHandler(ar -> {
         if (ar.succeeded()) {
-          msg.reply(new JsonArray(ar.result()));
+          List<JsonObject> result = ar.result()
+                  .stream()
+                  .map(p -> new JsonObject(p.toMap()))
+                  .collect(Collectors.toList());
+          msg.reply(new JsonArray(result));
         } else {
           msg.fail(-1, ar.cause().getMessage());
         }
       });
-      listDb(sqlClient, new JsonObject(), competeFuture);
+      Example example = ScriptUtils.createExample(msg.body());
+      listDb(example, competeFuture);
     });
   }
 
@@ -95,7 +94,7 @@ public class MySQLVerticle extends AbstractVerticle {
     this.sqlClient = MySQLClient.createShared(vertx, mySQLClientConfig);
   }
 
-  private void insertDb(AsyncSQLClient sqlClient, JsonObject jsonObject,
+  private void insertDb(DeviceScript deviceScript,
                         Future<Void> completeFuture) {
     sqlClient.getConnection(ar -> {
       if (ar.failed()) {
@@ -103,52 +102,35 @@ public class MySQLVerticle extends AbstractVerticle {
         return;
       }
       SQLConnection connection = ar.result();
-      String productType = jsonObject.getString("productType");
-      String messageType = jsonObject.getString("messageType");
-      String command = jsonObject.getString("command");
-      String content = jsonObject.getString("content");
-      String registration = jsonObject.getString("registration");
-      JsonArray params = new JsonArray()
-              .add(registration).add(productType)
-              .add(messageType).add(command)
-              .add(content).add(1)
-              .add(Instant.now().getEpochSecond())
-              .add(Instant.now().getEpochSecond());
-      connection.updateWithParams(SQL_INSERT,
-                                  params, result -> {
-                if (result.succeeded()) {
-//                  UpdateResult updateResult = result.result();
-                  completeFuture.complete();
-                } else {
-                  completeFuture.fail(result.cause());
-                }
-              });
+      VertxJdbc jdbc = VertxJdbc.create(connection);
+      jdbc.insert(deviceScript, iar -> {
+        if (iar.failed()) {
+          completeFuture.fail(iar.cause());
+          return;
+        }
+        completeFuture.complete();
+      });
     });
   }
 
-  private void listDb(AsyncSQLClient sqlClient, JsonObject jsonObject,
-                      Future<List<JsonObject>> completeFuture) {
+  private void listDb(Example example,
+                      Future<List<DeviceScript>> completeFuture) {
     sqlClient.getConnection(ar -> {
       if (ar.failed()) {
         completeFuture.fail(ar.cause());
         return;
       }
-      sqlClient.getConnection(res -> {
-        if (res.succeeded()) {
-          SQLConnection sqlConnection = res.result();
-          sqlConnection.query(SQL_SELECT, result -> {
-            if (result.failed()) {
-              completeFuture.fail(ar.cause());
-              return;
-            }
-            ResultSet resultSet = result.result();
-            List<JsonObject> results = resultSet.getRows();
-            completeFuture.complete(results);
-          });
-        } else {
-          completeFuture.fail(res.cause());
-        }
-      });
+      SQLConnection connection = ar.result();
+      VertxJdbc jdbc = VertxJdbc.create(connection);
+      jdbc.findByExample(DeviceScript.class, example,
+                         json -> JdbcUtils.convertToPojo(json, DeviceScript.class),
+                         far -> {
+                           if (far.failed()) {
+                             completeFuture.fail(far.cause());
+                             return;
+                           }
+                           completeFuture.complete(far.result());
+                         });
     });
   }
 }
