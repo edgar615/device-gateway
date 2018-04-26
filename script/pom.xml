@@ -5,7 +5,7 @@
     <parent>
         <artifactId>device-gateway</artifactId>
         <groupId>com.github.edgar615</groupId>
-        <version>0.0.1</version>
+        <version>${release.version}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
-            <artifactId>vertx-mysql-postgresql-client</artifactId>
+            <artifactId>vertx-web</artifactId>
         </dependency>
 
         <dependency>
@@ -61,17 +61,14 @@
             <version>${vertx.jdbc.version}</version>
         </dependency>
 
-        <!--持久层生成-->
-        <dependency>
-            <groupId>com.github.edgar615</groupId>
-            <artifactId>jdbc-codegen</artifactId>
-            <version>${jdbc.codegen.version}</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
 

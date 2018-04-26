@@ -7,18 +7,18 @@
     <groupId>com.github.edgar615</groupId>
     <artifactId>device-gateway</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1</version>
+    <version>${release.version}</version>
     <modules>
         <module>core</module>
         <module>heartbeat</module>
         <module>kafka</module>
         <module>worker</module>
         <module>script</module>
-        <module>log</module>
         <module>cache</module>
     </modules>
 
     <properties>
+        <release.version>0.0.1</release.version>
         <argLine>-Dfile.encoding=UTF-8</argLine>
         <java.version>1.8</java.version>
         <java.encoding>UTF-8</java.encoding>
@@ -65,6 +65,11 @@
             <dependency>
                 <groupId>io.vertx</groupId>
                 <artifactId>vertx-core</artifactId>
+                <version>${vertx.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.vertx</groupId>
+                <artifactId>vertx-web</artifactId>
                 <version>${vertx.version}</version>
             </dependency>
             <dependency>

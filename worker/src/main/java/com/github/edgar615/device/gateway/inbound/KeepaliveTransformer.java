@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import com.github.edgar615.device.gateway.core.LocalMessageTransformer;
 import com.github.edgar615.device.gateway.core.ScriptLogger;
 import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageType;
@@ -11,19 +12,14 @@ import com.github.edgar615.device.gateway.core.MessageType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Edgar on 2018/3/19.
  *
  * @author Edgar  Date 2018/3/19
  */
-public class KeepaliveTransformer implements MessageTransformer {
-
-  @Override
-  public boolean shouldExecute(Map<String, Object> input) {
-    return "keepalive".equals(input.get("command"))
-           && MessageType.UP.equals(input.get("type"));
-  }
+public class KeepaliveTransformer implements LocalMessageTransformer {
 
   @Override
   public List<Map<String, Object>> execute(Map<String, Object> input, ScriptLogger logger) {
@@ -40,6 +36,26 @@ public class KeepaliveTransformer implements MessageTransformer {
     logger.info("connect, clientIp:" + clientIp);
     return Lists.newArrayList(ImmutableMap.of("type", MessageType.PING, "command", "ping", "data",
                                               data));
+  }
+
+  @Override
+  public String registration() {
+    return UUID.randomUUID().toString();
+  }
+
+  @Override
+  public String productType() {
+    return "*";
+  }
+
+  @Override
+  public String command() {
+    return "keepalive";
+  }
+
+  @Override
+  public String messageType() {
+    return MessageType.UP;
   }
 
 }

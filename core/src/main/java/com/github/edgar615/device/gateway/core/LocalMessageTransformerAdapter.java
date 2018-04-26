@@ -1,12 +1,14 @@
 package com.github.edgar615.device.gateway.core;
 
-/**
- * Created by Edgar on 2018/3/14.
- *
- * @author Edgar  Date 2018/3/14
- */
-public class TransformerHolder {
+import java.util.List;
+import java.util.Map;
 
+/**
+ * Created by Edgar on 2018/4/26.
+ *
+ * @author Edgar  Date 2018/4/26
+ */
+public class LocalMessageTransformerAdapter implements LocalMessageTransformer {
   /**
    * 注册ID
    */
@@ -29,8 +31,8 @@ public class TransformerHolder {
    */
   private final MessageTransformer transformer;
 
-  public TransformerHolder(String registration, String productType, String messageType,
-                           String command, MessageTransformer transformer) {
+  public LocalMessageTransformerAdapter(String registration, String productType, String messageType,
+                                        String command, MessageTransformer transformer) {
     this.registration = registration;
     this.productType = productType;
     this.messageType = messageType;
@@ -42,7 +44,7 @@ public class TransformerHolder {
     return registration;
   }
 
-  public String deviceType() {
+  public String productType() {
     return productType;
   }
 
@@ -54,7 +56,8 @@ public class TransformerHolder {
     return messageType;
   }
 
-  public MessageTransformer transformer() {
-    return transformer;
+  @Override
+  public List<Map<String, Object>> execute(Map<String, Object> input, ScriptLogger logger) {
+    return transformer.execute(input, logger);
   }
 }

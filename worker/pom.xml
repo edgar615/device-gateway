@@ -5,7 +5,7 @@
     <parent>
         <artifactId>device-gateway</artifactId>
         <groupId>com.github.edgar615</groupId>
-        <version>0.0.1</version>
+        <version>${release.version}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -65,7 +65,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.edgar615</groupId>
-            <artifactId>device-gateway-log</artifactId>
+            <artifactId>device-gateway-script</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>

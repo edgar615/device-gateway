@@ -30,7 +30,7 @@ public class ScriptInsertTest {
   @Before
   public void setUp() {
     vertx = Vertx.vertx();
-    vertx.deployVerticle(MySQLVerticle.class.getName());
+    vertx.deployVerticle(ScriptVerticle.class.getName());
     try {
       TimeUnit.SECONDS.sleep(3);
     } catch (InterruptedException e) {

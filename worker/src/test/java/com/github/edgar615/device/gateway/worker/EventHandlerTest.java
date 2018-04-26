@@ -55,7 +55,7 @@ public class EventHandlerTest extends AbstractTransformerTest {
     String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
                         + "/setF1DefendRespEvent.js";
     MessageTransformer transformer = compile(vertx, scriptPath);
-    TransformerRegistry.instance().register("a", "LHF1", transformer);
+    TransformerRegistry.instance().register("a", "LHF1", "up", "setF1DefendRespEvent",  transformer);
     Map<String, Object> input = MessageUtils.createMessage(event);
     AtomicBoolean check = new AtomicBoolean();
    handler.handle(input, ar -> {

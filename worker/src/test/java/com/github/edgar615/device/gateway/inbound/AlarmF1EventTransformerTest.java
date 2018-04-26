@@ -10,6 +10,7 @@ import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
 import com.github.edgar615.util.event.Message;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.script.ScriptException;
 
 /**
@@ -25,7 +27,6 @@ import javax.script.ScriptException;
  * @author Edgar  Date 2018/3/13
  */
 public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
-
 
   @Test
   public void testTransformer() throws ScriptException, IOException {
@@ -71,6 +72,12 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
     List<Map<String, Object>> output = transformer.execute(input, logger);
     System.out.println(output);
     Assert.assertEquals(0, output.size());
+
+    try {
+      TimeUnit.SECONDS.sleep(3);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
 }

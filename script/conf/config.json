@@ -1,0 +1,7 @@
+{
+  "eventbusConsumer" : {
+    "address" : "__com.github.edgar615.device.gateway.script.loadAll",
+    "class": "com.github.edgar615.device.gateway.script.ScriptMessageConsumer",
+    "config": {}
+  }
+}

@@ -2,6 +2,7 @@ package com.github.edgar615.device.gateway.worker;
 
 import com.google.common.collect.Lists;
 
+import com.github.edgar615.device.gateway.core.LocalMessageTransformer;
 import com.github.edgar615.device.gateway.core.ScriptLogger;
 import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.TransformerRegistry;
@@ -35,9 +36,6 @@ public class EventHandler {
 
   private final Vertx vertx;
 
-  List<MessageTransformer> transformers
-          = Lists.newArrayList(ServiceLoader.load(MessageTransformer.class));
-
   public EventHandler(Vertx vertx) {
     this.vertx = vertx;
   }
@@ -46,21 +44,20 @@ public class EventHandler {
     //将input转换为output
     // 因为在执行脚本的过程中，对于异常的脚本要记录日志，所以这里没有使用lambda表达式，而是使用传统的方式
     List<Map<String, Object>> output = new ArrayList<>();
-    List<MessageTransformer> deviceTransformers = new ArrayList<>(transformers);
     String productType = (String) input.get("productType");
-    //todo null判断
-    deviceTransformers.addAll(TransformerRegistry.instance().deviceTransformers(productType));
+    String command = (String) input.get("command");
+    String messageType = (String) input.get("messageType");
+    List<MessageTransformer> deviceTransformers
+            = TransformerRegistry.instance().deviceTransformers(productType, messageType, command);
     for (MessageTransformer transformer : deviceTransformers) {
       try {
-        if (transformer.shouldExecute(input)) {
-          String traceId = (String) input.get("traceId");
-          String deviceId = (String) input.get("deviceId");
-          ScriptLogger logger = new ScriptLogger(vertx, traceId, deviceId);
-          List<Map<String, Object>> result = transformer.execute(input, logger);
-          if (result != null) {
-            //todo 根据不同的类型检查result中的数据支付合法
-            output.addAll(result);
-          }
+        String traceId = (String) input.get("traceId");
+        String deviceId = (String) input.get("deviceId");
+        ScriptLogger logger = new ScriptLogger(vertx, traceId, deviceId);
+        List<Map<String, Object>> result = transformer.execute(input, logger);
+        if (result != null) {
+          //todo 根据不同的类型检查result中的数据支付合法
+          output.addAll(result);
         }
       } catch (Exception e) {
         LOGGER.error("transformer failed", e);
