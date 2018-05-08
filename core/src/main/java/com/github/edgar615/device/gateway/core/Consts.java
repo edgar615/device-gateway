@@ -30,8 +30,20 @@ public class Consts {
   public static final String LOCAL_DEVICE_LOG_ADDRESS
           = "__com.github.edgar615.device.gateway.device.log";
 
+  public static final String LOCAL_SCRIPT_ADDRESS
+          = "__com.github.edgar615.device.gateway.script";
+
   public static final String LOCAL_SCRIPT_ADD_ADDRESS
-          = "__com.github.edgar615.device.gateway.script.add";
+          = "__com.github.edgar615.device.gateway.script.created";
+
+  public static final String LOCAL_SCRIPT_UPDATE_ADDRESS
+          = "__com.github.edgar615.device.gateway.script.updated";
+
+  public static final String LOCAL_SCRIPT_DELETE_ADDRESS
+          = "__com.github.edgar615.device.gateway.script.deleted";
+
+  public static final String LOCAL_SCRIPT_LOAD_ADDRESS
+          = "__com.github.edgar615.device.gateway.script.load";
 
   public static final String LOCAL_SCRIPT_LIST_ADDRESS
           = "__com.github.edgar615.device.gateway.script.list";

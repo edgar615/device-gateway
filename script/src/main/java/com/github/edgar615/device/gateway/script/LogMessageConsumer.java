@@ -29,10 +29,14 @@ public class LogMessageConsumer implements Handler<Message<JsonObject>> {
   @Override
   public void handle(Message<JsonObject> msg) {
     JsonObject jsonObject = msg.body();
-    System.out.println(jsonObject);
     InsertData insertData = new InsertData();
     insertData.setResource("deviceLog");
-    insertData.setData(new JsonObject().put("logContent", jsonObject.encode()));
+    JsonObject data = new JsonObject()
+            .put("logContent", jsonObject.getValue("message"))
+            .put("deviceIdentifier", jsonObject.getValue("deviceIdentifier"))
+            .put("productType", jsonObject.getValue("productType"))
+            .put("traceId", jsonObject.getValue("traceId"));
+    insertData.setData(data);
     persistentService.insert(insertData, ar ->{
       if (ar.failed()) {
         LOGGER.error("insert log failed", ar.cause());

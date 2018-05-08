@@ -2,15 +2,15 @@ package com.github.edgar615.device.gateway.inbound;
 
 import com.google.common.collect.ImmutableMap;
 
-import com.github.edgar615.device.gateway.core.ScriptLogger;
+import com.github.edgar615.device.gateway.ScriptUtils;
 import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.device.gateway.core.MessageUtils;
+import com.github.edgar615.device.gateway.core.ScriptLogger;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
 import com.github.edgar615.util.event.Message;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,11 +40,11 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
     Message message = Message.create("niot", ImmutableMap.of("id", "123456789", "cmd",
                                                              "alarmF1Event", "data", data));
     Event event = Event.create(head, message);
-    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
+    ScriptLogger logger = ScriptLogger.create();
     Map<String, Object> input = MessageUtils.createMessage(event);
     String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
                         + "/alarmF1Event.js";
-    MessageTransformer transformer = compile(vertx, scriptPath);
+    MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
     List<Map<String, Object>> output = transformer.execute(input, logger);
     System.out.println(output);
     Assert.assertEquals(1, output.size());
@@ -64,11 +64,11 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
     Message message = Message.create("niot", ImmutableMap.of("id", "123456789", "cmd",
                                                              "alarmF1Event", "data", data));
     Event event = Event.create(head, message);
-    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
+    ScriptLogger logger = ScriptLogger.create();
     Map<String, Object> input = MessageUtils.createMessage(event);
     String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
                         + "/alarmF1Event.js";
-    MessageTransformer transformer = compile(vertx, scriptPath);
+    MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
     List<Map<String, Object>> output = transformer.execute(input, logger);
     System.out.println(output);
     Assert.assertEquals(0, output.size());

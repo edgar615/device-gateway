@@ -35,8 +35,8 @@ public class RedisVerticle extends AbstractVerticle {
     });
 
     vertx.eventBus().<JsonObject>consumer(Consts.LOCAL_DEVICE_DELETE_ADDRESS, msg -> {
-      String deviceId = msg.body().getString("deviceId");
-      redisClient.del("device:" + deviceId, ar -> {
+      String deviceIdentifier = msg.body().getString("deviceIdentifier");
+      redisClient.del("device:" + deviceIdentifier, ar -> {
         if (ar.failed()) {
           msg.reply(ar.cause());
         } else {
@@ -46,15 +46,17 @@ public class RedisVerticle extends AbstractVerticle {
     });
     vertx.eventBus().<JsonObject>consumer(Consts.LOCAL_DEVICE_ADD_ADDRESS, msg -> {
       JsonObject device = msg.body();
-      String deviceId = device.getString("deviceId");
-      redisClient.hmset("device:" + deviceId, device, ar -> {
+      String deviceIdentifier = device.getString("deviceIdentifier");
+      redisClient.hmset("device:" + deviceIdentifier, device, ar -> {
         if (ar.failed()) {
           msg.reply(ar.cause());
         } else {
           msg.reply(new JsonObject().put("result", "ok"));
         }
       });
-      //todo 设置过期时间
+      redisClient.expire("device:" + deviceIdentifier, 24 * 3600, ar -> {
+        //ignore
+      });
     });
 
   }

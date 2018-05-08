@@ -43,13 +43,17 @@ public class KafkaVerticle extends AbstractVerticle {
 
     KafkaConsumerOptions consumerOptions = new KafkaConsumerOptions()
             .setGroup(eventbusGroup)
-            .setWorkerPoolSize(1)
+            .setWorkerPoolSize(1)//用单线程来保证消息按序读取
             .setServers(eventbusServers);
     for (int i = 0; i < upTopics.size(); i++) {
       consumerOptions.addTopic(upTopics.getString(i));
     }
     for (int i = 0; i < downTopics.size(); i++) {
       consumerOptions.addTopic(downTopics.getString(i));
+    }
+    JsonArray scriptTopics = eventbusConfig.getJsonArray("script.topics", new JsonArray());
+    for (int i = 0; i < scriptTopics.size(); i++) {
+      consumerOptions.addTopic(scriptTopics.getString(i));
     }
     EventConsumer eventConsumer = new KafkaEventConsumer(consumerOptions);
     startFuture.complete();
@@ -58,11 +62,17 @@ public class KafkaVerticle extends AbstractVerticle {
     eventConsumer.consumer((t, r) -> true, event -> {
       if (upTopics.contains(event.head().ext("__topic"))) {
         event.head().addExt("type", "up");
+        vertx.eventBus().send(Consts.LOCAL_KAFKA_CONSUMER_ADDRESS, new JsonObject(event.toMap()));
       }
       if (downTopics.contains(event.head().ext("__topic"))) {
         event.head().addExt("type", "down");
+        vertx.eventBus().send(Consts.LOCAL_KAFKA_CONSUMER_ADDRESS, new JsonObject(event.toMap()));
       }
-      vertx.eventBus().send(Consts.LOCAL_KAFKA_CONSUMER_ADDRESS, new JsonObject(event.toMap()));
+      if (scriptTopics.contains(event.head().ext("__topic"))) {
+        Message message = (Message) event.action();
+        vertx.eventBus().send(Consts.LOCAL_SCRIPT_ADDRESS + "." + message.resource(),
+                              new JsonObject(message.content()));
+      }
     });
 
     //接收发送消息的eventbus，将消息发送到kafka

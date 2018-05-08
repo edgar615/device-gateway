@@ -2,11 +2,10 @@ package com.github.edgar615.device.gateway.outbound;
 
 import com.github.edgar615.device.gateway.core.Consts;
 import com.github.edgar615.device.gateway.core.MessageType;
+import com.github.edgar615.device.gateway.core.Transmitter;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
 import com.github.edgar615.util.event.Message;
-import com.github.edgar615.util.exception.DefaultErrorCode;
-import com.github.edgar615.util.exception.SystemException;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * 事件的处理类.
  * 事件的command分为几种：
- * new 新事件，一个新事件包括下列属性：
+ * newEvent 新事件，一个新事件包括下列属性：
  * originId：事件的原始ID，用于更新事件的信息
  * type: 事件类型 int 默认0
  * time:事件时间  unix 时间戳
@@ -43,7 +42,7 @@ import java.util.stream.Collectors;
 public class EventOutboundHandler implements OutboundHandler {
 
   @Override
-  public void handle(Vertx vertx, Map<String, Object> input, List<Map<String, Object>> output,
+  public void handle(Vertx vertx, Transmitter transmitter, List<Map<String, Object>> output,
                      Future<Void> completeFuture) {
     List<Map<String, Object>> mapList = output.stream()
             .filter(m -> MessageType.EVENT.equals(m.get("type")))
@@ -53,20 +52,22 @@ public class EventOutboundHandler implements OutboundHandler {
       completeFuture.complete();
       return;
     }
-    String traceId = (String) input.get("traceId");
     for (Map<String, Object> map : mapList) {
       String command = (String) map.get("command");
-      String id = traceId + "." + UUID.randomUUID().toString();
       Map<String, Object> data = new HashMap<>((Map<String, Object>) map.get("data"));
-      if ("new".equalsIgnoreCase(command)) {
+      if ("newEvent".equalsIgnoreCase(command)) {
         data.putIfAbsent("originId", UUID.randomUUID().toString());
         data.putIfAbsent("time", Instant.now().getEpochSecond());
         data.putIfAbsent("type", 0);
         data.putIfAbsent("alarm", 1);
         data.putIfAbsent("defend", false);
       }
-      EventHead head = EventHead.create(id, "v1.event.device.event", "message");
-      Message message = Message.create(command, (Map<String, Object>) map.get("data"));
+
+      transmitter.logEvent(MessageType.EVENT, command, data);
+
+      EventHead head =
+              EventHead.create(transmitter.nextTraceId(), "v1.event.device.event", "message");
+      Message message = Message.create("newEvent", (Map<String, Object>) map.get("data"));
       Event event = Event.create(head, message);
       vertx.eventBus().send(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, new JsonObject(event.toMap()));
     }

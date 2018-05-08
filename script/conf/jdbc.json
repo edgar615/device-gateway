@@ -11,13 +11,16 @@
     "testTimeout": 10000
   },
   "persistent": {
-    "tables": ["device_script"],
+    "loginTimeout": 10,
+    "tables": ["product_script"],
     "ignoreColumns": ["created_on", "updated_on"],
     "address" : "__com.github.edgar615.util.vertx.jdbc"
   },
-  "eventbusConsumer" : {
-    "address" : "__com.github.edgar615.util.vertx.jdbc.loadAll",
-    "class": "com.github.edgar615.util.vertx.jdbc.LoadAllMessageConsumer",
-    "config": {}
-  }
+  "eventbusConsumer" : [
+    {
+      "address" : "__com.github.edgar615.util.vertx.jdbc.loadAll",
+      "class": "com.github.edgar615.util.vertx.jdbc.LoadAllMessageConsumer",
+      "config": {}
+    }
+  ]
 }

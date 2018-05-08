@@ -41,15 +41,15 @@ public class SequentialQueue implements Shareable {
    *
    * @return
    */
-  public synchronized Event dequeue() throws InterruptedException {
+  public synchronized Event dequeue() {
     if (tasks.isEmpty()) {
       return null;
     }
     for (Event event : tasks) {
-      String deviceId = extractor.apply(event);
-      if (!registry.contains(deviceId)) {
+      String deviceIdentifier = extractor.apply(event);
+      if (!registry.contains(deviceIdentifier)) {
         tasks.remove(event);
-        registry.add(deviceId);
+        registry.add(deviceIdentifier);
         return event;
       }
     }

@@ -2,8 +2,12 @@ package com.github.edgar615.device.gateway.worker;
 
 import com.google.common.collect.ImmutableMap;
 
+import com.github.edgar615.device.gateway.ScriptUtils;
+import com.github.edgar615.device.gateway.core.MessageTransformer;
+import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.device.gateway.core.SequentialQueue;
 import com.github.edgar615.device.gateway.core.SequentialQueueHelper;
+import com.github.edgar615.device.gateway.core.TransformerRegistry;
 import com.github.edgar615.util.base.Randoms;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
@@ -21,6 +25,7 @@ import org.junit.runner.RunWith;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,13 +38,43 @@ public class WorkerVerticleTest {
 
   private Vertx vertx;
 
-
   private SequentialQueue queue;
 
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
     vertx = Vertx.vertx();
     queue = SequentialQueueHelper.createShared(vertx, new JsonObject());
+    String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
+                        + "/setF1DefendRespEvent.js";
+    MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
+    TransformerRegistry.instance().register(UUID.randomUUID().toString(), "F1", "report",
+                                            "setDefendF1Response",
+                                            transformer);
+    scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
+                 + "/f1DeviceChanged.js";
+    transformer = ScriptUtils.compile(vertx, scriptPath);
+    TransformerRegistry.instance().register(UUID.randomUUID().toString(), "F1", MessageType.DOWN,
+                                            "device.changed",
+                                            transformer);
+    scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
+                 + "/disConnect.js";
+    transformer = ScriptUtils.compile(vertx, scriptPath);
+    TransformerRegistry.instance()
+            .register(UUID.randomUUID().toString(), "F1", MessageType.DIS_CONNECT,
+                      "disConnect",
+                      transformer);
+    scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
+                 + "/connect.js";
+    transformer = ScriptUtils.compile(vertx, scriptPath);
+    TransformerRegistry.instance().register(UUID.randomUUID().toString(), "F1", MessageType.CONNECT,
+                                            "connect",
+                                            transformer);
+    scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
+                 + "/alarmF1Event.js";
+    transformer = ScriptUtils.compile(vertx, scriptPath);
+    TransformerRegistry.instance().register(UUID.randomUUID().toString(), "F1", MessageType.UP,
+                                            "alarmF1Event",
+                                            transformer);
   }
 
   @Test
@@ -49,6 +84,8 @@ public class WorkerVerticleTest {
       int rnd = Integer.parseInt(Randoms.randomNumber(2));
       EventHead head = EventHead.create("v1.event.device.up", "message")
               .addExt("from", "niot")
+              .addExt("type", "up")
+              .addExt("productType", "F1")
               .addExt("__topic", "v1.event.device.up");
       Map<String, Object> data = new HashMap<>();
       data.put("defend", 1);

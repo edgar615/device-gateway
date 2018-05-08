@@ -1,20 +1,16 @@
 package com.github.edgar615.device.gateway.outbound;
 
-import com.github.edgar615.device.gateway.core.Consts;
 import com.github.edgar615.device.gateway.core.MessageType;
-import com.github.edgar615.util.base.MapUtils;
+import com.github.edgar615.device.gateway.core.Transmitter;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
 import com.github.edgar615.util.event.Message;
-import com.github.edgar615.util.event.Request;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by Edgar on 2018/4/10.
@@ -24,7 +20,7 @@ import java.util.UUID;
 public class ReportOutboundHandler implements OutboundHandler {
 
   @Override
-  public void handle(Vertx vertx, Map<String, Object> input, List<Map<String, Object>> output,
+  public void handle(Vertx vertx, Transmitter transmitter, List<Map<String, Object>> output,
                      Future<Void> completeFuture) {
     Map<String, Object> device = output.stream()
             .filter(m -> MessageType.REPORT.equals(m.get("type")))
@@ -38,14 +34,13 @@ public class ReportOutboundHandler implements OutboundHandler {
       completeFuture.complete();
       return;
     }
-    //封装event
-    String traceId = (String) input.get("traceId");
-    String channel = (String) input.get("channel");
-    String id = traceId + "." + UUID.randomUUID().toString();
-    EventHead head = EventHead.create(id, channel, "message");
+    String channel = (String) transmitter.input().get("channel");
+    // todo 更新channel
+    transmitter.logEvent(MessageType.REPORT, "report", device);
+    EventHead head = EventHead.create(transmitter.nextTraceId(), channel, "message");
     Message message = Message.create("device.reported", device);
     Event event = Event.create(head, message);
-    vertx.eventBus().send(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, new JsonObject(event.toMap()));
+    transmitter.sendEvent(event);
     completeFuture.complete();
   }
 }

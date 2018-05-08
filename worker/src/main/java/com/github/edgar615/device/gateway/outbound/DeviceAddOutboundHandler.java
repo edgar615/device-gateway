@@ -1,7 +1,7 @@
 package com.github.edgar615.device.gateway.outbound;
 
-import com.github.edgar615.device.gateway.core.Consts;
 import com.github.edgar615.device.gateway.core.MessageType;
+import com.github.edgar615.device.gateway.core.Transmitter;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -18,7 +18,7 @@ import java.util.Map;
 public class DeviceAddOutboundHandler implements OutboundHandler {
 
   @Override
-  public void handle(Vertx vertx, Map<String, Object> input, List<Map<String, Object>> output,
+  public void handle(Vertx vertx, Transmitter transmitter, List<Map<String, Object>> output,
                      Future<Void> completeFuture) {
     Map<String, Object> device = output.stream()
             .filter(m -> MessageType.DEVICE_ADDED.equals(m.get("type")))
@@ -32,15 +32,7 @@ public class DeviceAddOutboundHandler implements OutboundHandler {
       completeFuture.complete();
       return;
     }
-    String deviceId = (String) input.get("deviceId");
-    device.put("deviceId", deviceId);
-    vertx.eventBus().send(Consts.LOCAL_DEVICE_ADD_ADDRESS,
-                          new JsonObject(device), ar -> {
-              if (ar.failed()) {
-                completeFuture.fail(ar.cause());
-                return;
-              }
-              completeFuture.complete();
-            });
+    transmitter.updateCache(new JsonObject(device));
+    completeFuture.complete();
   }
 }

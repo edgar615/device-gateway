@@ -40,7 +40,7 @@ public class AbstractTransformerTest {
             ("username", "admin").put("password", "csst").put("database", "om_new");
     JsonObject persistentConfig = new JsonObject()
             .put("address", "database-service-address")
-            .put("tables", new JsonArray().add("device_script").add("device_log"));
+            .put("tables", new JsonArray().add("product_script").add("device_log"));
     DeploymentOptions options = new DeploymentOptions()
             .setConfig(new JsonObject().put("mysql", mySQLConfig)
                                .put("persistent", persistentConfig));
@@ -54,54 +54,4 @@ public class AbstractTransformerTest {
 
   }
 
-  protected MessageTransformer compile(Vertx vertx, String scriptPath) throws IOException,
-          ScriptException {
-    ScriptEngineManager manager = new ScriptEngineManager();
-    ScriptEngine engine = manager.getEngineByName("JavaScript");
-    ScriptContext sc = engine.getContext();
-//    https://stackoverflow.com/questions/39578020/how-to-write-to-nashorn-error-stream
-//    sc.setAttribute("stderr", // name is 'stderr'
-//                                     (Consumer<String>) str -> { // Object is a Consumer<String>
-//                                       try {
-//                                         Writer err = sc.getErrorWriter();
-//                                         err.write(str);
-//                                         err.flush();
-//                                       } catch (Exception e) {
-//                                         throw new Error(e);
-//                                       }
-//                                     },
-//                                     ScriptContext.ENGINE_SCOPE
-//// i.e. don't share with other engines
-//    );
-//    sc.setAttribute("logger", new ScriptLogger(vertx), ScriptContext.ENGINE_SCOPE);
-//    sc.setErrorWriter(new PrintWriter(new OutputStream() {
-//      @Override
-//      public void write(int b) throws IOException {
-//        System.err.write(b);
-//      }
-//    }));
-    if (!(engine instanceof Invocable)) {
-      System.out.println("Interface implementation in script"
-                         + "is not supported.");
-      return null;
-    }
-    if (!(engine instanceof Compilable)) {
-      System.out.println("Script compilation not supported.");
-      return null;
-    }
-
-    Reader scriptReader = Files.newBufferedReader(Paths.get(scriptPath));
-
-    Compilable comp = (Compilable) engine;
-    CompiledScript cScript = comp.compile(scriptReader);
-    Invocable inv = (Invocable) engine;
-    cScript.eval();
-    MessageTransformer transformer = inv.getInterface(MessageTransformer.class);
-    if (transformer == null) {
-      System.err.println("MessageTransformer interface "
-                         + "implementation not found.");
-      return null;
-    }
-    return transformer;
-  }
 }

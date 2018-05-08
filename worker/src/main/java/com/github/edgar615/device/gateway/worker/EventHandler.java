@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 
 import com.github.edgar615.device.gateway.core.LocalMessageTransformer;
 import com.github.edgar615.device.gateway.core.ScriptLogger;
-import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.TransformerRegistry;
+import com.github.edgar615.device.gateway.core.Transmitter;
 import com.github.edgar615.device.gateway.outbound.OutboundHandler;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.CompositeFuture;
@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -44,40 +43,38 @@ public class EventHandler {
     //将input转换为output
     // 因为在执行脚本的过程中，对于异常的脚本要记录日志，所以这里没有使用lambda表达式，而是使用传统的方式
     List<Map<String, Object>> output = new ArrayList<>();
+    Transmitter transmitter = Transmitter.create(vertx, input);
     String productType = (String) input.get("productType");
     String command = (String) input.get("command");
-    String messageType = (String) input.get("messageType");
-    List<MessageTransformer> deviceTransformers
+    String messageType = (String) input.get("type");
+    List<LocalMessageTransformer> deviceTransformers
             = TransformerRegistry.instance().deviceTransformers(productType, messageType, command);
-    for (MessageTransformer transformer : deviceTransformers) {
+    if (deviceTransformers.isEmpty()) {
+      transmitter.info("no script");
+    }
+    for (LocalMessageTransformer transformer : deviceTransformers) {
+      ScriptLogger scriptLogger = ScriptLogger.create();
       try {
-        String traceId = (String) input.get("traceId");
-        String deviceId = (String) input.get("deviceId");
-        ScriptLogger logger = new ScriptLogger(vertx, traceId, deviceId);
-        List<Map<String, Object>> result = transformer.execute(input, logger);
+        List<Map<String, Object>> result = transformer.execute(input, scriptLogger);
         if (result != null) {
           //todo 根据不同的类型检查result中的数据支付合法
           output.addAll(result);
         }
+        transmitter.info("execute script " + transformer.registration() + " succeeded");
       } catch (Exception e) {
-        LOGGER.error("transformer failed", e);
-        Map<String, Object> logData = new HashMap<>();
-        logData.put("message", e.getMessage());
-//        Map<String, Object> log =
-//                ImmutableMap.of("type", MessageType.LOG, "command",
-//                                "error", "data", logData);
-//        output.add(log);
-        // todo log
+        transmitter.error("execute script " + transformer.registration() + " failed, cause:"
+                          + e.getMessage());
       }
     }
+
     //处理output
     List<Future> futures = outboundHandlers.stream()
             .map(h -> {
               Future<Void> future = Future.future();
               try {
-                h.handle(vertx, input, output, future);
+                h.handle(vertx, transmitter, output, future);
               } catch (Exception e) {
-                //todo log
+                transmitter.error("outbound handled failed, cause:" + e.getMessage());
                 if (!future.isComplete()) {
                   future.fail(e);
                 }

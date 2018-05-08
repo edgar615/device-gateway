@@ -1,0 +1,81 @@
+{
+  "verticles": {
+    "KafkaVerticle": {
+      "class": "com.github.edgar615.device.gateway.kafka.KafkaVerticle",
+      "worker": true,
+      "config": {
+        "eventbus": {
+          "group": "device-gateway",
+          "id": "device-gateway-1",
+          "servers": "120.76.158.7:9092",
+          "auto.offset.reset": "latest",
+          "up.topics": [
+            "v1.event.device.up"
+          ],
+          "down.topics": [
+            "v1.event.device.down"
+          ],
+          "script.topics": [
+            "v1.event.product.script"
+          ],
+          "pool.size": 1
+        }
+      }
+    },
+    "JdbcVerticle": {
+      "class": "com.github.edgar615.util.vertx.jdbc.JdbcVerticle",
+      "config": {
+        "mysql" :{
+          "host": "www.edgar615.com",
+          "port": 3306,
+          "database": "user",
+          "username": "user",
+          "password": "sdwaxech",
+          "charset": "UTF-8",
+          "maxPoolSize": 10,
+          "connectTimeout": 10000,
+          "testTimeout": 10000
+        },
+        "persistent": {
+          "loginTimeout": 10,
+          "tables": ["product_script"],
+          "ignoreColumns": ["created_on", "updated_on"],
+          "address" : "__com.github.edgar615.util.vertx.jdbc"
+        },
+        "eventbusConsumer" : [
+          {
+            "address" : "__com.github.edgar615.util.vertx.jdbc.loadAll",
+            "class": "com.github.edgar615.util.vertx.jdbc.LoadAllMessageConsumer",
+            "config": {}
+          }
+        ]
+      }
+    },
+    "ScriptVerticle": {
+      "class": "com.github.edgar615.device.gateway.script.ScriptVerticle",
+      "dependencies": [
+        "JdbcVerticle"
+      ],
+      "config": {
+      }
+    },
+    "MasterVerticle": {
+      "class": "com.github.edgar615.device.gateway.worker.MasterVerticle",
+      "dependencies": [
+        "KafkaVerticle"
+      ],
+      "config": {
+      }
+    },
+    "WorkerVerticle": {
+      "class": "com.github.edgar615.device.gateway.worker.WorkerVerticle",
+      "config": {
+      }
+    },
+    "HeartbeatVerticle": {
+      "class": "com.github.edgar615.device.gateway.heartbeat.HeartbeatVerticle",
+      "config": {
+      }
+    }
+  }
+}

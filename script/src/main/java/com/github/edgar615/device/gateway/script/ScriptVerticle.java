@@ -11,6 +11,7 @@ import com.github.edgar615.util.vertx.jdbc.table.Table;
 import com.github.edgar615.util.vertx.jdbc.table.TableRegistry;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.asyncsql.AsyncSQLClient;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -33,17 +34,28 @@ public class ScriptVerticle extends AbstractVerticle {
 
   @Override
   public void start() throws Exception {
-    try {
-      JsonArray consumerArray = config().getJsonArray("eventbusConsumer", new JsonArray());
-      EventbusUtils.registerConsumer(vertx, consumerArray);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
     ServiceProxyBuilder
-            builder = new ServiceProxyBuilder(vertx).setAddress("database-service-address");
+            builder = new ServiceProxyBuilder(vertx).setAddress("__com.github.edgar615.util.vertx.jdbc");
     PersistentService persistentService = builder.build(PersistentService.class);
     vertx.eventBus().consumer(Consts.LOCAL_DEVICE_LOG_ADDRESS,
                               LogMessageConsumer.create(persistentService));
+    vertx.eventBus().consumer(Consts.LOCAL_SCRIPT_ADD_ADDRESS,
+                              new AddScriptMessageConsumer(vertx, new JsonObject()));
+    vertx.eventBus().consumer(Consts.LOCAL_SCRIPT_UPDATE_ADDRESS,
+                              new UpdateScriptMessageConsumer(vertx, new JsonObject()));
+    vertx.eventBus().consumer(Consts.LOCAL_SCRIPT_DELETE_ADDRESS,
+                              new DeleteScriptMessageConsumer(vertx, new JsonObject()));
+    vertx.eventBus().consumer(Consts.LOCAL_SCRIPT_LOAD_ADDRESS,
+                              new LoadScriptMessageConsumer(vertx, new JsonObject()));
+    JsonObject data = new JsonObject()
+            .put("resource", "product_script")
+            .put("limit", 1);
+    JsonObject jsonObject = new JsonObject()
+            .put("data", data)
+            .put("publishAddress", Consts.LOCAL_SCRIPT_LOAD_ADDRESS);
+    vertx.eventBus().send("__com.github.edgar615.util.vertx.jdbc.loadAll", jsonObject);
+
+
   }
 
   private void startWeb(PersistentService persistentService) {

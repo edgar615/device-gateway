@@ -33,7 +33,7 @@ public class WebTest {
             ("username", "admin").put("password", "csst").put("database", "om_new");
     JsonObject persistentConfig = new JsonObject()
             .put("address", "database-service-address")
-            .put("tables", new JsonArray().add("device_script"));
+            .put("tables", new JsonArray().add("product_script"));
 
     AtomicBoolean check1 = new AtomicBoolean();
     DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("mysql",
@@ -49,7 +49,7 @@ public class WebTest {
 
   @Test
   public void testListScript(TestContext testContext) {
-    vertx.createHttpClient().get(9000, "localhost", "/device-script", resp -> {
+    vertx.createHttpClient().get(9000, "localhost", "/product-script", resp -> {
       System.out.println(resp.statusCode());
       resp.bodyHandler(body -> {
         System.out.println(body);

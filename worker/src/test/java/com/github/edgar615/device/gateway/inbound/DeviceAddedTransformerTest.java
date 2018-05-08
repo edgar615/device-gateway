@@ -2,10 +2,10 @@ package com.github.edgar615.device.gateway.inbound;
 
 import com.google.common.collect.ImmutableMap;
 
-import com.github.edgar615.device.gateway.core.ScriptLogger;
 import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.device.gateway.core.MessageUtils;
+import com.github.edgar615.device.gateway.core.ScriptLogger;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
 import com.github.edgar615.util.event.Message;
@@ -42,7 +42,7 @@ public class DeviceAddedTransformerTest {
             .addExt("__topic", "v1.event.device.down");
     Message message = Message.create("device.added", ImmutableMap.of("foo", "bar"));
     Event event = Event.create(head, message);
-    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
+    ScriptLogger logger = ScriptLogger.create();
     MessageTransformer transformer = new DeviceAddedTransformer();
     List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event), logger);
 

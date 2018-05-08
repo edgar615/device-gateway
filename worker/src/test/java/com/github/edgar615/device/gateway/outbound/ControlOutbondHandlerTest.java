@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 
 import com.github.edgar615.device.gateway.core.Consts;
 import com.github.edgar615.device.gateway.core.MessageType;
+import com.github.edgar615.device.gateway.core.Transmitter;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.TestContext;
@@ -42,11 +43,14 @@ public class ControlOutbondHandlerTest {
     output.put("data", ImmutableMap.of("foo", "bar"));
 
     Map<String, Object> input = new HashMap<>();
+    input.put("productType", "test_type");
     input.put("type", MessageType.DOWN);
     input.put("command", "device.changed");
-    input.put("deviceId", "12345678");
+    input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());
     input.put("data", new HashMap<>());
+
+    Transmitter transmitter = Transmitter.create(vertx, input);
 
     AtomicInteger check = new AtomicInteger();
     vertx.eventBus().consumer(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, msg -> {
@@ -55,7 +59,7 @@ public class ControlOutbondHandlerTest {
     });
     OutboundHandler handler = new ControlOutboundHandler();
     Future<Void> future = Future.future();
-    handler.handle(vertx, input, Lists.newArrayList(output), future);
+    handler.handle(vertx, transmitter, Lists.newArrayList(output), future);
     future.setHandler(ar -> {
           check.incrementAndGet();
     });
@@ -71,12 +75,13 @@ public class ControlOutbondHandlerTest {
 
     Map<String, Object> input = new HashMap<>();
     input.put("type", MessageType.DOWN);
+    input.put("productType", "test_type");
     input.put("command", "device.changed");
     input.put("channel", "niot");
-    input.put("deviceId", "12345678");
+    input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());
     input.put("data", new HashMap<>());
-
+    Transmitter transmitter = Transmitter.create(vertx, input);
     AtomicInteger check = new AtomicInteger();
     vertx.eventBus().consumer(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, msg -> {
       System.out.println(msg.body());
@@ -84,7 +89,7 @@ public class ControlOutbondHandlerTest {
     });
     OutboundHandler handler = new ControlOutboundHandler();
     Future<Void> future = Future.future();
-    handler.handle(vertx, input, Lists.newArrayList(output), future);
+    handler.handle(vertx, transmitter, Lists.newArrayList(output), future);
     future.setHandler(ar -> {
       check.incrementAndGet();
     });
@@ -107,10 +112,10 @@ public class ControlOutbondHandlerTest {
     input.put("type", MessageType.DOWN);
     input.put("command", "device.changed");
     input.put("channel", "niot");
-    input.put("deviceId", "12345678");
+    input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());
     input.put("data", new HashMap<>());
-
+    Transmitter transmitter = Transmitter.create(vertx, input);
     AtomicInteger check = new AtomicInteger();
     vertx.eventBus().consumer(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, msg -> {
       System.out.println(msg.body());
@@ -118,7 +123,7 @@ public class ControlOutbondHandlerTest {
     });
     OutboundHandler handler = new ControlOutboundHandler();
     Future<Void> future = Future.future();
-    handler.handle(vertx, input, Lists.newArrayList(output1, output2), future);
+    handler.handle(vertx, transmitter, Lists.newArrayList(output1, output2), future);
     future.setHandler(ar -> {
       check.incrementAndGet();
     });

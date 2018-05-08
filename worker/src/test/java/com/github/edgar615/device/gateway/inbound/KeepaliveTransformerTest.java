@@ -2,10 +2,10 @@ package com.github.edgar615.device.gateway.inbound;
 
 import com.google.common.collect.ImmutableMap;
 
-import com.github.edgar615.device.gateway.core.ScriptLogger;
 import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.device.gateway.core.MessageUtils;
+import com.github.edgar615.device.gateway.core.ScriptLogger;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
 import com.github.edgar615.util.event.Message;
@@ -50,7 +50,7 @@ public class KeepaliveTransformerTest extends AbstractTransformerTest {
     Message message = Message.create("niot", ImmutableMap.of("id", "123456789", "cmd",
                                                              "keepalive", "data", data));
     Event event = Event.create(head, message);
-    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
+    ScriptLogger logger = ScriptLogger.create();
     List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event), logger);
     System.out.println(output);
     Assert.assertEquals(1, output.size());

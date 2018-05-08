@@ -1,10 +1,9 @@
 package com.github.edgar615.device.gateway.outbound;
 
-import com.github.edgar615.device.gateway.core.Consts;
 import com.github.edgar615.device.gateway.core.MessageType;
+import com.github.edgar615.device.gateway.core.Transmitter;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.Map;
 public class PingOutboundHandler implements OutboundHandler {
 
   @Override
-  public void handle(Vertx vertx, Map<String, Object> input, List<Map<String, Object>> output,
+  public void handle(Vertx vertx, Transmitter transmitter, List<Map<String, Object>> output,
                      Future<Void> completeFuture) {
     Map<String, Object> keepalive = output.stream()
             .filter(m -> MessageType.PING.equals(m.get("type")))
@@ -28,14 +27,8 @@ public class PingOutboundHandler implements OutboundHandler {
               m1.putAll(m2);
               return m1;
             });
-    String traceId = (String) input.get("traceId");
-    String deviceId = (String) input.get("deviceId");
-    JsonObject jsonObject = new JsonObject()
-            .put("traceId", traceId)
-            .put("id", deviceId)
-            .put("data", keepalive);
-    vertx.eventBus().send(Consts.LOCAL_DEVICE_HEARTBEAT_ADDRESS,
-                          jsonObject);
+    transmitter.logEvent(MessageType.PING, "ping", keepalive);
+    transmitter.sendPing(keepalive);
 
     completeFuture.complete();
   }

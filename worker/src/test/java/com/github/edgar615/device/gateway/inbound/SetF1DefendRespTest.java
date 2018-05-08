@@ -2,9 +2,10 @@ package com.github.edgar615.device.gateway.inbound;
 
 import com.google.common.collect.ImmutableMap;
 
-import com.github.edgar615.device.gateway.core.ScriptLogger;
+import com.github.edgar615.device.gateway.ScriptUtils;
 import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageUtils;
+import com.github.edgar615.device.gateway.core.ScriptLogger;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
 import com.github.edgar615.util.event.Message;
@@ -47,10 +48,10 @@ public class SetF1DefendRespTest extends AbstractTransformerTest {
     Message message = Message.create("niot", ImmutableMap.of("id", "123456789", "cmd",
                                                              "setDefendF1Response", "data", data));
     Event event = Event.create(head, message);
-    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
+    ScriptLogger logger = ScriptLogger.create();
     String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
                         + "/setF1DefendRespEvent.js";
-    MessageTransformer transformer = compile(vertx, scriptPath);
+    MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
     Map<String, Object> input = MessageUtils.createMessage(event);
     List<Map<String, Object>> output = transformer.execute(input, logger);
     System.out.println(output);
@@ -67,10 +68,10 @@ public class SetF1DefendRespTest extends AbstractTransformerTest {
     Message message = Message.create("niot", ImmutableMap.of("id", "123456789", "cmd",
                                                              "setDefendF1Response", "data", data));
     Event event = Event.create(head, message);
-    ScriptLogger logger = new ScriptLogger(vertx, event.head().id(), "123456789");
+    ScriptLogger logger = ScriptLogger.create();
     String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
                         + "/setF1DefendRespEvent.js";
-    MessageTransformer transformer = compile(vertx, scriptPath);
+    MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
     Map<String, Object> input = MessageUtils.createMessage(event);
     List<Map<String, Object>> output = transformer.execute(input, logger);
     System.out.println(output);

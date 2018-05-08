@@ -9,6 +9,8 @@ import com.github.edgar615.device.gateway.core.SequentialQueueHelper;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
 import com.github.edgar615.util.event.Message;
+import com.github.edgar615.util.eventbus.Helper;
+import com.github.edgar615.util.log.Log;
 import com.github.edgar615.util.vertx.JsonUtils;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -45,7 +47,6 @@ public class MasterVerticle extends AbstractVerticle {
     //接受设备上下线的消息，入队
     vertx.eventBus().<JsonObject>consumer(DEFAULT_FIRST_CONN_ADDRESS, msg -> {
       JsonObject jsonObject = msg.body();
-      System.out.println(jsonObject);
       //包装为event
       String id = jsonObject.getString("id");
       Long time = jsonObject.getLong("time", Instant.now().getEpochSecond());
@@ -54,6 +55,15 @@ public class MasterVerticle extends AbstractVerticle {
               .addExt("__topic", Consts.LOCAL_DEVICE_ADDRESS);
       Message message = Message.create("device.online", ImmutableMap.of("id", id, "time", time));
       Event event = Event.create(eventHead, message);
+      Log.create(LOGGER)
+              .setLogType("device-gateway")
+              .setEvent("connect")
+              .setMessage("[{}] [{}] [{}]")
+              .setTraceId(id)
+              .addArg(id)
+              .addArg(Helper.toHeadString(event))
+              .addArg(Helper.toActionString(event))
+              .info();
       try {
         queue.enqueue(event);
       } catch (InterruptedException e) {
@@ -74,6 +84,15 @@ public class MasterVerticle extends AbstractVerticle {
                 .addExt("__topic", Consts.LOCAL_DEVICE_ADDRESS);
         Message message = Message.create("device.offline", ImmutableMap.of("id", id, "time", time));
         Event event = Event.create(eventHead, message);
+        Log.create(LOGGER)
+                .setLogType("device-gateway")
+                .setEvent("disConnect")
+                .setMessage("[{}] [{}] [{}]")
+                .setTraceId(id)
+                .addArg(id)
+                .addArg(Helper.toHeadString(event))
+                .addArg(Helper.toActionString(event))
+                .info();
         try {
           queue.enqueue(event);
         } catch (InterruptedException e) {

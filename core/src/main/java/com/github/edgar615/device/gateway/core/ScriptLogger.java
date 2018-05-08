@@ -1,9 +1,11 @@
 package com.github.edgar615.device.gateway.core;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Edgar on 2018/4/13.
@@ -13,58 +15,48 @@ import org.slf4j.LoggerFactory;
 public class ScriptLogger {
   private static final Logger LOGGER = LoggerFactory.getLogger(ScriptLogger.class);
 
-  private final Vertx vertx;
+  /**
+   * 限制每个脚本的日志不超过20条，避免被人恶意刷脚本
+   */
+  private final int limit = 20;
 
-  private final String traceId;
+  private final List<LogMessage> logMessages = new CopyOnWriteArrayList<>();
 
-  private final String deviceId;
+  /**
+   * 如果阀门=false，不在增加日志
+   */
+  private boolean throttle = true;
 
-  public ScriptLogger(Vertx vertx, String traceId, String deviceId) {
-    this.vertx = vertx;
-    this.traceId = traceId;
-    this.deviceId = deviceId;
+  private ScriptLogger() {
   }
 
-//  public void debug(String traceId, String deviceId, String message) {
-//    log(traceId, deviceId, message).debug();
-//    pub(traceId, deviceId, "debug", message);
-//  }
+  private synchronized boolean check() {
+    if (throttle && logMessages.size() >= limit) {
+      long now = Instant.now().getEpochSecond();
+      logMessages.add(LogMessage.create(now, 1, "too many log"));
+      throttle = false;
+    }
+    return throttle;
+  }
+
+  public static ScriptLogger create() {
+    return new ScriptLogger();
+  }
 
   public void info(String message) {
-    log(message).info();
-    pub("info", message);
+    if (check()) {
+      long now = Instant.now().getEpochSecond();
+      LogMessage logMessage = LogMessage.create(now, 1, message);
+      logMessages.add(logMessage);
+    }
   }
-//
-//  public void warn(String traceId, String deviceId, String message) {
-//    log(traceId, deviceId, message).warn();
-//    pub(traceId, deviceId, "warn", message);
-//  }
 
   public void error(String message) {
-    log(message).error();
-    pub("error", message);
+    if (check()) {
+      long now = Instant.now().getEpochSecond();
+      LogMessage logMessage = LogMessage.create(now, 2, message);
+      logMessages.add(logMessage);
+    }
   }
 
-  private void pub(String level, String message) {
-    //广播
-    JsonObject jsonObject = new JsonObject()
-            .put("traceId", traceId)
-            .put("deviceId", deviceId)
-            .put("level", level)
-            .put("message", message);
-    vertx.eventBus().send(Consts.LOCAL_DEVICE_LOG_ADDRESS, jsonObject);
-  }
-
-  private Log log(String message) {
-    Log log = Log.create(LOGGER)
-            .setEvent(deviceId)
-            .setTraceId(traceId)
-            .setMessage(message);
-//    if (args != null) {
-//      for (Object arg : args) {
-//        log.addArg(arg);
-//      }
-//    }
-    return log;
-  }
 }

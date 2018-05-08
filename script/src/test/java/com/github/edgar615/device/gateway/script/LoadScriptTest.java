@@ -33,7 +33,7 @@ public class LoadScriptTest {
             ("username", "admin").put("password", "csst").put("database", "om_new");
     JsonObject persistentConfig = new JsonObject()
             .put("address", "database-service-address")
-            .put("tables", new JsonArray().add("device_script"));
+            .put("tables", new JsonArray().add("product_script"));
     JsonObject loadAllConfig = new JsonObject()
             .put("address", "__com.github.edgar615.util.vertx.jdbc.loadAll")
             .put("class", "com.github.edgar615.util.vertx.jdbc.LoadAllMessageConsumer")
@@ -49,7 +49,7 @@ public class LoadScriptTest {
 
     JsonObject scriptEbConfig = new JsonObject()
             .put("address", "__com.github.edgar615.device.gateway.script.loadAll")
-            .put("class", "com.github.edgar615.device.gateway.script.ScriptMessageConsumer")
+            .put("class", "com.github.edgar615.device.gateway.script.LoadScriptMessageConsumer")
             .put("config", mySQLConfig);
     jsonObjectConsumer = new JsonArray().add(scriptEbConfig);
     AtomicBoolean check2 = new AtomicBoolean();
@@ -63,7 +63,7 @@ public class LoadScriptTest {
   @Test
   public void testListScript(TestContext testContext) {
     JsonObject data = new JsonObject()
-            .put("resource", "device_script")
+            .put("resource", "product_script")
             .put("limit", 1);
     JsonObject jsonObject = new JsonObject()
             .put("data", data)

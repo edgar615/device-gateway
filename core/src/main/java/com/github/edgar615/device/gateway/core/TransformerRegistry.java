@@ -41,7 +41,7 @@ public class TransformerRegistry {
    * @param productType
    * @return
    */
-  public List<MessageTransformer> deviceTransformers(String productType, String messageType,
+  public List<LocalMessageTransformer> deviceTransformers(String productType, String messageType,
                                                      String command) {
     return transformers.stream()
             .filter(h -> "*".equalsIgnoreCase(h.productType())
@@ -62,6 +62,11 @@ public class TransformerRegistry {
 
   public void remove(String registration) {
     transformers.removeIf(t -> t.registration().equals(registration));
+  }
+
+  public LocalMessageTransformer get(String registration) {
+    return transformers.stream().filter(t -> t.registration().equals(registration))
+    .findFirst().orElseGet(() -> null);
   }
 
   public int size() {

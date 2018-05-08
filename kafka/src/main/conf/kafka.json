@@ -20,6 +20,9 @@
       "DeviceChangeEvent_1102",
       "DeviceChangeEvent_1103"
     ],
+    "script.topic" : [
+      "v1.event.product.script"
+    ],
     "pool.size": 1
   }
 }

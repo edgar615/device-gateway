@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 
 import com.github.edgar615.device.gateway.core.Consts;
 import com.github.edgar615.device.gateway.core.MessageType;
+import com.github.edgar615.device.gateway.core.Transmitter;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.TestContext;
@@ -57,10 +58,10 @@ public class EventOutbondHandlerTest {
     input.put("type", MessageType.UP);
     input.put("command", "updateVideo");
     input.put("channel", "niot");
-    input.put("deviceId", "12345678");
+    input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());
     input.put("data", new HashMap<>());
-
+    Transmitter transmitter = Transmitter.create(vertx, input);
     AtomicInteger check = new AtomicInteger();
     vertx.eventBus().consumer(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, msg -> {
       System.out.println(msg.body());
@@ -68,7 +69,7 @@ public class EventOutbondHandlerTest {
     });
     OutboundHandler handler = new EventOutboundHandler();
     Future<Void> future = Future.future();
-    handler.handle(vertx, input, Lists.newArrayList(output1, output2, output3), future);
+    handler.handle(vertx, transmitter, Lists.newArrayList(output1, output2, output3), future);
     future.setHandler(ar -> {
       check.incrementAndGet();
     });
