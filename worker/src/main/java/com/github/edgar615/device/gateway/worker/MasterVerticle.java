@@ -1,5 +1,6 @@
 package com.github.edgar615.device.gateway.worker;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 
 import com.github.edgar615.device.gateway.core.Consts;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,11 +51,15 @@ public class MasterVerticle extends AbstractVerticle {
       JsonObject jsonObject = msg.body();
       //包装为event
       String id = jsonObject.getString("id");
+      List<String> idSplitter = Splitter.on(":").splitToList(id);
+      String deviceIdentifier = idSplitter.get(1);
+      String productType = idSplitter.get(0);
       Long time = jsonObject.getLong("time", Instant.now().getEpochSecond());
       EventHead eventHead = EventHead.create(Consts.LOCAL_DEVICE_ADDRESS, "message")
+              .addExt("productType", productType)
               .addExt("type", MessageType.CONNECT)
               .addExt("__topic", Consts.LOCAL_DEVICE_ADDRESS);
-      Message message = Message.create("device.online", ImmutableMap.of("id", id, "time", time));
+      Message message = Message.create("device.online", ImmutableMap.of("deviceIdentifier", deviceIdentifier, "time", time));
       Event event = Event.create(eventHead, message);
       Log.create(LOGGER)
               .setLogType("device-gateway")
@@ -79,10 +85,14 @@ public class MasterVerticle extends AbstractVerticle {
       for (int i = 0; i < ids.size(); i++) {
         String id = ids.getString(i);
         //包装为event
+        List<String> idSplitter = Splitter.on(":").splitToList(id);
+        String deviceIdentifier = idSplitter.get(1);
+        String productType = idSplitter.get(0);
         EventHead eventHead = EventHead.create(Consts.LOCAL_DEVICE_ADDRESS, "message")
+                .addExt("productType", productType)
                 .addExt("type", MessageType.DIS_CONNECT)
                 .addExt("__topic", Consts.LOCAL_DEVICE_ADDRESS);
-        Message message = Message.create("device.offline", ImmutableMap.of("id", id, "time", time));
+        Message message = Message.create("device.offline", ImmutableMap.of("deviceIdentifier", deviceIdentifier, "time", time));
         Event event = Event.create(eventHead, message);
         Log.create(LOGGER)
                 .setLogType("device-gateway")

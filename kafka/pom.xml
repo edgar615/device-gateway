@@ -57,11 +57,7 @@
 
         <dependency>
             <groupId>com.github.edgar615</groupId>
-            <artifactId>eventbus-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.edgar615</groupId>
-            <artifactId>eventbus-kafka</artifactId>
+            <artifactId>eventbus-kafka-vertx</artifactId>
         </dependency>
     </dependencies>
 

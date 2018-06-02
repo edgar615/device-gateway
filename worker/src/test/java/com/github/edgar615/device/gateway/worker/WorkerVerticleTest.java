@@ -80,7 +80,7 @@ public class WorkerVerticleTest {
   @Test
   public void testWorker(TestContext testContext) throws InterruptedException {
     vertx.deployVerticle(WorkerVerticle.class.getName(), new DeploymentOptions().setInstances(3));
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 1; i++) {
       int rnd = Integer.parseInt(Randoms.randomNumber(2));
       EventHead head = EventHead.create("v1.event.device.up", "message")
               .addExt("from", "niot")
@@ -99,6 +99,7 @@ public class WorkerVerticleTest {
     }
 
     Awaitility.await().until(() -> queue.size() == 0);
+    TimeUnit.SECONDS.sleep(3);
 
   }
 

@@ -61,7 +61,7 @@ public class WorkerVerticle extends AbstractVerticle {
                     .setTraceId(finalEvent.head().id())
                     .setLogType("device-gateway")
                     .setEvent("completed")
-                    .info();
+                    .debug();
           }
           queue.complete(finalEvent);
           //尝试将worker的事件处理状态从false修改为true，如果成功说明之前worker没处理事件，开启新一轮处理

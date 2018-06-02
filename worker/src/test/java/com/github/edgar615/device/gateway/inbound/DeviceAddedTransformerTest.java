@@ -39,6 +39,7 @@ public class DeviceAddedTransformerTest {
   public void testAddDevice(TestContext testContext) {
     EventHead head = EventHead.create("v1.event.device.down", "message")
             .addExt("type", "down")
+            .addExt("productType", "f1")
             .addExt("__topic", "v1.event.device.down");
     Message message = Message.create("device.added", ImmutableMap.of("foo", "bar"));
     Event event = Event.create(head, message);

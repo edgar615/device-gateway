@@ -54,13 +54,6 @@ public class MessageUtils {
 
   public static Map<String, Object> createMessage(Event event) {
     String productType = event.head().ext("productType");
-    //todo
-    if ("connect".equals(event.head().ext("type"))) {
-      productType = "all";
-    }
-    if ("disConnect".equals(event.head().ext("type"))) {
-      productType = "all";
-    }
     Objects.requireNonNull(productType);
     if ("up".equals(event.head().ext("type"))) {
       //将下游服务向网关发送的消息转换为内部格式

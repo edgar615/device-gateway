@@ -39,7 +39,7 @@ public class ReportOutbondHandlerTest {
   public void testNoData(TestContext testContext) {
     Map<String, Object> output = new HashMap<>();
     output.put("type", MessageType.REPORT);
-    output.put("command", "defend");
+    output.put("command", "device.report");
 
     Map<String, Object> input = new HashMap<>();
     input.put("type", MessageType.UP);

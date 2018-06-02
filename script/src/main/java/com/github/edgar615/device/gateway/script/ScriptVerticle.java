@@ -4,11 +4,11 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 
 import com.github.edgar615.device.gateway.core.Consts;
+import com.github.edgar615.mysql.mapping.Table;
+import com.github.edgar615.mysql.mapping.TableRegistry;
 import com.github.edgar615.util.vertx.eventbus.EventbusUtils;
 import com.github.edgar615.util.vertx.jdbc.PersistentService;
 import com.github.edgar615.util.vertx.jdbc.dataobj.FindExample;
-import com.github.edgar615.util.vertx.jdbc.table.Table;
-import com.github.edgar615.util.vertx.jdbc.table.TableRegistry;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;

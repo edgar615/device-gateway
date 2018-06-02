@@ -17,6 +17,7 @@ function execute(input, logger) {
         event.data.alarmTime = input.data.time;
         event.data.type = 42201;
         list.add(event);
+        logger.info("test");
     } else {
         logger.error("undefined defend:" + defend);
     }

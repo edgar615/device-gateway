@@ -40,6 +40,7 @@ public class F1DisConnectTransformerTest extends AbstractTransformerTest {
   public void testTransformer(TestContext testContext) throws IOException, ScriptException {
     EventHead head = EventHead.create("local", "message")
             .addExt("type", "disConnect")
+            .addExt("productType", "f1")
             .addExt("__topic", "local");
     Map<String, Object> data = new HashMap<>();
     data.put("id", "123456789");

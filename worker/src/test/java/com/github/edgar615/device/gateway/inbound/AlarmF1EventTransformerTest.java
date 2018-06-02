@@ -32,6 +32,7 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
   public void testTransformer() throws ScriptException, IOException {
     EventHead head = EventHead.create("v1.event.device.up", "message")
             .addExt("type", "up")
+            .addExt("productType", "f1")
             .addExt("__topic", "v1.event.device.up");
     Map<String, Object> data = new HashMap<>();
     data.put("defend", 1);

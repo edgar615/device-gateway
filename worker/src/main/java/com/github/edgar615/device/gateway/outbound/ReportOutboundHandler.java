@@ -11,6 +11,7 @@ import io.vertx.core.Vertx;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by Edgar on 2018/4/10.
@@ -22,25 +23,33 @@ public class ReportOutboundHandler implements OutboundHandler {
   @Override
   public void handle(Vertx vertx, Transmitter transmitter, List<Map<String, Object>> output,
                      Future<Void> completeFuture) {
-    Map<String, Object> device = output.stream()
-            .filter(m -> MessageType.REPORT.equals(m.get("type")))
-            .map(m -> (Map<String, Object>) m.get("data"))
-            .filter(m -> m != null)
-            .reduce(new HashMap<>(), (m1, m2) -> {
-              m1.putAll(m2);
-              return m1;
-            });
-    if (device.isEmpty()) {
-      completeFuture.complete();
-      return;
+    Map<String, List<Map<String, Object>>> grouping =
+            output.stream()
+                    .filter(m -> MessageType.REPORT.equals(m.get("type")))
+                    .filter(m -> m.get("command") instanceof String)
+                    .collect(Collectors.groupingBy(o -> (String) o.get("command")));
+    for (Map.Entry<String, List<Map<String, Object>>> entry : grouping.entrySet()) {
+      Map<String, Object> content = entry.getValue().stream()
+              .map(m -> (Map<String, Object>) m.get("data"))
+              .filter(m -> m != null)
+              .reduce(new HashMap<>(), (m1, m2) -> {
+                m1.putAll(m2);
+                return m1;
+              });
+      // todo 更新channel
+      if (!content.isEmpty()) {
+        transmitter.logOut(MessageType.REPORT, entry.getKey(), content);
+        content.put("deviceIdentifier", transmitter.deviceIdentifier());
+        EventHead head = EventHead.create(transmitter.nextTraceId(),
+                                          "v1.event.device.report", "message")
+                .addExt("productType", transmitter.productType());
+        Message message = Message.create(entry.getKey(), content);
+        Event event = Event.create(head, message);
+        transmitter.sendEvent(event);
+      }
+
     }
-    String channel = (String) transmitter.input().get("channel");
-    // todo 更新channel
-    transmitter.logEvent(MessageType.REPORT, "report", device);
-    EventHead head = EventHead.create(transmitter.nextTraceId(), channel, "message");
-    Message message = Message.create("device.reported", device);
-    Event event = Event.create(head, message);
-    transmitter.sendEvent(event);
+
     completeFuture.complete();
   }
 }

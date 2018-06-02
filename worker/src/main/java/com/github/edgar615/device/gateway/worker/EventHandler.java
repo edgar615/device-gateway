@@ -1,5 +1,6 @@
 package com.github.edgar615.device.gateway.worker;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import com.github.edgar615.device.gateway.core.LocalMessageTransformer;
@@ -12,6 +13,7 @@ import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,12 +49,14 @@ public class EventHandler {
     String productType = (String) input.get("productType");
     String command = (String) input.get("command");
     String messageType = (String) input.get("type");
+    transmitter.logInput(messageType, command, (Map<String, Object>) input.get("data"));
     List<LocalMessageTransformer> deviceTransformers
             = TransformerRegistry.instance().deviceTransformers(productType, messageType, command);
     if (deviceTransformers.isEmpty()) {
       transmitter.info("no script");
     }
     for (LocalMessageTransformer transformer : deviceTransformers) {
+      long start = System.currentTimeMillis();
       ScriptLogger scriptLogger = ScriptLogger.create();
       try {
         List<Map<String, Object>> result = transformer.execute(input, scriptLogger);
@@ -60,10 +64,21 @@ public class EventHandler {
           //todo 根据不同的类型检查result中的数据支付合法
           output.addAll(result);
         }
-        transmitter.info("execute script " + transformer.registration() + " succeeded");
+        long duration = System.currentTimeMillis() - start;
+        scriptLogger.messages().forEach(msg -> {
+          if (msg.type() == 1) {
+            transmitter.info(msg.message(),
+                             ImmutableMap.of("script", transformer.registration()));
+          } else {
+            transmitter.error(msg.message(),
+                             ImmutableMap.of("script", transformer.registration()));
+          }
+        });
+        transmitter.info("execute script succeeded",
+                         ImmutableMap.of("script", transformer.registration(), "duration", duration));
       } catch (Exception e) {
-        transmitter.error("execute script " + transformer.registration() + " failed, cause:"
-                          + e.getMessage());
+        transmitter.error("execute script failed, cause:" + e.getMessage(),
+                          ImmutableMap.of("script", transformer.registration(), "duration", System.currentTimeMillis() - start));
       }
     }
 

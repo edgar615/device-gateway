@@ -42,7 +42,7 @@ public class ControlOutboundHandler implements OutboundHandler {
         data = new HashMap<>();
       }
       //记录日志
-      transmitter.logEvent(MessageType.CONTROL, command, data);
+      transmitter.logOut(MessageType.CONTROL, command, data);
       //发送事件
       String channel = (String) transmitter.input().get("channel");
       EventHead head = EventHead.create(transmitter.nextTraceId(), channel, "request");

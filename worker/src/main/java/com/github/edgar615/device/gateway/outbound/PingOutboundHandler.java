@@ -27,7 +27,7 @@ public class PingOutboundHandler implements OutboundHandler {
               m1.putAll(m2);
               return m1;
             });
-    transmitter.logEvent(MessageType.PING, "ping", keepalive);
+    transmitter.logOut(MessageType.PING, "ping", keepalive);
     transmitter.sendPing(keepalive);
 
     completeFuture.complete();

@@ -2,7 +2,6 @@ package com.github.edgar615.device.gateway.core;
 
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.log.Log;
-import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
@@ -68,23 +67,45 @@ public class Transmitter {
   }
 
   public void sendPing(Map<String, Object> keepalive) {
+    //用productType和deviceIdentifier组合成心跳的监测
     JsonObject jsonObject = new JsonObject()
             .put("traceId", traceId)
-            .put("id", deviceIdentifier)
+            .put("id", productType + ":" + deviceIdentifier)
             .put("data", keepalive);
     vertx.eventBus().send(Consts.LOCAL_DEVICE_HEARTBEAT_ADDRESS,
                           jsonObject);
   }
 
-  public void logEvent(String type, String command, Map<String, Object> data) {
-    JsonObject jsonObject = new JsonObject()
-            .put("traceId", traceId)
-            .put("productType", productType)
-            .put("deviceIdentifier", deviceIdentifier)
-            .put("type", type)
-            .put("command", command)
-            .put("data", data);
-    vertx.eventBus().send(Consts.LOCAL_DEVICE_LOG_ADDRESS, jsonObject);
+  public void logInput(String type, String command, Map<String, Object> data) {
+    Log log = Log.create(LOGGER)
+            .setLogType("device-gateway")
+            .setEvent("in")
+            .setTraceId(traceId)
+            .setMessage("[{}] [{}] [{}] [{}]")
+            .addArg(productType)
+            .addArg(deviceIdentifier)
+            .addArg(type)
+            .addArg(command);
+    if (data != null && !data.isEmpty()) {
+      data.forEach((k, v) -> log.addData(k, v));
+    }
+    log.info();
+  }
+
+  public void logOut(String type, String command, Map<String, Object> data) {
+    Log log = Log.create(LOGGER)
+            .setLogType("device-gateway")
+            .setEvent("out")
+            .setTraceId(traceId)
+            .setMessage("[{}] [{}] [{}] [{}]")
+            .addArg(productType)
+            .addArg(deviceIdentifier)
+            .addArg(type)
+            .addArg(command);
+    if (data != null && !data.isEmpty()) {
+      data.forEach((k, v) -> log.addData(k, v));
+    }
+    log.info();
   }
 
   public void sendEvent(Event event) {
@@ -114,31 +135,16 @@ public class Transmitter {
     error(message, null);
   }
 
-  public void info(String message, JsonObject data) {
+  public void info(String message, Map<String, Object> data) {
     log(message, data).info();
-    pub("info", message, data);
   }
 
-  public void error(String message, JsonObject data) {
+  public void error(String message, Map<String, Object> data) {
     log(message, data).error();
-    pub("error", message, data);
   }
 
-  private void pub(String level, String message, JsonObject data) {
-    //广播
-    JsonObject jsonObject = new JsonObject()
-            .put("traceId", traceId)
-            .put("productType", productType)
-            .put("deviceIdentifier", deviceIdentifier)
-            .put("level", level)
-            .put("message", message);
-    if (data != null && !data.isEmpty()) {
-      jsonObject.put("data", data);
-    }
-    vertx.eventBus().send(Consts.LOCAL_DEVICE_LOG_ADDRESS, jsonObject);
-  }
 
-  private Log log(String message, JsonObject data) {
+  private Log log(String message, Map<String, Object> data) {
     Log log = Log.create(LOGGER)
             .setLogType("device-gateway")
             .setEvent("script")
@@ -148,7 +154,7 @@ public class Transmitter {
             .addArg(deviceIdentifier)
             .addArg(message);
     if (data != null && !data.isEmpty()) {
-      data.forEach(e -> log.addData(e.getKey(), e.getValue()));
+      data.forEach((k, v) -> log.addData(k, v));
     }
     return log;
   }

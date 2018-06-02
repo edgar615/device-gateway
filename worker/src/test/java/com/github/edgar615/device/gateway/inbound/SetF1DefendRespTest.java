@@ -42,6 +42,7 @@ public class SetF1DefendRespTest extends AbstractTransformerTest {
   public void testUndefinedDefend(TestContext testContext) throws IOException, ScriptException {
     EventHead head = EventHead.create("v1.event.device.up", "message")
             .addExt("type", "up")
+            .addExt("productType", "f1")
             .addExt("__topic", "v1.event.device.up");
     Map<String, Object> data = new HashMap<>();
     data.put("defend", 3);

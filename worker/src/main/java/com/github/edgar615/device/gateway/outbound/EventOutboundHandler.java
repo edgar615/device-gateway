@@ -63,7 +63,7 @@ public class EventOutboundHandler implements OutboundHandler {
         data.putIfAbsent("defend", false);
       }
 
-      transmitter.logEvent(MessageType.EVENT, command, data);
+      transmitter.logOut(MessageType.EVENT, command, data);
 
       EventHead head =
               EventHead.create(transmitter.nextTraceId(), "v1.event.device.event", "message");

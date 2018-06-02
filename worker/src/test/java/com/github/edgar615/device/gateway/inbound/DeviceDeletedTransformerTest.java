@@ -43,6 +43,7 @@ public class DeviceDeletedTransformerTest {
   public void testDeleteDevice(TestContext testContext) {
     EventHead head = EventHead.create("v1.event.device.down", "message")
             .addExt("type", "down")
+            .addExt("productType", "f1")
             .addExt("__topic", "v1.event.device.down");
     Message message = Message.create("device.deleted", ImmutableMap.of("id", "1234"));
     Event event = Event.create(head, message);

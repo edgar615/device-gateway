@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -57,6 +58,10 @@ public class ScriptLogger {
       LogMessage logMessage = LogMessage.create(now, 2, message);
       logMessages.add(logMessage);
     }
+  }
+
+  public List<LogMessage> messages() {
+    return new ArrayList<>(logMessages);
   }
 
 }

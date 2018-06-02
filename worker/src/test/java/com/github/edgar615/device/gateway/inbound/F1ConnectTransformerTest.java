@@ -50,6 +50,7 @@ public class F1ConnectTransformerTest extends AbstractTransformerTest {
 
     EventHead head = EventHead.create("local", "message")
             .addExt("type", "connect")
+            .addExt("productType", "f1")
             .addExt("__topic", "local");
     Map<String, Object> data = new HashMap<>();
     data.put("id", "123456789");
