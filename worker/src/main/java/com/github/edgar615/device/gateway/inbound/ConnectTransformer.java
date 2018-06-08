@@ -40,7 +40,7 @@ public class ConnectTransformer implements LocalMessageTransformer {
 
   @Override
   public String command() {
-    return InnerCommand.CONNECT;
+    return KeepaliveCommand.CONNECT;
   }
 
   @Override

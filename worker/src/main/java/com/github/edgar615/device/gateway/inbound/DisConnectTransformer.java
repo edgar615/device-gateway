@@ -37,7 +37,7 @@ public class DisConnectTransformer implements LocalMessageTransformer {
 
   @Override
   public String command() {
-    return InnerCommand.DIS_CONNECT;
+    return KeepaliveCommand.DIS_CONNECT;
   }
 
   @Override

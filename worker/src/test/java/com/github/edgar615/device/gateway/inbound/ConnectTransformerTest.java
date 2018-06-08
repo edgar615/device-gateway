@@ -44,7 +44,7 @@ public class ConnectTransformerTest extends AbstractTransformerTest {
     brokerMessage.put("topic", "local");
     brokerMessage.put("deviceIdentifier", "123456789");
     brokerMessage.put("traceId", UUID.randomUUID().toString());
-    brokerMessage.put("command", InnerCommand.CONNECT);
+    brokerMessage.put("command", KeepaliveCommand.CONNECT);
     brokerMessage.put("data", data);
     brokerMessage.put("type", MessageType.INNER);
     brokerMessage.put("channel", "from_channel");

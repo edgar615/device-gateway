@@ -7,6 +7,48 @@
 
 > Nashorn是JVM上的ECMAScript 5.1规范的运行时实现。
 
+根据消息的发送方向，我将消息划分为下列几类：
+
+- down 平台发到协议网关
+- control 协议网关发到接入网关
+- up 接入网关发到协议网关
+- report 协议网关发到平台
+- keepalive 设备心跳，虽然也是从接入网关发到协议网关，但是单独列为一类处理
+- event 设备事件，虽然也是从接入网关发到协议网关，但是单独列为一类处理
+- inner 协议网关内部消息，调用方不应该使用这个类型的消息
+
+inner消息的command有下面几种
+
+- keepalive 心跳 会交由心跳模块处理
+- device.added 新增设备，会在redis中存放密钥供接入网关使用（不是很好的设计）
+- device.deleted 删除设备，会将redis中的密钥删除
+
+keepalive消息的command有下面几种
+
+- keepalive 心跳 会转换为inner类型的keepalive，调用方不需要关心
+- connect 建立连接 调用方可以处理一下业务逻辑
+- disConnect 断开连接 调用方可以处理一下业务逻辑
+
+event消息的command有下面几种
+
+- new 新事件
+- updateImage 更新图片，用于设备互联的图片抓拍
+- updateVideo 更新视频，用户设备互联的视频抓拍
+
+down消息的command有下面几种
+
+- device.added 新增设备，会转换为inner类型的device.added，调用方不需要关心
+- device.deleted 删除设备，会转换为inner类型的device.deleted，调用方不需要关心
+- device.control 控制设备，调用方需要根据属性转换为对应的control消息
+- part.added 新增配件，会转换为inner类型的part.added，调用方不需要关心
+- part.deleted 删除配件，会转换为inner类型的part.deleted，调用方不需要关心
+- part.control 控制配件，调用方需要根据属性转换为对应的control消息
+
+
+
+
+**下面的文档已过期**
+
 设备服务向网关发送的消息
 
 - 新增设备
@@ -29,11 +71,6 @@
 - 回复添加子设备
 - 回复删除子设备
 - 回复快照
-
-网关内部的消息
-
-- 设备n m上线
-- 设备掉线
 
 
 设备服务向网关发送的消息

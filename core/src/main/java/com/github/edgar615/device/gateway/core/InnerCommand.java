@@ -13,12 +13,12 @@ public class InnerCommand {
     /**
      * 设备连接
      */
-    public static final String CONNECT = "connect";
+//    public static final String CONNECT = "connect";
 
     /**
      * 设备断开
      */
-    public static final String DIS_CONNECT = "disConnect";
+//    public static final String DIS_CONNECT = "disConnect";
 
     /**
      * 设备添加
