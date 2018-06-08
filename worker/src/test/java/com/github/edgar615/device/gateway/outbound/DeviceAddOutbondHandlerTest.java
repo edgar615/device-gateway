@@ -1,5 +1,7 @@
 package com.github.edgar615.device.gateway.outbound;
 
+import com.github.edgar615.device.gateway.core.InnerCommand;
+import com.github.edgar615.util.base.Randoms;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
@@ -38,13 +40,13 @@ public class DeviceAddOutbondHandlerTest {
   @Test
   public void testNoData(TestContext testContext) {
     Map<String, Object> output = new HashMap<>();
-    output.put("type", MessageType.DEVICE_ADDED);
-    output.put("command", "device");
+    output.put("type", MessageType.INNER);
+    output.put("command", InnerCommand.DEVICE_ADDED);
 //    output.put("data", ImmutableMap.of("foo", "bar"));
 
     Map<String, Object> input = new HashMap<>();
     input.put("type", MessageType.DOWN);
-    input.put("command", "device.add");
+    input.put("command", "device.added");
     input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());
     input.put("data", new HashMap<>());
@@ -66,14 +68,13 @@ public class DeviceAddOutbondHandlerTest {
   @Test
   public void testAdd(TestContext testContext) {
     Map<String, Object> output = new HashMap<>();
-    output.put("type", MessageType.DEVICE_ADDED);
-    output.put("command", "device");
-    output.put("data", ImmutableMap.of("foo", "bar"));
+    output.put("type", MessageType.INNER);
+    output.put("command", InnerCommand.DEVICE_ADDED);
+    output.put("data", ImmutableMap.of("encryptKey", Randoms.randomAlphabet(16)));
 
     Map<String, Object> input = new HashMap<>();
     input.put("type", MessageType.DOWN);
     input.put("command", "device.changed");
-    input.put("channel", "niot");
     input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());
     input.put("data", new HashMap<>());

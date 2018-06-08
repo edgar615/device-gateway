@@ -19,34 +19,33 @@ import java.util.UUID;
  */
 public class DeviceDeletedTransformer implements LocalMessageTransformer {
 
-  @Override
-  public List<Map<String, Object>> execute(Map<String, Object> input, ScriptLogger logger) {
-    //设备的唯一标识符，条码或者mac
-    return Lists
-            .newArrayList(ImmutableMap.of("type", MessageType.DEVICE_DELETED, "command", "device"
-                                                                                         + ".deleted",
-                                          "data",
-                                          input.get("data")));
-  }
+    @Override
+    public List<Map<String, Object>> execute(Map<String, Object> input, ScriptLogger logger) {
+        //设备的唯一标识符，条码或者mac
+        return Lists
+                .newArrayList(ImmutableMap.of("type", MessageType.INNER,
+                        "command", "device.deleted",
+                        "data", input.get("data")));
+    }
 
-  @Override
-  public String registration() {
-    return UUID.randomUUID().toString();
-  }
+    @Override
+    public String registration() {
+        return UUID.randomUUID().toString();
+    }
 
-  @Override
-  public String productType() {
-    return "*";
-  }
+    @Override
+    public String productType() {
+        return "*";
+    }
 
-  @Override
-  public String command() {
-    return "device";
-  }
+    @Override
+    public String command() {
+        return "device.deleted";
+    }
 
-  @Override
-  public String messageType() {
-    return MessageType.DEVICE_DELETED;
-  }
+    @Override
+    public String messageType() {
+        return MessageType.DOWN;
+    }
 
 }

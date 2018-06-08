@@ -3,4 +3,4 @@ com.github.edgar615.device.gateway.outbound.DeviceDeletedOutboundHandler
 com.github.edgar615.device.gateway.outbound.ControlOutboundHandler
 com.github.edgar615.device.gateway.outbound.EventOutboundHandler
 #com.github.edgar615.device.gateway.outbound.LogOutboundHandler
-com.github.edgar615.device.gateway.outbound.PingOutboundHandler
+com.github.edgar615.device.gateway.outbound.KeepaliveOutboundHandler

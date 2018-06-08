@@ -80,5 +80,10 @@
             <artifactId>device-gateway-script</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.edgar615</groupId>
+            <artifactId>device-gateway-cache</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 </project>

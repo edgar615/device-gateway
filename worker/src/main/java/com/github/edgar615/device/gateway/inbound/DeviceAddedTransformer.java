@@ -7,10 +7,7 @@ import com.github.edgar615.device.gateway.core.ScriptLogger;
 import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.MessageType;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 设备添加到平台.
@@ -22,22 +19,27 @@ public class DeviceAddedTransformer implements LocalMessageTransformer {
   @Override
   public List<Map<String, Object>> execute(Map<String, Object> input, ScriptLogger logger) {
     //设备的唯一标识符，条码或者mac
-    String id = (String) input.get("id");
-    Map<String, Object> data = (Map<String, Object>) input.getOrDefault("data", new HashMap<>());
-    //TODO 数据校验
-    //密钥
-    String encryptKey = (String) data.get("encryptKey");
+    String deviceIdentifier = (String) input.get("deviceIdentifier");
     //产品类型
-    String productType = (String) data.get("productType");
+    String productType = (String) input.get("productType");
+    Map<String, Object> data = (Map<String, Object>) input.getOrDefault("data", new HashMap<>());
+    //密钥
+    if (!(data.get("encryptKey") instanceof String)) {
+      logger.error("encryptKey required");
+      return new ArrayList<>();
+    }
+    String encryptKey = (String) data.get("encryptKey");
+
     //缓存中增加设备
     Map<String, Object> deviceMap = new HashMap<>();
-    deviceMap.put("id", id);
+    deviceMap.put("deviceIdentifier", deviceIdentifier);
     deviceMap.put("encryptKey", encryptKey);
     deviceMap.put("productType", productType);
 
     Map<String, Object> newMsg = new HashMap<>(input);
     newMsg.put("data", deviceMap);
-    newMsg.put("type", MessageType.DEVICE_ADDED);
+    newMsg.put("command", "device.added");
+    newMsg.put("type", MessageType.INNER);
     return Lists.newArrayList(newMsg);
   }
 
@@ -53,11 +55,11 @@ public class DeviceAddedTransformer implements LocalMessageTransformer {
 
   @Override
   public String command() {
-    return "device";
+    return "device.added";
   }
 
   @Override
   public String messageType() {
-    return MessageType.DEVICE_ADDED;
+    return MessageType.DOWN;
   }
 }

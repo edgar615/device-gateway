@@ -40,7 +40,7 @@ public class ScriptInsertTest {
 
 //  @Test
 //  public void testInsert(TestContext testContext) throws IOException {
-//    String scriptPath = "H:/dev/workspace/device-gateway/script/src/test/resources/script"
+//    String scriptPath = "e:/iotp/device-gateway/script/src/test/resources/script"
 //                        + "/alarmF1Event.js";
 ////    Reader scriptReader = Files.newBufferedReader(Paths.get(scriptPath));
 //    String script = new String(Files.readAllBytes(Paths.get(scriptPath)));

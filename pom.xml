@@ -36,7 +36,7 @@
         <util.version>1.0.18.RELEASE</util.version>
         <vertx.util.version>1.0.14</vertx.util.version>
         <vertx.util.jdbc.version>0.0.1</vertx.util.jdbc.version>
-        <eventbus.version>1.0.10</eventbus.version>
+        <eventbus.version>1.0.10.kafka09</eventbus.version>
 
     </properties>
 

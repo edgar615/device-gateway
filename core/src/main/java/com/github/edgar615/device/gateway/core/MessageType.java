@@ -30,27 +30,27 @@ public class MessageType {
   /**
    * 心跳
    */
-  public static final String PING = "ping";
+  public static final String KEEPALIVE = "keepalive";
 
   /**
    * 设备连接
    */
-  public static final String CONNECT = "connect";
+//  public static final String CONNECT = "connect";
 
   /**
    * 设备断开
    */
-  public static final String DIS_CONNECT = "disConnect";
+//  public static final String DIS_CONNECT = "disConnect";
 
   /**
    * 设备添加
    */
-  public static final String DEVICE_ADDED = "device_added";
+//  public static final String DEVICE_ADDED = "device_added";
 
   /**
    * 设备删除
    */
-  public static final String DEVICE_DELETED = "device_deleted";
+//  public static final String DEVICE_DELETED = "device_deleted";
 
   /**
    * 事件
@@ -61,4 +61,6 @@ public class MessageType {
    * 日志
    */
 //  public static final String LOG = "log";
+
+  public static final String INNER = "inner";
 }

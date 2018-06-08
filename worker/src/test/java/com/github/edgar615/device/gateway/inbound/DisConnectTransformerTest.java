@@ -1,12 +1,10 @@
 package com.github.edgar615.device.gateway.inbound;
 
-import com.github.edgar615.device.gateway.core.MessageTransformer;
-import com.github.edgar615.device.gateway.core.MessageType;
-import com.github.edgar615.device.gateway.core.MessageUtils;
-import com.github.edgar615.device.gateway.core.ScriptLogger;
+import com.github.edgar615.device.gateway.core.*;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
 import com.github.edgar615.util.event.Message;
+import com.sun.org.apache.bcel.internal.generic.BREAKPOINT;
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -19,6 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import javax.script.ScriptException;
 
 /**
@@ -38,18 +37,20 @@ public class DisConnectTransformerTest extends AbstractTransformerTest {
 
   @Test
   public void testTransformer(TestContext testContext) throws IOException, ScriptException {
-    EventHead head = EventHead.create("local", "message")
-            .addExt("type", "disConnect")
-            .addExt("productType", "f1")
-            .addExt("__topic", "local");
     Map<String, Object> data = new HashMap<>();
-    data.put("id", "123456789");
-    data.put("address", "127.0.0.1");
-    Message message = Message.create("connect", data);
-    Event event = Event.create(head, message);
+    Map<String, Object> brokerMessage = new HashMap<>();
+    brokerMessage.put("productType", "F1");
+    brokerMessage.put("topic", "local");
+    brokerMessage.put("deviceIdentifier", "123456789");
+    brokerMessage.put("traceId", UUID.randomUUID().toString());
+    brokerMessage.put("command", InnerCommand.DIS_CONNECT);
+    brokerMessage.put("data", data);
+    brokerMessage.put("type", MessageType.INNER);
+    brokerMessage.put("channel", "from_channel");
+
     ScriptLogger logger = ScriptLogger.create();
     MessageTransformer transformer = new DisConnectTransformer();
-    List<Map<String, Object>> output = transformer.execute(MessageUtils.createMessage(event), logger);
+    List<Map<String, Object>> output = transformer.execute(brokerMessage, logger);
     System.out.println(output);
     Assert.assertEquals(1, output.size());
 

@@ -25,17 +25,20 @@ public class ControlOutboundHandler implements OutboundHandler {
   @Override
   public void handle(Vertx vertx, Transmitter transmitter, List<Map<String, Object>> output,
                      Future<Void> completeFuture) {
-    List<Map<String, Object>> mapList = output.stream()
+    List<Map<String, Object>> controlList = output.stream()
             .filter(m -> MessageType.CONTROL.equals(m.get("type")))
             .collect(Collectors.toList());
+    if (controlList.isEmpty()) {
+      completeFuture.complete();
+      return;
+    }
     if (!transmitter.input().containsKey("channel")) {
       transmitter.error("channel required");
       completeFuture.complete();
       return;
     }
     //封装event\
-    for (Map<String, Object> control : mapList) {
-
+    for (Map<String, Object> control : controlList) {
       String command = (String) control.get("command");
       Map<String, Object> data = (Map<String, Object>) control.get("data");
       if (data == null) {

@@ -1,13 +1,9 @@
 package com.github.edgar615.device.gateway.inbound;
 
+import com.github.edgar615.device.gateway.core.*;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-
-import com.github.edgar615.device.gateway.core.LocalMessageTransformer;
-import com.github.edgar615.device.gateway.core.ScriptLogger;
-import com.github.edgar615.device.gateway.core.MessageTransformer;
-import com.github.edgar615.device.gateway.core.MessageType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +30,7 @@ public class KeepaliveTransformer implements LocalMessageTransformer {
       return Lists.newArrayList();
     }
     logger.info("connect, clientIp:" + clientIp);
-    return Lists.newArrayList(ImmutableMap.of("type", MessageType.PING, "command", "ping", "data",
+    return Lists.newArrayList(ImmutableMap.of("type", MessageType.INNER, "command", InnerCommand.KEEPALIVE, "data",
                                               data));
   }
 
@@ -55,7 +51,7 @@ public class KeepaliveTransformer implements LocalMessageTransformer {
 
   @Override
   public String messageType() {
-    return MessageType.UP;
+    return MessageType.KEEPALIVE;
   }
 
 }

@@ -24,30 +24,23 @@ public class KafkaSendEventTest {
 
   public static void main(String[] args) throws InterruptedException {
     KafkaProducerOptions options = new KafkaProducerOptions();
-    options.setServers("120.76.158.7:9092");
+    options.setServers("test.ihorn.com.cn:9092");
     EventProducer producer = new KafkaEventProducer(options);
-    for (int i = 0; i < 10; i++) {
-      int rnd = Integer.parseInt(Randoms.randomNumber(2));
-      EventHead head = EventHead.create("v1.event.device.up", "message")
-              .addExt("from", "niot")
-              .addExt("type", "up")
-              .addExt("productType", "F1")
-              .addExt("__topic", "v1.event.device.up");
-      Map<String, Object> data = new HashMap<>();
-      data.put("defend", 1);
-      data.put("alarm", 1);
-      data.put("time", Instant.now().getEpochSecond());
-      Message message = Message.create("niot", ImmutableMap.of("id", "" + rnd, "cmd",
-                                                               "alarmF1Event", "data", data));
-      Event event = Event.create(head, message);
-      producer.send(event);
-    }
+    EventHead head = EventHead.create("v1.job.device.control", "message")
+            .addExt("from", "device")
+            .addExt("productType", "LH204");
+    Map<String, Object> data = new HashMap<>();
+    data.put("deviceIdentifier", "123456789");
+    data.put("encryptKey", "0000000000000000");
+    Message message = Message.create("device.added", data);
+    Event event = Event.create(head, message);
+    producer.send(event);
+
     try {
       TimeUnit.SECONDS.sleep(3);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-
     producer.close();
 
     System.out.println(producer.metrics());

@@ -7,13 +7,13 @@
         "eventbus": {
           "group": "device-gateway",
           "id": "device-gateway-1",
-          "servers": "120.76.158.7:9092",
+          "servers": "test.ihorn.com.cn:9092",
           "auto.offset.reset": "latest",
           "up.topics": [
-            "v1.event.device.up"
+            "v1.event.device.report"
           ],
           "down.topics": [
-            "v1.event.device.down"
+            "v1.job.device.control"
           ],
           "script.topics": [
             "v1.event.product.script"
@@ -62,19 +62,25 @@
     "MasterVerticle": {
       "class": "com.github.edgar615.device.gateway.worker.MasterVerticle",
       "dependencies": [
-        "KafkaVerticle"
+        "KafkaVerticle",
+        "RedisVerticle"
       ],
-      "config": {
-      }
-    },
-    "WorkerVerticle": {
-      "class": "com.github.edgar615.device.gateway.worker.WorkerVerticle",
       "config": {
       }
     },
     "HeartbeatVerticle": {
       "class": "com.github.edgar615.device.gateway.heartbeat.HeartbeatVerticle",
       "config": {
+      }
+    },
+    "RedisVerticle": {
+      "class": "com.github.edgar615.device.gateway.cache.RedisVerticle",
+      "config": {
+        "redis" : {
+          "host": "test.ihorn.com.cn",
+          "port": 32770,
+          "auth": "7CBF5FBEF855F16F"
+        }
       }
     }
   }

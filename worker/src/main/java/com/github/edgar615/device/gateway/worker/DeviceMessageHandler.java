@@ -13,7 +13,6 @@ import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,16 +27,16 @@ import java.util.stream.Collectors;
  *
  * @author Edgar  Date 2018/3/19
  */
-public class EventHandler {
+public class DeviceMessageHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(EventHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DeviceMessageHandler.class);
 
   private final List<OutboundHandler> outboundHandlers
           = Lists.newArrayList(ServiceLoader.load(OutboundHandler.class));
 
   private final Vertx vertx;
 
-  public EventHandler(Vertx vertx) {
+  public DeviceMessageHandler(Vertx vertx) {
     this.vertx = vertx;
   }
 

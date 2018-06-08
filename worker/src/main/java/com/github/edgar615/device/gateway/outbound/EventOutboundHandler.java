@@ -1,6 +1,7 @@
 package com.github.edgar615.device.gateway.outbound;
 
 import com.github.edgar615.device.gateway.core.Consts;
+import com.github.edgar615.device.gateway.core.EventCommand;
 import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.device.gateway.core.Transmitter;
 import com.github.edgar615.util.event.Event;
@@ -11,10 +12,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,59 +39,84 @@ import java.util.stream.Collectors;
  */
 public class EventOutboundHandler implements OutboundHandler {
 
-  @Override
-  public void handle(Vertx vertx, Transmitter transmitter, List<Map<String, Object>> output,
-                     Future<Void> completeFuture) {
-    List<Map<String, Object>> mapList = output.stream()
-            .filter(m -> MessageType.EVENT.equals(m.get("type")))
-            .filter(m -> m.get("data") != null)
-            .collect(Collectors.toList());
-    if (mapList.isEmpty()) {
-      completeFuture.complete();
-      return;
+    @Override
+    public void handle(Vertx vertx, Transmitter transmitter, List<Map<String, Object>> output,
+                       Future<Void> completeFuture) {
+        List<Map<String, Object>> mapList = output.stream()
+                .filter(m -> MessageType.EVENT.equals(m.get("type")))
+                .filter(m -> m.get("data") != null)
+                .collect(Collectors.toList());
+        if (mapList.isEmpty()) {
+            completeFuture.complete();
+            return;
+        }
+        //新警情
+        for (Map<String, Object> map : mapList) {
+            String command = (String) map.get("command");
+            if (EventCommand.NEW_EVENT.equalsIgnoreCase(command)) {
+                sendNewEvent(vertx, transmitter, map);
+            } else if (EventCommand.UPDATE_IMAGE.equalsIgnoreCase(command)) {
+                sendUpdateImage(vertx, transmitter, map);
+            } else if (EventCommand.UPDATE_VIDEO.equalsIgnoreCase(command)) {
+                sendUpdateImage(vertx, transmitter, map);
+            } else {
+                transmitter.error("Undefined event command:" + command);
+            }
+        }
+        completeFuture.complete();
     }
-    for (Map<String, Object> map : mapList) {
-      String command = (String) map.get("command");
-      Map<String, Object> data = new HashMap<>((Map<String, Object>) map.get("data"));
-      if ("newEvent".equalsIgnoreCase(command)) {
-        data.putIfAbsent("originId", UUID.randomUUID().toString());
+
+    private void sendNewEvent(Vertx vertx, Transmitter transmitter, Map<String, Object> map) {
+        Map<String, Object> data = new HashMap<>((Map<String, Object>) map.get("data"));
+        ///todo校验格式
+        data.putIfAbsent("originId", transmitter.traceId());
         data.putIfAbsent("time", Instant.now().getEpochSecond());
         data.putIfAbsent("type", 0);
         data.putIfAbsent("alarm", 1);
         data.putIfAbsent("defend", false);
-      }
-
-      transmitter.logOut(MessageType.EVENT, command, data);
-
-      EventHead head =
-              EventHead.create(transmitter.nextTraceId(), "v1.event.device.event", "message");
-      Message message = Message.create("newEvent", (Map<String, Object>) map.get("data"));
-      Event event = Event.create(head, message);
-      vertx.eventBus().send(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, new JsonObject(event.toMap()));
+        transmitter.logOut(MessageType.EVENT, EventCommand.NEW_EVENT, data);
+        Message message = Message.create(EventCommand.NEW_EVENT, data);
+        sendEvent(vertx, transmitter.nextTraceId(), message);
     }
-    completeFuture.complete();
-  }
 
-//  private void check(Map<String, Object> output) {
-//    if (!(output.get("command") instanceof String)) {
-//      throw SystemException.create(DefaultErrorCode.UNKOWN)
-//              .setDetails("outbound: command[String] required");
-//    }
-//    if (!(output.get("data") instanceof Map)) {
-//      throw SystemException.create(DefaultErrorCode.UNKOWN)
-//              .setDetails("outbound: data[Map] required");
-//    }
-//    String command = (String) output.get("command");
-//    Map<String, Object> data = (Map<String, Object>) output.get("data");
-//    if ("new".equalsIgnoreCase(command)) {
-//      if (!(data.get("type") instanceof Integer)) {
-//        throw SystemException.create(DefaultErrorCode.UNKOWN)
-//                .setDetails("outbound: type[int] required");
-//      }
-//      if (!(data.get("time") instanceof Long)) {
-//        throw SystemException.create(DefaultErrorCode.UNKOWN)
-//                .setDetails("outbound: time[long] required");
-//      }
-//    }
-//  }
+    private void sendUpdateImage(Vertx vertx, Transmitter transmitter, Map<String, Object> map) {
+        Map<String, Object> data = new HashMap<>((Map<String, Object>) map.get("data"));
+        if (!(data.get("originId") instanceof String)) {
+            transmitter.error("originId(String) required");
+            return;
+        }
+
+        if (!(data.get("url") instanceof List)) {
+            transmitter.error("url required");
+            return;
+        }
+        data.putIfAbsent("time", Instant.now().getEpochSecond());
+        transmitter.logOut(MessageType.EVENT, EventCommand.UPDATE_IMAGE, data);
+        Message message = Message.create(EventCommand.UPDATE_IMAGE, data);
+        sendEvent(vertx, transmitter.nextTraceId(), message);
+    }
+
+    private void sendUpdateVideo(Vertx vertx, Transmitter transmitter, Map<String, Object> map) {
+        Map<String, Object> data = new HashMap<>((Map<String, Object>) map.get("data"));
+        if (!(data.get("originId") instanceof String)) {
+            transmitter.error("originId(String) required");
+            return;
+        }
+
+        if (!(data.get("url") instanceof List)) {
+            transmitter.error("url required");
+            return;
+        }
+        data.putIfAbsent("time", Instant.now().getEpochSecond());
+        transmitter.logOut(MessageType.EVENT, EventCommand.UPDATE_VIDEO, data);
+        Message message = Message.create(EventCommand.UPDATE_VIDEO, data);
+        sendEvent(vertx, transmitter.nextTraceId(), message);
+    }
+
+    private void sendEvent(Vertx vertx, String nextId,  Message message) {
+        EventHead head =
+                EventHead.create(nextId, "v1.event.device.event", "message");
+        Event event = Event.create(head, message);
+        vertx.eventBus().send(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, new JsonObject(event.toMap()));
+    }
 }

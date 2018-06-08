@@ -11,18 +11,16 @@
       "DeviceControlEvent_4"
     ],
     "down.topics": [
-      "DeviceChangeEvent",
-      "DeviceChangeEvent_1",
-      "DeviceChangeEvent_2",
-      "DeviceChangeEvent_3",
-      "DeviceChangeEvent_4",
-      "DeviceChangeEvent_1101",
-      "DeviceChangeEvent_1102",
-      "DeviceChangeEvent_1103"
+      "v1.job.device.control"
     ],
     "script.topic" : [
       "v1.event.product.script"
-    ],
-    "pool.size": 1
+    ]
+  },
+  "productMapping": {
+    "LH204": {
+      "pid": "horn8006",
+      "code": "horn8006m"
+    }
   }
 }

@@ -36,7 +36,7 @@ public class RedisVerticle extends AbstractVerticle {
 
     vertx.eventBus().<JsonObject>consumer(Consts.LOCAL_DEVICE_DELETE_ADDRESS, msg -> {
       String deviceIdentifier = msg.body().getString("deviceIdentifier");
-      redisClient.del("device:" + deviceIdentifier, ar -> {
+      redisClient.del("device:encrypt:" + deviceIdentifier, ar -> {
         if (ar.failed()) {
           msg.reply(ar.cause());
         } else {
@@ -47,16 +47,20 @@ public class RedisVerticle extends AbstractVerticle {
     vertx.eventBus().<JsonObject>consumer(Consts.LOCAL_DEVICE_ADD_ADDRESS, msg -> {
       JsonObject device = msg.body();
       String deviceIdentifier = device.getString("deviceIdentifier");
-      redisClient.hmset("device:" + deviceIdentifier, device, ar -> {
+      String encryptKey = device.getString("encryptKey", "0000000000000000");
+      redisClient.set("device:encrypt:" + deviceIdentifier,encryptKey, ar -> {
         if (ar.failed()) {
           msg.reply(ar.cause());
         } else {
           msg.reply(new JsonObject().put("result", "ok"));
         }
       });
-      redisClient.expire("device:" + deviceIdentifier, 24 * 3600, ar -> {
-        //ignore
-      });
+//      redisClient.hmset("device:" + deviceIdentifier, device, ar -> {
+//
+//      });
+//      redisClient.expire("device:" + deviceIdentifier, 24 * 3600, ar -> {
+//        //ignore
+//      });
     });
 
   }

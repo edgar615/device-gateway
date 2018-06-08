@@ -6,8 +6,8 @@ package com.github.edgar615.device.gateway.core;
  * @author Edgar  Date 2018/3/19
  */
 public class Consts {
-  public static final String LOCAL_KAFKA_CONSUMER_ADDRESS
-          = "__com.github.edgar615.device.gateway.kafka.consumer";
+  public static final String LOCAL_EVENT_HANDLER
+          = "__com.github.edgar615.device.gateway.event.handler";
 
   public static final String LOCAL_KAFKA_PRODUCER_ADDRESS
           = "__com.github.edgar615.device.gateway.kafka.producer";

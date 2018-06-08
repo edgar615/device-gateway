@@ -79,6 +79,7 @@ public class ReportOutbondHandlerTest {
     input.put("type", MessageType.UP);
     input.put("command", "device.changed");
     input.put("channel", "niot");
+    input.put("productType", "F1");
     input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());
     input.put("data", new HashMap<>());

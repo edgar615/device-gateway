@@ -9,6 +9,7 @@ import com.github.edgar615.util.eventbus.KafkaConsumerOptions;
 import com.github.edgar615.util.eventbus.KafkaEventConsumer;
 import com.github.edgar615.util.eventbus.KafkaEventProducer;
 import com.github.edgar615.util.eventbus.KafkaProducerOptions;
+import com.github.edgar615.util.eventbus.vertx.KafkaVertxEventbusConsumer;
 import com.github.edgar615.util.vertx.JsonUtils;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -55,25 +56,13 @@ public class KafkaVerticle extends AbstractVerticle {
     for (int i = 0; i < scriptTopics.size(); i++) {
       consumerOptions.addTopic(scriptTopics.getString(i));
     }
-    EventConsumer eventConsumer = new KafkaEventConsumer(consumerOptions);
+    KafkaVertxEventbusConsumer.create(vertx, consumerOptions);
     startFuture.complete();
 
+
+    JsonObject mappingConfig = config().getJsonObject("productMapping", new JsonObject());
     //通过eventbus，将消息转发到Master处理
-    eventConsumer.consumer((t, r) -> true, event -> {
-      if (upTopics.contains(event.head().ext("__topic"))) {
-        event.head().addExt("type", "up");
-        vertx.eventBus().send(Consts.LOCAL_KAFKA_CONSUMER_ADDRESS, new JsonObject(event.toMap()));
-      }
-      if (downTopics.contains(event.head().ext("__topic"))) {
-        event.head().addExt("type", "down");
-        vertx.eventBus().send(Consts.LOCAL_KAFKA_CONSUMER_ADDRESS, new JsonObject(event.toMap()));
-      }
-      if (scriptTopics.contains(event.head().ext("__topic"))) {
-        Message message = (Message) event.action();
-        vertx.eventBus().send(Consts.LOCAL_SCRIPT_ADDRESS + "." + message.resource(),
-                              new JsonObject(message.content()));
-      }
-    });
+    new UpEventHandler(vertx, eventbusConfig, mappingConfig).register((t, r) -> true);
 
     //接收发送消息的eventbus，将消息发送到kafka
     vertx.eventBus().<JsonObject>consumer(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, msg -> {

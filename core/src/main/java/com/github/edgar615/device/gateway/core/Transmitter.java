@@ -28,6 +28,8 @@ public class Transmitter {
 
   private final Map<String, Object> input;
 
+  private final String channel;
+
   private final AtomicInteger seq = new AtomicInteger();
 
   private Transmitter(Vertx vertx, Map<String, Object> input) {
@@ -36,6 +38,7 @@ public class Transmitter {
     this.traceId = (String) input.get("traceId");
     this.deviceIdentifier = (String) input.get("deviceIdentifier");
     this.input = input;
+    this.channel = (String) input.get("channel");
   }
 
   public static Transmitter create(Vertx vertx, Map<String, Object> input) {
@@ -66,14 +69,19 @@ public class Transmitter {
     return seq.incrementAndGet();
   }
 
-  public void sendPing(Map<String, Object> keepalive) {
+  public String registration() {
+    return productType + ":" + deviceIdentifier;
+  }
+
+  public void keepalive(Map<String, Object> keepalive) {
     //用productType和deviceIdentifier组合成心跳的监测
     JsonObject jsonObject = new JsonObject()
             .put("traceId", traceId)
-            .put("id", productType + ":" + deviceIdentifier)
+            .put("id", registration())
             .put("data", keepalive);
     vertx.eventBus().send(Consts.LOCAL_DEVICE_HEARTBEAT_ADDRESS,
                           jsonObject);
+    DeviceChannelRegistry.instance().register(registration(), channel);
   }
 
   public void logInput(String type, String command, Map<String, Object> data) {
@@ -125,6 +133,7 @@ public class Transmitter {
     vertx.eventBus().send(Consts.LOCAL_DEVICE_DELETE_ADDRESS,
                           device, ar -> {
             });
+    DeviceChannelRegistry.instance().remove(registration());
   }
 
   public void info(String message) {

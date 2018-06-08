@@ -1,5 +1,6 @@
 package com.github.edgar615.device.gateway.outbound;
 
+import com.github.edgar615.device.gateway.core.InnerCommand;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
@@ -39,8 +40,8 @@ public class DeviceDeleteOutbondHandlerTest {
   @Test
   public void testDelete(TestContext testContext) {
     Map<String, Object> output = new HashMap<>();
-    output.put("type", MessageType.DEVICE_DELETED);
-    output.put("command", "device");
+    output.put("type", MessageType.INNER);
+    output.put("command", InnerCommand.DEVICE_DELETED);
 
     Map<String, Object> input = new HashMap<>();
     input.put("type", MessageType.DOWN);

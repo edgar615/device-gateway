@@ -1,12 +1,9 @@
 package com.github.edgar615.device.gateway.worker;
 
+import com.github.edgar615.device.gateway.core.*;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 
-import com.github.edgar615.device.gateway.core.Consts;
-import com.github.edgar615.device.gateway.core.MessageType;
-import com.github.edgar615.device.gateway.core.SequentialQueue;
-import com.github.edgar615.device.gateway.core.SequentialQueueHelper;
 import com.github.edgar615.util.event.Event;
 import com.github.edgar615.util.event.EventHead;
 import com.github.edgar615.util.event.Message;
@@ -39,13 +36,11 @@ public class MasterVerticle extends AbstractVerticle {
   private static final String DEFAULT_DISCONN_ADDRESS
           = "__com.github.edgar615.keepalive.disconnected";
 
-  private SequentialQueue queue;
+  private DeviceMessageHandler deviceMessageHandler;
 
   @Override
   public void start(Future<Void> startFuture) throws Exception {
-
-    queue = SequentialQueueHelper.createShared(vertx, new JsonObject());
-
+    deviceMessageHandler = new DeviceMessageHandler(vertx);
     //接受设备上下线的消息，入队
     vertx.eventBus().<JsonObject>consumer(DEFAULT_FIRST_CONN_ADDRESS, msg -> {
       JsonObject jsonObject = msg.body();
@@ -57,7 +52,7 @@ public class MasterVerticle extends AbstractVerticle {
       Long time = jsonObject.getLong("time", Instant.now().getEpochSecond());
       EventHead eventHead = EventHead.create(Consts.LOCAL_DEVICE_ADDRESS, "message")
               .addExt("productType", productType)
-              .addExt("type", MessageType.CONNECT)
+              .addExt("type", MessageType.INNER)
               .addExt("__topic", Consts.LOCAL_DEVICE_ADDRESS);
       Message message = Message.create("device.online", ImmutableMap.of("deviceIdentifier", deviceIdentifier, "time", time));
       Event event = Event.create(eventHead, message);
@@ -70,11 +65,11 @@ public class MasterVerticle extends AbstractVerticle {
               .addArg(Helper.toHeadString(event))
               .addArg(Helper.toActionString(event))
               .info();
-      try {
-        queue.enqueue(event);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
+//      try {
+//        queue.enqueue(event);
+//      } catch (InterruptedException e) {
+//        e.printStackTrace();
+//      }
     });
 
     //掉线
@@ -90,7 +85,7 @@ public class MasterVerticle extends AbstractVerticle {
         String productType = idSplitter.get(0);
         EventHead eventHead = EventHead.create(Consts.LOCAL_DEVICE_ADDRESS, "message")
                 .addExt("productType", productType)
-                .addExt("type", MessageType.DIS_CONNECT)
+                .addExt("type", MessageType.INNER)
                 .addExt("__topic", Consts.LOCAL_DEVICE_ADDRESS);
         Message message = Message.create("device.offline", ImmutableMap.of("deviceIdentifier", deviceIdentifier, "time", time));
         Event event = Event.create(eventHead, message);
@@ -103,22 +98,26 @@ public class MasterVerticle extends AbstractVerticle {
                 .addArg(Helper.toHeadString(event))
                 .addArg(Helper.toActionString(event))
                 .info();
-        try {
-          queue.enqueue(event);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
+//        try {
+//          queue.enqueue(event);
+//        } catch (InterruptedException e) {
+//          e.printStackTrace();
+//        }
       }
     });
 
     //kafka的消息
-    vertx.eventBus().<JsonObject>consumer(Consts.LOCAL_KAFKA_CONSUMER_ADDRESS, msg -> {
+    vertx.eventBus().<JsonObject>consumer(Consts.LOCAL_EVENT_HANDLER, msg -> {
       try {
         JsonObject jsonObject = msg.body();
-        Map<String, Object> map = JsonUtils.toMap(jsonObject);
-        Event event = Event.fromMap(map);
-        queue.enqueue(event);
-      } catch (InterruptedException e) {
+        Map<String, Object> brokerMessage = JsonUtils.toMap(jsonObject);
+        if (brokerMessage == null) {
+          msg.reply(new JsonObject());
+        }
+        deviceMessageHandler.handle(brokerMessage, ar -> {
+          msg.reply(new JsonObject());
+        });
+      } catch (Exception e) {
         e.printStackTrace();
       }
     });

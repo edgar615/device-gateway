@@ -23,9 +23,16 @@ public class ReportOutboundHandler implements OutboundHandler {
   @Override
   public void handle(Vertx vertx, Transmitter transmitter, List<Map<String, Object>> output,
                      Future<Void> completeFuture) {
+    List<Map<String, Object>> reportList = output.stream()
+            .filter(m -> MessageType.REPORT.equals(m.get("type")))
+            .collect(Collectors.toList());
+    if (reportList.isEmpty()) {
+      completeFuture.complete();
+      return;
+    }
+
     Map<String, List<Map<String, Object>>> grouping =
-            output.stream()
-                    .filter(m -> MessageType.REPORT.equals(m.get("type")))
+            reportList.stream()
                     .filter(m -> m.get("command") instanceof String)
                     .collect(Collectors.groupingBy(o -> (String) o.get("command")));
     for (Map.Entry<String, List<Map<String, Object>>> entry : grouping.entrySet()) {

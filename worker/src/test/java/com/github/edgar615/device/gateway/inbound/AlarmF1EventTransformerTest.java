@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import javax.script.ScriptException;
 
@@ -30,23 +31,26 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
 
   @Test
   public void testTransformer() throws ScriptException, IOException {
-    EventHead head = EventHead.create("v1.event.device.up", "message")
-            .addExt("type", "up")
-            .addExt("productType", "f1")
-            .addExt("__topic", "v1.event.device.up");
     Map<String, Object> data = new HashMap<>();
     data.put("defend", 1);
     data.put("alarm", 1);
     data.put("time", Instant.now().getEpochSecond());
-    Message message = Message.create("niot", ImmutableMap.of("id", "123456789", "cmd",
-                                                             "alarmF1Event", "data", data));
-    Event event = Event.create(head, message);
+
+    Map<String, Object> brokerMessage = new HashMap<>();
+    brokerMessage.put("productType", "F1");
+    brokerMessage.put("topic", "v1.event.device.up");
+    brokerMessage.put("deviceIdentifier", "123456789");
+    brokerMessage.put("traceId", UUID.randomUUID().toString());
+    brokerMessage.put("command", "alarmF1Event");
+    brokerMessage.put("data", data);
+    brokerMessage.put("type", MessageType.UP);
+    brokerMessage.put("channel", "from_channel");
+
     ScriptLogger logger = ScriptLogger.create();
-    Map<String, Object> input = MessageUtils.createMessage(event);
-    String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
-                        + "/alarmF1Event.js";
+    String scriptPath = "e:/iotp/device-gateway/worker/src/test/resources/script"
+            + "/alarmF1Event.js";
     MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
-    List<Map<String, Object>> output = transformer.execute(input, logger);
+    List<Map<String, Object>> output = transformer.execute(brokerMessage, logger);
     System.out.println(output);
     Assert.assertEquals(1, output.size());
     Map<String, Object> out1 = output.get(0);
@@ -55,22 +59,26 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
 
   @Test
   public void testUndefinedDefend() throws ScriptException, IOException {
-    EventHead head = EventHead.create("v1.event.device.up", "message")
-            .addExt("type", "up")
-            .addExt("__topic", "v1.event.device.up");
     Map<String, Object> data = new HashMap<>();
     data.put("defend", 6);
     data.put("alarm", 1);
     data.put("time", Instant.now().getEpochSecond());
-    Message message = Message.create("niot", ImmutableMap.of("id", "123456789", "cmd",
-                                                             "alarmF1Event", "data", data));
-    Event event = Event.create(head, message);
+
+    Map<String, Object> brokerMessage = new HashMap<>();
+    brokerMessage.put("productType", "F1");
+    brokerMessage.put("topic", "v1.event.device.up");
+    brokerMessage.put("deviceIdentifier", "123456789");
+    brokerMessage.put("traceId", UUID.randomUUID().toString());
+    brokerMessage.put("command", "alarmF1Event");
+    brokerMessage.put("data", data);
+    brokerMessage.put("type", MessageType.UP);
+    brokerMessage.put("channel", "from_channel");
+
     ScriptLogger logger = ScriptLogger.create();
-    Map<String, Object> input = MessageUtils.createMessage(event);
-    String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/worker/src/test/resources/script"
                         + "/alarmF1Event.js";
     MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
-    List<Map<String, Object>> output = transformer.execute(input, logger);
+    List<Map<String, Object>> output = transformer.execute(brokerMessage, logger);
     System.out.println(output);
     Assert.assertEquals(0, output.size());
 

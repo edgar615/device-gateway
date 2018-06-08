@@ -1,5 +1,6 @@
 package com.github.edgar615.device.gateway.outbound;
 
+import com.github.edgar615.device.gateway.core.EventCommand;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
@@ -40,23 +41,23 @@ public class EventOutbondHandlerTest {
   public void testThreeEvent(TestContext testContext) {
     Map<String, Object> output1 = new HashMap<>();
     output1.put("type", MessageType.EVENT);
-    output1.put("command", "new");
+    output1.put("command", EventCommand.NEW_EVENT);
     output1.put("data", ImmutableMap.of("foo", "bar"));
 
     Map<String, Object> output2 = new HashMap<>();
     output2.put("type", MessageType.EVENT);
-    output2.put("command", "updateImage");
-    output2.put("data", ImmutableMap.of("foo", "bar"));
+    output2.put("command", EventCommand.UPDATE_IMAGE);
+    output2.put("data", ImmutableMap.of("originId", "bar", "url", Lists.newArrayList("url")));
 
 
     Map<String, Object> output3 = new HashMap<>();
     output3.put("type", MessageType.EVENT);
-    output3.put("command", "updateVideo");
-    output3.put("data", ImmutableMap.of("foo", "bar"));
+    output3.put("command", EventCommand.UPDATE_VIDEO);
+    output3.put("data", ImmutableMap.of("originId", "bar", "url", Lists.newArrayList("url")));
 
     Map<String, Object> input = new HashMap<>();
     input.put("type", MessageType.UP);
-    input.put("command", "updateVideo");
+    input.put("command", EventCommand.UPDATE_VIDEO);
     input.put("channel", "niot");
     input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());

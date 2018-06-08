@@ -1,15 +1,11 @@
 package com.github.edgar615.device.gateway.worker;
 
-import com.google.common.collect.ImmutableMap;
+import com.github.edgar615.device.gateway.core.MessageType;
 
 import com.github.edgar615.device.gateway.ScriptUtils;
-import com.github.edgar615.device.gateway.core.MessageUtils;
 import com.github.edgar615.device.gateway.inbound.AbstractTransformerTest;
 import com.github.edgar615.device.gateway.core.MessageTransformer;
 import com.github.edgar615.device.gateway.core.TransformerRegistry;
-import com.github.edgar615.util.event.Event;
-import com.github.edgar615.util.event.EventHead;
-import com.github.edgar615.util.event.Message;
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
@@ -21,6 +17,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.script.ScriptException;
 
@@ -30,36 +27,38 @@ import javax.script.ScriptException;
  * @author Edgar  Date 2018/3/19
  */
 @RunWith(VertxUnitRunner.class)
-public class EventHandlerTest extends AbstractTransformerTest {
+public class DeviceMessageHandlerTest extends AbstractTransformerTest {
 
   private Vertx vertx;
 
-  private EventHandler handler;
+  private DeviceMessageHandler handler;
 
   @Before
   public void setUp() {
     vertx = Vertx.vertx();
     TransformerRegistry.instance().clear();
-    handler = new EventHandler(vertx);
+    handler = new DeviceMessageHandler(vertx);
   }
 
   @Test
   public void testScript(TestContext testContext) throws IOException, ScriptException {
-    EventHead head = EventHead.create("v1.event.device.up", "message")
-            .addExt("type", "up")
-            .addExt("__topic", "v1.event.device.up");
-    Map<String, Object> data = new HashMap<>();
-    data.put("defend", 1);
-    Message message = Message.create("niot", ImmutableMap.of("id", "123456789", "cmd",
-                                                             "setDefendF1Response", "data", data));
-    Event event = Event.create(head, message);
-    String scriptPath = "H:/dev/workspace/device-gateway/worker/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/worker/src/test/resources/script"
                         + "/setF1DefendRespEvent.js";
     MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
     TransformerRegistry.instance().register("a", "LHF1", "up", "setF1DefendRespEvent",  transformer);
-    Map<String, Object> input = MessageUtils.createMessage(event);
+    Map<String, Object> data = new HashMap<>();
+    data.put("defend", 1);
+    Map<String, Object> brokerMessage = new HashMap<>();
+    brokerMessage.put("productType", "F1");
+    brokerMessage.put("topic", "local");
+    brokerMessage.put("deviceIdentifier", "123456789");
+    brokerMessage.put("traceId", UUID.randomUUID().toString());
+    brokerMessage.put("command", "setDefendF1Response");
+    brokerMessage.put("data", data);
+    brokerMessage.put("type", MessageType.UP);
+
     AtomicBoolean check = new AtomicBoolean();
-   handler.handle(input, ar -> {
+   handler.handle(brokerMessage, ar -> {
     check.set(true);
     });
     Awaitility.await().until(()-> check.get());
