@@ -38,7 +38,7 @@ public class DeviceAddedTransformer implements LocalMessageTransformer {
 
     Map<String, Object> newMsg = new HashMap<>(input);
     newMsg.put("data", deviceMap);
-    newMsg.put("command", "device.added");
+    newMsg.put("command", "deviceAdded");
     newMsg.put("type", MessageType.INNER);
     return Lists.newArrayList(newMsg);
   }
@@ -55,7 +55,7 @@ public class DeviceAddedTransformer implements LocalMessageTransformer {
 
   @Override
   public String command() {
-    return "device.added";
+    return "deviceAdded";
   }
 
   @Override

@@ -23,7 +23,7 @@ public class ConnectTransformer implements LocalMessageTransformer {
     logger.info("connect, clientIp:" + clientIp);
     Map<String, Object> report =
             ImmutableMap.of("type", MessageType.REPORT, "command",
-                            "device.reported", "data", ImmutableMap.of("isOnline", true,
+                            "deviceReport", "data", ImmutableMap.of("isOnline", true,
                                                                        "clientIp", clientIp));
     return Lists.newArrayList(report);
   }

@@ -23,11 +23,11 @@ public class InnerCommand {
     /**
      * 设备添加
      */
-  public static final String DEVICE_ADDED = "device.added";
+  public static final String DEVICE_ADDED = "deviceAdded";
 
     /**
      * 设备删除
      */
-  public static final String DEVICE_DELETED = "device.deleted";
+  public static final String DEVICE_DELETED = "deviceDeleted";
 
 }

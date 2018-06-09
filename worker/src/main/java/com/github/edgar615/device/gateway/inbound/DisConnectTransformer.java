@@ -21,7 +21,7 @@ public class DisConnectTransformer implements LocalMessageTransformer {
     logger.info("disConnect");
     Map<String, Object> report =
             ImmutableMap.of("type", MessageType.REPORT, "command",
-                            "device.reported", "data", ImmutableMap.of("isOnline", false));
+                            "deviceReport", "data", ImmutableMap.of("isOnline", false));
     return Lists.newArrayList(report);
   }
 

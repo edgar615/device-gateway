@@ -20,8 +20,8 @@
 inner消息的command有下面几种
 
 - keepalive 心跳 会交由心跳模块处理
-- device.added 新增设备，会在redis中存放密钥供接入网关使用（不是很好的设计）
-- device.deleted 删除设备，会将redis中的密钥删除
+- deviceAdded 新增设备，会在redis中存放密钥供接入网关使用（不是很好的设计）
+- deviceDeleted 删除设备，会将redis中的密钥删除
 
 keepalive消息的command有下面几种
 
@@ -37,13 +37,36 @@ event消息的command有下面几种
 
 down消息的command有下面几种
 
-- device.added 新增设备，会转换为inner类型的device.added，调用方不需要关心
-- device.deleted 删除设备，会转换为inner类型的device.deleted，调用方不需要关心
-- device.control 控制设备，调用方需要根据属性转换为对应的control消息
-- part.added 新增配件，会转换为inner类型的part.added，调用方不需要关心
-- part.deleted 删除配件，会转换为inner类型的part.deleted，调用方不需要关心
+- deviceAdded 新增设备，会转换为inner类型的deviceAdded，调用方不需要关心
+- deviceDeleted 删除设备，会转换为inner类型的deviceDeleted，调用方不需要关心
+- deviceControl 控制设备，调用方需要根据属性转换为对应的control消息
+- partAdded 新增配件，会转换为inner类型的partAdded，调用方不需要关心
+- partDeleted 删除配件，会转换为inner类型的partDeleted，调用方不需要关心
 - part.control 控制配件，调用方需要根据属性转换为对应的control消息
+- versionNotify 新版本通知，调用方可以自行选择是否将消息发送给设备(数组)
+- versionUpgrade 开始升级，调用方可以自行选择是否将消息发送给设备
 
+消息格式
+versionNotify:
+
+scheme: 当前固定为HTTP
+host: 域名或IP
+port: 端口
+files: 文件的JSON数组，格式如下
+vesionType: 字符串，说明是那种类型的升级文件,与versionReport中定义的版本名称相同
+filePath: 文件下载路径
+fileLength: 文件大小
+fileMd5: 文件的MD5
+
+report消息的command有下面几种
+
+- deviceReport 设备属性变化，调用方需要修改存储设备属性快照
+- partDeleted 删除配件的回应，调用方需要删除存储的配件
+- partAdded 添加配件的回应，调用方需要添加存储的配件
+- partReport 配件属性变化，调用方需要修改存储设备属性快照(数组)
+- versionReport 上报版本信息，里面带一个notifyNewVersion的bool属性，设备服务检测到notifyNewVersion=true后，将触发versionNotify事件
+
+up消息的command根据协议文档来操作
 
 
 
@@ -77,7 +100,7 @@ down消息的command有下面几种
 
 主题：v1.event.device.down
 
-device.added 平台新增设备 平台内置，不通过脚本配置
+deviceAdded 平台新增设备 平台内置，不通过脚本配置
 收到新增设备的命令后，在cache中维护设备信息，不需要与设备交互
 
 - 用户
@@ -87,7 +110,7 @@ device.added 平台新增设备 平台内置，不通过脚本配置
 - IP
 - 在线状态
 
-device.deleted 平台删除设备 平台内置，不通过脚本配置
+deviceDeleted 平台删除设备 平台内置，不通过脚本配置
 收到删除设备的命令后，在cache中删除设备信息，不需要需设备交互
 
 field.update 平台修改设备属性

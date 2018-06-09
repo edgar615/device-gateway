@@ -48,7 +48,7 @@ public class DeviceAddHandlerTest {
         brokerMessage.put("topic", "local");
         brokerMessage.put("deviceIdentifier", "123456789");
         brokerMessage.put("traceId", UUID.randomUUID().toString());
-        brokerMessage.put("command", "device.added");
+        brokerMessage.put("command", "deviceAdded");
         brokerMessage.put("data", data);
         brokerMessage.put("type", MessageType.DOWN);
 
@@ -75,7 +75,7 @@ public class DeviceAddHandlerTest {
         brokerMessage.put("topic", "local");
         brokerMessage.put("deviceIdentifier", "123456789");
         brokerMessage.put("traceId", UUID.randomUUID().toString());
-        brokerMessage.put("command", "device.added");
+        brokerMessage.put("command", "deviceAdded");
         brokerMessage.put("data", data);
         brokerMessage.put("type", MessageType.DOWN);
 

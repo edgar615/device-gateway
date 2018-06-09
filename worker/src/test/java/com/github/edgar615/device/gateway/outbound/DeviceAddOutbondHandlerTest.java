@@ -46,7 +46,7 @@ public class DeviceAddOutbondHandlerTest {
 
     Map<String, Object> input = new HashMap<>();
     input.put("type", MessageType.DOWN);
-    input.put("command", "device.added");
+    input.put("command", "deviceAdded");
     input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());
     input.put("data", new HashMap<>());

@@ -32,7 +32,7 @@ public class KafkaSendEventTest {
     Map<String, Object> data = new HashMap<>();
     data.put("deviceIdentifier", "123456789");
     data.put("encryptKey", "0000000000000000");
-    Message message = Message.create("device.added", data);
+    Message message = Message.create("deviceAdded", data);
     Event event = Event.create(head, message);
     producer.send(event);
 

@@ -50,7 +50,7 @@ public class DeviceDeleteHandlerTest {
         brokerMessage.put("topic", "local");
         brokerMessage.put("deviceIdentifier", "123456789");
         brokerMessage.put("traceId", UUID.randomUUID().toString());
-        brokerMessage.put("command", "device.deleted");
+        brokerMessage.put("command", "deviceDeleted");
         brokerMessage.put("data", data);
         brokerMessage.put("type", MessageType.DOWN);
 

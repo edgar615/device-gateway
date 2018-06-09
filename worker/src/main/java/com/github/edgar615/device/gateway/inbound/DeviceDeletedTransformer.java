@@ -24,7 +24,7 @@ public class DeviceDeletedTransformer implements LocalMessageTransformer {
         //设备的唯一标识符，条码或者mac
         return Lists
                 .newArrayList(ImmutableMap.of("type", MessageType.INNER,
-                        "command", "device.deleted",
+                        "command", "deviceDeleted",
                         "data", input.get("data")));
     }
 
@@ -40,7 +40,7 @@ public class DeviceDeletedTransformer implements LocalMessageTransformer {
 
     @Override
     public String command() {
-        return "device.deleted";
+        return "deviceDeleted";
     }
 
     @Override

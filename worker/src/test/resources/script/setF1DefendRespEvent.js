@@ -9,7 +9,7 @@ function execute(input, logger) {
     event.data = new Map();
     var report = new Map();
     report.type = "report";
-    report.command = "device.reported";
+    report.command = "deviceReport";
     report.data = new Map();
 
     event.data.alarmType = 1;
