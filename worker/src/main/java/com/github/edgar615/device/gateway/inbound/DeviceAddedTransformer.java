@@ -1,11 +1,7 @@
 package com.github.edgar615.device.gateway.inbound;
 
+import com.github.edgar615.device.gateway.core.*;
 import com.google.common.collect.Lists;
-
-import com.github.edgar615.device.gateway.core.LocalMessageTransformer;
-import com.github.edgar615.device.gateway.core.ScriptLogger;
-import com.github.edgar615.device.gateway.core.MessageTransformer;
-import com.github.edgar615.device.gateway.core.MessageType;
 
 import java.util.*;
 
@@ -38,7 +34,7 @@ public class DeviceAddedTransformer implements LocalMessageTransformer {
 
     Map<String, Object> newMsg = new HashMap<>(input);
     newMsg.put("data", deviceMap);
-    newMsg.put("command", "deviceAdded");
+    newMsg.put("command", InnerCommand.DEVICE_ADDED);
     newMsg.put("type", MessageType.INNER);
     return Lists.newArrayList(newMsg);
   }

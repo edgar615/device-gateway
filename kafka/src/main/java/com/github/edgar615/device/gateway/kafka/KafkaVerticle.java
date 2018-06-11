@@ -2,25 +2,18 @@ package com.github.edgar615.device.gateway.kafka;
 
 import com.github.edgar615.device.gateway.core.Consts;
 import com.github.edgar615.util.event.Event;
-import com.github.edgar615.util.event.Message;
-import com.github.edgar615.util.eventbus.EventConsumer;
 import com.github.edgar615.util.eventbus.EventProducer;
 import com.github.edgar615.util.eventbus.KafkaConsumerOptions;
-import com.github.edgar615.util.eventbus.KafkaEventConsumer;
 import com.github.edgar615.util.eventbus.KafkaEventProducer;
 import com.github.edgar615.util.eventbus.KafkaProducerOptions;
 import com.github.edgar615.util.eventbus.vertx.KafkaVertxEventbusConsumer;
 import com.github.edgar615.util.vertx.JsonUtils;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Edgar on 2016/7/11.
@@ -62,7 +55,7 @@ public class KafkaVerticle extends AbstractVerticle {
 
     JsonObject mappingConfig = config().getJsonObject("productMapping", new JsonObject());
     //通过eventbus，将消息转发到Master处理
-    new UpEventHandler(vertx, eventbusConfig, mappingConfig).register((t, r) -> true);
+    new EventHandler(vertx, eventbusConfig, mappingConfig).register((t, r) -> true);
 
     //接收发送消息的eventbus，将消息发送到kafka
     vertx.eventBus().<JsonObject>consumer(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, msg -> {

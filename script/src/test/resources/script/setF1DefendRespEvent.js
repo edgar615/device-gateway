@@ -12,8 +12,8 @@ function execute(input, logger) {
     report.command = "deviceReport";
     report.data = new Map();
 
-    event.data.alarmType = 1;
-    event.data.alarmTime = Instant.now().getEpochSecond();
+    event.data.level = 1;
+    event.data.time = Instant.now().getEpochSecond();
     var defend = input.data.defend;
     var list = new List();
     if (defend == 1) {

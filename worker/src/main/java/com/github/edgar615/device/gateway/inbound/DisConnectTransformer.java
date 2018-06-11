@@ -4,6 +4,8 @@ import com.github.edgar615.device.gateway.core.*;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -21,8 +23,19 @@ public class DisConnectTransformer implements LocalMessageTransformer {
     logger.info("disConnect");
     Map<String, Object> report =
             ImmutableMap.of("type", MessageType.REPORT, "command",
-                            "deviceReport", "data", ImmutableMap.of("isOnline", false));
-    return Lists.newArrayList(report);
+                            ReportCommand.DEVICE_DISCONN, "data", new HashMap<>());
+    //掉线事件
+    Map<String, Object> eventData = new HashMap<>();
+    eventData.putIfAbsent("originId", input.getOrDefault("traceId", UUID.randomUUID().toString()));
+    eventData.putIfAbsent("time", Instant.now().getEpochSecond());
+    eventData.putIfAbsent("type", 40021);
+    eventData.putIfAbsent("level", 1);
+    eventData.putIfAbsent("push", true);
+    eventData.putIfAbsent("defend", false);
+    Map<String, Object> event =
+            ImmutableMap.of("type", MessageType.EVENT, "command",
+                    EventCommand.NEW_EVENT, "data", eventData);
+    return Lists.newArrayList(report, event);
   }
 
   @Override

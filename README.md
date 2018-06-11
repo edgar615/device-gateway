@@ -35,6 +35,24 @@ event消息的command有下面几种
 - updateImage 更新图片，用于设备互联的图片抓拍
 - updateVideo 更新视频，用户设备互联的视频抓拍
 
+新事件有下列属性，调用方可以自行增加其他属性，在入库时将会写入到attribute属性中
+- originId 事件的唯一ID，UUID，用于互联
+- time 事件时间
+- type 平台统一定义的事件类型
+- level 事件级别 1-普通事件 100-重要事件 200-报警
+- push 是否推送给用户 bool
+- defend 布撤防事件 bool
+- protectNo 防区号，新设备不再使用条码判断配件，而是统一使用一个整数来表示
+- partitionNo 分区号，-1表示非分区事件
+
+updateImage只有两个属性
+- originId 事件的唯一ID，UUID
+- files 图片的数组
+
+updateVideo只有两个属性
+- originId 事件的唯一ID，UUID
+- files 视频的数组
+
 down消息的command有下面几种
 
 - deviceAdded 新增设备，会转换为inner类型的deviceAdded，调用方不需要关心
@@ -68,6 +86,9 @@ report消息的command有下面几种
 
 up消息的command根据协议文档来操作
 
+event的类型
+- 40020 上线
+- 40021 掉线
 
 
 **下面的文档已过期**

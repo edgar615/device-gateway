@@ -26,9 +26,9 @@ import java.util.Map;
  *
  * @author Edgar  Date 2018/3/12
  */
-public class MasterVerticle extends AbstractVerticle {
+public class WorkerVerticle extends AbstractVerticle {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MasterVerticle.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(WorkerVerticle.class);
 
   private static final String DEFAULT_FIRST_CONN_ADDRESS
           = "__com.github.edgar615.keepalive.firstconnected";

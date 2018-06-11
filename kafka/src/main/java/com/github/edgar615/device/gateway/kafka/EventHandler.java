@@ -8,10 +8,14 @@ import com.github.edgar615.util.event.Message;
 import com.github.edgar615.util.eventbus.vertx.VertxEventHandler;
 import com.github.edgar615.util.exception.DefaultErrorCode;
 import com.github.edgar615.util.exception.SystemException;
+import com.github.edgar615.util.log.Log;
+import com.github.edgar615.util.log.LogType;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,14 +23,16 @@ import java.util.stream.Collectors;
 /**
  * Created by Administrator on 2018/6/7.
  */
-public class UpEventHandler implements VertxEventHandler {
+public class EventHandler implements VertxEventHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventHandler.class);
     private final Vertx vertx;
     private final JsonArray upTopics;
     private final JsonArray downTopics;
     private final JsonArray scriptTopics;
     private List<ProductMapping> mappings;
-    public UpEventHandler(Vertx vertx, JsonObject config, JsonObject mappingConfig) {
+
+    public EventHandler(Vertx vertx, JsonObject config, JsonObject mappingConfig) {
         this.vertx = vertx;
         this.upTopics = config.getJsonArray("up.topics", new JsonArray());
         this.downTopics = config.getJsonArray("down.topics", new JsonArray());
@@ -43,17 +49,37 @@ public class UpEventHandler implements VertxEventHandler {
     @Override
     public void handle(Event event, Future<Void> completeFuture) {
         if (upTopics.contains(event.head().ext("__topic"))) {
-            Map<String, Object> deviceMessage = createUpMessage(event);
-            vertx.eventBus().send(Consts.LOCAL_EVENT_HANDLER, new JsonObject(deviceMessage), msg -> {
-                completeFuture.complete();
-            });
+            try {
+                Map<String, Object> deviceMessage = createUpMessage(event);
+                vertx.eventBus().send(Consts.LOCAL_EVENT_HANDLER, new JsonObject(deviceMessage), msg -> {
+                    completeFuture.complete();
+                });
+            } catch (Exception e) {
+                Log.create(LOGGER)
+                        .setEvent("transform")
+                        .setLogType("event")
+                        .setTraceId(event.head().id())
+                        .setThrowable(e)
+                        .error();
+                completeFuture.tryComplete();
+            }
             return;
         }
         if (downTopics.contains(event.head().ext("__topic"))) {
-            Map<String, Object> deviceMessage = createDownMessage(event);
-            vertx.eventBus().send(Consts.LOCAL_EVENT_HANDLER, new JsonObject(deviceMessage), msg -> {
-                completeFuture.complete();
-            });
+            try {
+                Map<String, Object> deviceMessage = createDownMessage(event);
+                vertx.eventBus().send(Consts.LOCAL_EVENT_HANDLER, new JsonObject(deviceMessage), msg -> {
+                    completeFuture.complete();
+                });
+            } catch (Exception e) {
+                Log.create(LOGGER)
+                        .setEvent("transform")
+                        .setLogType("event")
+                        .setTraceId(event.head().id())
+                        .setThrowable(e)
+                        .error();
+                completeFuture.tryComplete();
+            }
             return;
         }
         if (scriptTopics.contains(event.head().ext("__topic"))) {
@@ -79,38 +105,38 @@ public class UpEventHandler implements VertxEventHandler {
             return optional.get();
         }
         throw SystemException.create(DefaultErrorCode.RESOURCE_NOT_FOUND)
-                .set("pid",pid)
+                .set("pid", pid)
                 .set("code", code);
     }
 
     //将设备接入服务向网关发送的消息转换为内部格式
-   private Map<String, Object> createUpMessage(Event event) {
-       //根据PID、CODE映射出设备类型
-       String productType = checkProductType(event);
-       String topic = event.head().ext("__topic");
-       Message message = (Message) event.action();
-       Map<String, Object> content = message.content();
-       String deviceIdentifier = (String) content.get("id");
-       Objects.requireNonNull(deviceIdentifier);
-       String cmd = (String) message.content().get("cmd");
-       String type = MessageType.UP;
-       if ("keepalive".equals(cmd)) {
-           type = MessageType.KEEPALIVE;
-       }
-       Map<String, Object> cmdData = (Map<String, Object>) message.content().getOrDefault
-               ("data", new HashMap<>());
-       String command = (String) cmdData.get("cmd");
-       Objects.requireNonNull(command);
-       Map<String, Object> brokerMessage = new HashMap<>();
-       brokerMessage.put("productType", productType);
-       brokerMessage.put("topic", topic);
-       brokerMessage.put("deviceIdentifier", deviceIdentifier);
-       brokerMessage.put("traceId", event.head().id());
-       brokerMessage.put("command", cmd);
-       brokerMessage.put("data", cmdData);
-       brokerMessage.put("type", type);
-       brokerMessage.put("channel", event.head().ext("from"));
-       return brokerMessage;
+    private Map<String, Object> createUpMessage(Event event) {
+        //根据PID、CODE映射出设备类型
+        String productType = checkProductType(event);
+        String topic = event.head().ext("__topic");
+        Message message = (Message) event.action();
+        Map<String, Object> content = message.content();
+        String deviceIdentifier = (String) content.get("id");
+        Objects.requireNonNull(deviceIdentifier);
+        String cmd = (String) message.content().get("cmd");
+        String type = MessageType.UP;
+        if ("keepalive".equals(cmd)) {
+            type = MessageType.KEEPALIVE;
+        }
+        Map<String, Object> cmdData = (Map<String, Object>) message.content().getOrDefault
+                ("data", new HashMap<>());
+        String command = (String) cmdData.get("cmd");
+        Objects.requireNonNull(command);
+        Map<String, Object> brokerMessage = new HashMap<>();
+        brokerMessage.put("productType", productType);
+        brokerMessage.put("topic", topic);
+        brokerMessage.put("deviceIdentifier", deviceIdentifier);
+        brokerMessage.put("traceId", event.head().id());
+        brokerMessage.put("command", cmd);
+        brokerMessage.put("data", cmdData);
+        brokerMessage.put("type", type);
+        brokerMessage.put("channel", event.head().ext("from"));
+        return brokerMessage;
     }
 
     private Map<String, Object> createDownMessage(Event event) {

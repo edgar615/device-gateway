@@ -13,8 +13,8 @@ function execute(input, logger) {
         event.type = "event";
         event.command = "newEvent";
         event.data = new Map();
-        event.data.alarmType = input.data.alarm;
-        event.data.alarmTime = input.data.time;
+        event.data.level = input.data.alarm;
+        event.data.time = input.data.time;
         event.data.type = 42201;
         list.add(event);
         logger.info("test");

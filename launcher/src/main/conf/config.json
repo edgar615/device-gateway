@@ -10,15 +10,21 @@
           "servers": "test.ihorn.com.cn:9092",
           "auto.offset.reset": "latest",
           "up.topics": [
-            "v1.event.device.report"
+            "v1.event.device.up"
           ],
           "down.topics": [
-            "v1.job.device.control"
+            "v1.job.device.down"
           ],
           "script.topics": [
             "v1.event.product.script"
           ],
           "pool.size": 1
+        },
+        "productMapping": {
+          "LH204": {
+            "pid": "horn8006",
+            "code": "horn8006m"
+          }
         }
       }
     },
@@ -59,8 +65,8 @@
       "config": {
       }
     },
-    "MasterVerticle": {
-      "class": "com.github.edgar615.device.gateway.worker.MasterVerticle",
+    "WorkerVerticle": {
+      "class": "com.github.edgar615.device.gateway.worker.WorkerVerticle",
       "dependencies": [
         "KafkaVerticle",
         "RedisVerticle"
