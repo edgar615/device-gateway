@@ -58,9 +58,10 @@ down消息的command有下面几种
 - deviceAdded 新增设备，会转换为inner类型的deviceAdded，调用方不需要关心
 - deviceDeleted 删除设备，会转换为inner类型的deviceDeleted，调用方不需要关心
 - deviceControl 控制设备，调用方需要根据属性转换为对应的control消息
+- langChange 修改语言，可能会涉及到语音包
 - partAdded 新增配件，会转换为inner类型的partAdded，调用方不需要关心
 - partDeleted 删除配件，会转换为inner类型的partDeleted，调用方不需要关心
-- part.control 控制配件，调用方需要根据属性转换为对应的control消息
+- partControl 控制配件，调用方需要根据属性转换为对应的control消息
 - versionNotify 新版本通知，调用方可以自行选择是否将消息发送给设备(数组)
 - versionUpgrade 开始升级，调用方可以自行选择是否将消息发送给设备
 

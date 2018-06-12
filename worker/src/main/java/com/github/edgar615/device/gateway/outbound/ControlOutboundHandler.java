@@ -1,5 +1,7 @@
 package com.github.edgar615.device.gateway.outbound;
 
+import com.github.edgar615.device.gateway.core.DeviceChannelRegistry;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
 import com.github.edgar615.device.gateway.core.MessageType;
@@ -32,8 +34,9 @@ public class ControlOutboundHandler implements OutboundHandler {
       completeFuture.complete();
       return;
     }
-    if (!transmitter.input().containsKey("channel")) {
-      transmitter.error("channel required");
+    String channel = DeviceChannelRegistry.instance().get(transmitter.deviceIdentifier());
+    if (Strings.isNullOrEmpty(channel)) {
+      transmitter.error("offline");
       completeFuture.complete();
       return;
     }
@@ -47,7 +50,6 @@ public class ControlOutboundHandler implements OutboundHandler {
       //记录日志
       transmitter.logOut(MessageType.CONTROL, command, data);
       //发送事件
-      String channel = (String) transmitter.input().get("channel");
       EventHead head = EventHead.create(transmitter.nextTraceId(), channel, "request");
       Request request =
               Request.create("niot", "set", ImmutableMap.of("cmd", command, "data", data));
