@@ -5,10 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 设备连上平台.
@@ -23,9 +20,11 @@ public class ConnectTransformer implements LocalMessageTransformer {
         Map<String, Object> data = (Map<String, Object>) input.getOrDefault("data", new HashMap<>());
         String clientIp = (String) data.get("address");
         logger.info("connect, clientIp:" + clientIp);
+        Map<String, Object> reportData = new HashMap<>();
+        reportData.put("clientIp", clientIp);
         Map<String, Object> report =
                 ImmutableMap.of("type", MessageType.REPORT, "command",
-                        ReportCommand.DEVICE_CONN, "data", ImmutableMap.of("clientIp", clientIp));
+                        ReportCommand.DEVICE_CONN, "data", reportData);
         //上线事件
         Map<String, Object> eventData = new HashMap<>();
         eventData.putIfAbsent("originId", input.getOrDefault("traceId", UUID.randomUUID().toString()));

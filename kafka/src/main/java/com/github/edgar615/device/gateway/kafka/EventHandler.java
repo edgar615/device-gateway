@@ -1,6 +1,7 @@
 package com.github.edgar615.device.gateway.kafka;
 
 import com.github.edgar615.device.gateway.core.Consts;
+import com.github.edgar615.device.gateway.core.KeepaliveExpiredException;
 import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.util.base.MorePreconditions;
 import com.github.edgar615.util.event.Event;
@@ -17,6 +18,7 @@ import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -116,12 +118,17 @@ public class EventHandler implements VertxEventHandler {
         String topic = event.head().ext("__topic");
         Message message = (Message) event.action();
         Map<String, Object> content = message.content();
-        String deviceIdentifier = (String) content.get("id");
+        //强制转为大写，平台统一按大写处理
+        String deviceIdentifier = ((String) content.get("id")).toUpperCase();
         Objects.requireNonNull(deviceIdentifier);
         String cmd = (String) message.content().get("cmd");
+        Objects.requireNonNull(cmd);
         String type = MessageType.UP;
         if ("keepalive".equals(cmd)) {
             type = MessageType.KEEPALIVE;
+            if (event.head().timestamp() < Instant.now().getEpochSecond() - 5 * 60) {
+                throw new KeepaliveExpiredException();
+            }
         }
         Map<String, Object> cmdData = (Map<String, Object>) message.content().getOrDefault
                 ("data", new HashMap<>());
@@ -150,7 +157,8 @@ public class EventHandler implements VertxEventHandler {
         Map<String, Object> brokerMessage = new HashMap<>();
         brokerMessage.put("topic", topic);
         brokerMessage.put("traceId", event.head().id());
-        String deviceIdentifier = (String) data.get("deviceIdentifier");
+        //强制转为大写，平台统一按大写处理
+        String deviceIdentifier = ((String) data.get("deviceIdentifier")).toUpperCase();
         Objects.requireNonNull(deviceIdentifier);
         brokerMessage.put("productType", productType);
         brokerMessage.put("deviceIdentifier", deviceIdentifier);

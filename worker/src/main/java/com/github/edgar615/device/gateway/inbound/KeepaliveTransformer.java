@@ -29,7 +29,6 @@ public class KeepaliveTransformer implements LocalMessageTransformer {
       logger.error("ping, channel required");
       return Lists.newArrayList();
     }
-    logger.info("connect, clientIp:" + clientIp);
     return Lists.newArrayList(ImmutableMap.of("type", MessageType.INNER, "command", InnerCommand.KEEPALIVE, "data",
                                               data));
   }

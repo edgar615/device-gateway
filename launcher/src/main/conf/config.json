@@ -7,10 +7,10 @@
         "eventbus": {
           "group": "device-gateway",
           "id": "device-gateway-1",
-          "servers": "test.ihorn.com.cn:9092",
+          "servers": "114.55.255.20:9092",
           "auto.offset.reset": "latest",
           "up.topics": [
-            "v1.event.device.up"
+            "v1.event.device.up.test"
           ],
           "down.topics": [
             "v1.job.device.down"
@@ -83,7 +83,7 @@
       "class": "com.github.edgar615.device.gateway.cache.RedisVerticle",
       "config": {
         "redis" : {
-          "host": "test.ihorn.com.cn",
+          "host": "114.55.255.20",
           "port": 32770,
           "auth": "7CBF5FBEF855F16F"
         }

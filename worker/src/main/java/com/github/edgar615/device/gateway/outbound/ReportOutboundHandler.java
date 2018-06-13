@@ -43,17 +43,14 @@ public class ReportOutboundHandler implements OutboundHandler {
                 m1.putAll(m2);
                 return m1;
               });
-      // todo 更新channel
-      if (!content.isEmpty()) {
-        transmitter.logOut(MessageType.REPORT, entry.getKey(), content);
-        content.put("deviceIdentifier", transmitter.deviceIdentifier());
-        EventHead head = EventHead.create(transmitter.nextTraceId(),
-                                          "v1.event.device.report", "message")
-                .addExt("productType", transmitter.productType());
-        Message message = Message.create(entry.getKey(), content);
-        Event event = Event.create(head, message);
-        transmitter.sendEvent(event);
-      }
+      transmitter.logOut(MessageType.REPORT, entry.getKey(), content);
+      content.put("deviceIdentifier", transmitter.deviceIdentifier());
+      EventHead head = EventHead.create(transmitter.nextTraceId(),
+              "v1.event.device.report", "message")
+              .addExt("productType", transmitter.productType());
+      Message message = Message.create(entry.getKey(), removeNull(content));
+      Event event = Event.create(head, message);
+      transmitter.sendEvent(event);
 
     }
 

@@ -7,6 +7,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,4 +21,13 @@ public interface OutboundHandler {
   void handle(Vertx vertx, Transmitter transmitter, List<Map<String, Object>> output,
               Future<Void> completeFuture);
 
+  default Map<String, Object> removeNull(Map<String, Object> source) {
+    Map<String, Object> map = new HashMap<>();
+    source.forEach((k, v) -> {
+      if (v != null) {
+        map.put(k, v);
+      }
+    });
+    return map;
+  }
 }

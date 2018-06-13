@@ -1,6 +1,7 @@
 package com.github.edgar615.device.gateway.outbound;
 
 import com.github.edgar615.device.gateway.core.DeviceChannelRegistry;
+import com.github.edgar615.util.base.MapUtils;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
@@ -52,7 +53,7 @@ public class ControlOutboundHandler implements OutboundHandler {
       //发送事件
       EventHead head = EventHead.create(transmitter.nextTraceId(), channel, "request");
       Request request =
-              Request.create("niot", "set", ImmutableMap.of("cmd", command, "data", data));
+              Request.create("niot", "set", ImmutableMap.of("cmd", command, "data", removeNull(data)));
       Event event = Event.create(head, request);
       transmitter.sendEvent(event);
     }

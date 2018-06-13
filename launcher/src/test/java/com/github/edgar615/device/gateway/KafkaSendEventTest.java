@@ -26,24 +26,33 @@ public class KafkaSendEventTest {
     KafkaProducerOptions options = new KafkaProducerOptions();
     options.setServers("test.ihorn.com.cn:9092");
     EventProducer producer = new KafkaEventProducer(options);
-    EventHead head = EventHead.create("v1.job.device.control", "message")
-            .addExt("from", "device")
-            .addExt("productType", "LH204");
-    Map<String, Object> data = new HashMap<>();
-    data.put("deviceIdentifier", "123456789");
-    data.put("encryptKey", "0000000000000000");
-    Message message = Message.create("deviceAdded", data);
-    Event event = Event.create(head, message);
-    producer.send(event);
+    while (true) {
+      EventHead head = EventHead.create("v1.event.device.up.test", "message")
+              .addExt("from", "device")
+              .addExt("productType", "LH204");
+      Map<String, Object> content = new HashMap<>();
+      content.put("id", "123456789");
+      content.put("code", "horn8006m");
+      content.put("pid", "horn8006");
+      content.put("cmd", "keepalive");
+      Map<String, Object> data = new HashMap<>();
+      data.put("cmd", "keepalive");
+      content.put("data", data);
+      Message message = Message.create("keepalive", content);
+      Event event = Event.create(head, message);
+      producer.send(event);
 
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+      try {
+        TimeUnit.SECONDS.sleep(10);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+//      producer.close();
+
+      System.out.println(producer.metrics());
     }
-    producer.close();
 
-    System.out.println(producer.metrics());
+
   }
 
 }

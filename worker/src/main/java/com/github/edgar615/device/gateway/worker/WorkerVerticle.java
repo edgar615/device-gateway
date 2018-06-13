@@ -18,8 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Edgar on 2018/3/12.
@@ -50,26 +52,26 @@ public class WorkerVerticle extends AbstractVerticle {
       String deviceIdentifier = idSplitter.get(1);
       String productType = idSplitter.get(0);
       Long time = jsonObject.getLong("time", Instant.now().getEpochSecond());
-      EventHead eventHead = EventHead.create(Consts.LOCAL_DEVICE_ADDRESS, "message")
-              .addExt("productType", productType)
-              .addExt("type", MessageType.INNER)
-              .addExt("__topic", Consts.LOCAL_DEVICE_ADDRESS);
-      Message message = Message.create("device.online", ImmutableMap.of("deviceIdentifier", deviceIdentifier, "time", time));
-      Event event = Event.create(eventHead, message);
-      Log.create(LOGGER)
-              .setLogType("device-gateway")
-              .setEvent("connect")
-              .setMessage("[{}] [{}] [{}]")
-              .setTraceId(id)
-              .addArg(id)
-              .addArg(Helper.toHeadString(event))
-              .addArg(Helper.toActionString(event))
-              .info();
-//      try {
-//        queue.enqueue(event);
-//      } catch (InterruptedException e) {
-//        e.printStackTrace();
-//      }
+//      Log.create(LOGGER)
+//              .setLogType("device-gateway")
+//              .setEvent("connect")
+//              .setMessage("[{}] [{}] [{}]")
+//              .setTraceId(id)
+//              .addArg(id)
+//              .addArg(Helper.toHeadString(event))
+//              .addArg(Helper.toActionString(event))
+//              .info();
+      Map<String, Object> brokerMessage = new HashMap<>();
+      brokerMessage.put("productType", productType);
+      brokerMessage.put("topic", "__inner");
+      brokerMessage.put("deviceIdentifier", deviceIdentifier);
+      brokerMessage.put("traceId", UUID.randomUUID().toString());
+      brokerMessage.put("command", KeepaliveCommand.CONNECT);
+      brokerMessage.put("data", new HashMap<>());
+      brokerMessage.put("type", MessageType.KEEPALIVE);
+      deviceMessageHandler.handle(brokerMessage, ar -> {
+        //do nothing
+      });
     });
 
     //掉线
@@ -83,26 +85,26 @@ public class WorkerVerticle extends AbstractVerticle {
         List<String> idSplitter = Splitter.on(":").splitToList(id);
         String deviceIdentifier = idSplitter.get(1);
         String productType = idSplitter.get(0);
-        EventHead eventHead = EventHead.create(Consts.LOCAL_DEVICE_ADDRESS, "message")
-                .addExt("productType", productType)
-                .addExt("type", MessageType.INNER)
-                .addExt("__topic", Consts.LOCAL_DEVICE_ADDRESS);
-        Message message = Message.create("device.offline", ImmutableMap.of("deviceIdentifier", deviceIdentifier, "time", time));
-        Event event = Event.create(eventHead, message);
-        Log.create(LOGGER)
-                .setLogType("device-gateway")
-                .setEvent("disConnect")
-                .setMessage("[{}] [{}] [{}]")
-                .setTraceId(id)
-                .addArg(id)
-                .addArg(Helper.toHeadString(event))
-                .addArg(Helper.toActionString(event))
-                .info();
-//        try {
-//          queue.enqueue(event);
-//        } catch (InterruptedException e) {
-//          e.printStackTrace();
-//        }
+//        Log.create(LOGGER)
+//                .setLogType("device-gateway")
+//                .setEvent("disConnect")
+//                .setMessage("[{}] [{}] [{}]")
+//                .setTraceId(id)
+//                .addArg(id)
+//                .addArg(Helper.toHeadString(event))
+//                .addArg(Helper.toActionString(event))
+//                .info();
+        Map<String, Object> brokerMessage = new HashMap<>();
+        brokerMessage.put("productType", productType);
+        brokerMessage.put("topic", "__inner");
+        brokerMessage.put("deviceIdentifier", deviceIdentifier);
+        brokerMessage.put("traceId", UUID.randomUUID().toString());
+        brokerMessage.put("command", KeepaliveCommand.DIS_CONNECT);
+        brokerMessage.put("data", new HashMap<>());
+        brokerMessage.put("type", MessageType.KEEPALIVE);
+        deviceMessageHandler.handle(brokerMessage, ar -> {
+          //do nothing
+        });
       }
     });
 

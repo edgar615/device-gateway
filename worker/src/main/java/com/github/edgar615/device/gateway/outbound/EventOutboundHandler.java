@@ -58,7 +58,7 @@ public class EventOutboundHandler implements OutboundHandler {
             } else if (EventCommand.UPDATE_IMAGE.equalsIgnoreCase(command)) {
                 sendUpdateImage(vertx, transmitter, map);
             } else if (EventCommand.UPDATE_VIDEO.equalsIgnoreCase(command)) {
-                sendUpdateImage(vertx, transmitter, map);
+                sendUpdateVideo(vertx, transmitter, map);
             } else {
                 transmitter.error("Undefined event command:" + command);
             }
@@ -75,7 +75,7 @@ public class EventOutboundHandler implements OutboundHandler {
         data.putIfAbsent("alarm", 1);
         data.putIfAbsent("defend", false);
         transmitter.logOut(MessageType.EVENT, EventCommand.NEW_EVENT, data);
-        Message message = Message.create(EventCommand.NEW_EVENT, data);
+        Message message = Message.create(EventCommand.NEW_EVENT, removeNull(data));
         sendEvent(vertx, transmitter.nextTraceId(), message);
     }
 
@@ -92,7 +92,7 @@ public class EventOutboundHandler implements OutboundHandler {
         }
         data.putIfAbsent("time", Instant.now().getEpochSecond());
         transmitter.logOut(MessageType.EVENT, EventCommand.UPDATE_IMAGE, data);
-        Message message = Message.create(EventCommand.UPDATE_IMAGE, data);
+        Message message = Message.create(EventCommand.UPDATE_IMAGE, removeNull(data));
         sendEvent(vertx, transmitter.nextTraceId(), message);
     }
 
@@ -109,7 +109,7 @@ public class EventOutboundHandler implements OutboundHandler {
         }
         data.putIfAbsent("time", Instant.now().getEpochSecond());
         transmitter.logOut(MessageType.EVENT, EventCommand.UPDATE_VIDEO, data);
-        Message message = Message.create(EventCommand.UPDATE_VIDEO, data);
+        Message message = Message.create(EventCommand.UPDATE_VIDEO, removeNull(data));
         sendEvent(vertx, transmitter.nextTraceId(), message);
     }
 

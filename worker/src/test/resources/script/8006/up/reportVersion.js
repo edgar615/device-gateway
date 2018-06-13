@@ -8,11 +8,11 @@ function execute(input, logger) {
     event.type = "report";
     event.command = "versionReport";
     event.data = new Map();
-    event.data.firmwareVersion = input.data.currentVer;
-    event.data.nextFirmwareVersion = input.data.bakVer;
-    event.data.nextKeyboardVersion = input.data.bakKeyVer;
-    event.data.voiceVersion = input.data.voiceVer;
-    event.data.voiceVersion = input.data.voiceVer;
+    // currentVer=LHD8006-STM32-RF-V0.0.1, bakVer=LHD8006-STM32-RF-V0.0.1, bakKeyVer=DK808-NT100-RF-V0.0.1, voiceVer=VOICE-EN-V0.0.1
+    event.data.firmwareVersion = input.data.currentVer.substr("LHD8006-STM32-RF-V".length);
+    event.data.nextFirmwareVersion = input.data.bakVer.substr("LHD8006-STM32-RF-V".length);
+    event.data.nextKeyboardVersion = input.data.bakKeyVer.substr("DK808-NT100-RF-V".length);
+    event.data.voiceVersion = input.data.voiceVer.substr("VOICE-EN-V".length);
     event.data.wirelessVersion = input.data.wirelessVer;
     event.data.voiceFirmwareVersion = input.data.voiceFirmwareVer;
     event.data.notifyNewVersion = true;

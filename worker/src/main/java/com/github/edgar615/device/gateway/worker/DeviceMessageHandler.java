@@ -53,6 +53,8 @@ public class DeviceMessageHandler {
             = TransformerRegistry.instance().deviceTransformers(productType, messageType, command);
     if (deviceTransformers.isEmpty()) {
       transmitter.info("no script");
+      resultHandler.handle(Future.succeededFuture());
+      return;
     }
     for (LocalMessageTransformer transformer : deviceTransformers) {
       long start = System.currentTimeMillis();
