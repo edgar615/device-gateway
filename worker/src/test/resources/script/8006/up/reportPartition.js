@@ -24,6 +24,7 @@ function execute(input, logger) {
         //退出延时，布撤防延时
         partition.defendDelayRunning = partInfo.outDelayStatus  == 1 ? true : false;
         partition.defendDelay = partInfo.outDelay;
+        partition.delayEnable = partInfo.inDelayEnable == 1 ||  partInfo.outDelayEnable == 1;
 
         var event = new Map();
         event.type = "report";

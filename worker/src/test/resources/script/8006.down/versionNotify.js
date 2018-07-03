@@ -22,7 +22,7 @@ function execute(input, logger) {
 
     var control = new Map();
     control.type = "control";
-    control.command = "reportVersionAck";
+    control.command = "setUpgradeInfo";
     control.data = new Map();
     event.data.fileCnt = files.length;
     event.data.scheme  = input.data.scheme;

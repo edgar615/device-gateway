@@ -5,7 +5,23 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
-    var checknum = input.data.checknum;
+    //上报无线探测器校验和
+    var deviceReport = new Map();
+    deviceReport.type = "report";
+    deviceReport.command = "deviceReport";
+    deviceReport.data = new Map();
+    deviceReport.data.wireLessPartCheckNum = input.data.checknum;
+    list.add(event);
+    //64位字符串，对应1-64是否已经注册，每一位1表示已注册，0没有注册
+    var isRegst = input.data.isRegst;
+    //todo 根据这个属性判断配件是否已经被删除
+    //var partExists = new Map();
+    //partExists.type = "report";
+    //partExists.command = "partSync";
+    //partExists.data = new Map();
+    //partExists.data.wireLessPartCheckNum = input.data.checknum;
+    //list.add(event);
+
     for (var i = 0; i < input.partInfo.length; i ++) {
         var partInfo = input.partInfo[i];
         var part = new Map();
@@ -38,6 +54,9 @@ function execute(input, logger) {
         event.command = "partReport";
         event.data = part;
         list.add(event);
+        if (partInfo.actionType == 2) {
+            //事件
+        }
     }
     return list;
 }

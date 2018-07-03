@@ -1,7 +1,7 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
 
-//up reportWireDetectorInfo消息
+//up reportWiredDefenceInfo
 function execute(input, logger) {
 
     var list = new List();
@@ -24,6 +24,10 @@ function execute(input, logger) {
         event.command = "partReport";
         event.data = part;
         list.add(event);
+
+        if (partInfo.actionType == 2) {
+            //事件
+        }
     }
     return list;
 }

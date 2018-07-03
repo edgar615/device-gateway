@@ -92,73 +92,33 @@ event的类型
 - 40021 掉线
 
 
-**下面的文档已过期**
+系统全局transformer，所有的设备都会走这个属性
+KeepaliveTransformer
+处理 type=keepalive command = keepalive 的消息
+转换为 type=inner command=keepalive的消息
 
-设备服务向网关发送的消息
+ConnectTransformer
+处理 type=keepalive command = connect 的消息
+转换为
 
-- 新增设备
-- 删除设备
-- 修改设备属性
-- 控制设备（拍照）
-- 升级
-- 添加子设备
-- 删除子设备
-- 修改子设备属性
-- 请求快照
+- type=report command=deviceConnect的消息
+- type=event command=new的消息
 
-设备向网关发送的消息
+DisConnectTransformer
+处理 type=keepalive command = disConnect 的消息
+转换为
 
-- 心跳
-- 回复属性修改
-- 回复控制命令
-- 上报事件
-- 回复升级
-- 回复添加子设备
-- 回复删除子设备
-- 回复快照
+- type=report command=deviceDisConnect的消息
+- type=event command=new的消息
 
+DeviceAddedTransformer
+处理 type=down command = deviceAdded 的消息
+转换为
 
-设备服务向网关发送的消息
+- type=inner command=deviceAdded的消息
 
-主题：v1.event.device.down
+DeviceDeletedTransformer
+处理 type=down command = deviceDeleted 的消息
+转换为
 
-deviceAdded 平台新增设备 平台内置，不通过脚本配置
-收到新增设备的命令后，在cache中维护设备信息，不需要与设备交互
-
-- 用户
-- 加密方式 1-随机，2-约定
-- 秘钥
-- 通道
-- IP
-- 在线状态
-
-deviceDeleted 平台删除设备 平台内置，不通过脚本配置
-收到删除设备的命令后，在cache中删除设备信息，不需要需设备交互
-
-field.update 平台修改设备属性
-需要与设备交互
-
-ControlDevice 平台向设备下发控制指令
-
-- 协议名
-- 参数
-
-UpgradeDevice 平台向设备下发升级命令
-
-网关向设备服务发送的设备消息
-主题 v1.event.device.up
-
-DeviceOnline 设备上线
-
-DeviceOffline 设备离线
-
-UpdateReplied  设备响应平台修改之后的回应
-
-ControlReplied 设备响应平台控制指令的回应
-
-UpgradeReplied 设备响应平台升级指令的回应
-
-网关向设备服务发送的时间
-主题 v1.event.device.report
-
-EventReported 设备向平台发送的事件
+- type=inner command=deviceDeleted的消息
