@@ -6,12 +6,12 @@ function execute(input, logger) {
 
     var list = new List();
 
-    if (files.length == 0) {
+    if (input.data.files.length == 0) {
         return list;
     }
     var upgradeFiles = new List();
-    for (var i = 0; i < files.length; i ++) {
-        var file = files[i];
+    for (var i = 0; i < input.data.files.length; i ++) {
+        var file = input.data.files[i];
         var upgradeFile = new Map();
         upgradeFiles.add(upgradeFile);
         upgradeFile.fileType = file.name;
@@ -24,7 +24,7 @@ function execute(input, logger) {
     control.type = "control";
     control.command = "setUpgradeInfo";
     control.data = new Map();
-    event.data.fileCnt = files.length;
+    event.data.fileCnt = input.data.files.length;
     event.data.scheme  = input.data.scheme;
     event.data.domainName  = input.data.host;
     event.data.port  = input.data.port;

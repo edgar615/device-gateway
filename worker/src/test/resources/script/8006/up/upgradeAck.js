@@ -10,5 +10,6 @@ function execute(input, logger) {
     } else {
         logger.error("failed start upgrade");
     }
+    //todo 更新设备的升级结果
     return new List();
 }

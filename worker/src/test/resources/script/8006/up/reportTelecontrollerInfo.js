@@ -5,12 +5,14 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
-    var checknum = input.data.checknum;
+    //0同歩 1添加/删除 2上报遥控器状态变化
+    var actionType = input.data.actionType;
+    var isRegst = input.data.isRegst;
+    //todo 更新
     for (var i = 0; i < input.partInfo.length; i ++) {
         var partInfo = input.partInfo[i];
         var part = new Map();
-        //todo 有问题
-        part.protectNo = partInfo.defenceNum;
+        part.protectNo = partInfo.identifyNum;
         part.barcode = partInfo.barcode;
         part.partitionNo = partInfo.partNum;
         part.battery = partInfo.charge;
