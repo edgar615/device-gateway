@@ -24,6 +24,26 @@ function execute(input, logger) {
         event.command = "new";
         event.data = new Map();
         event.data.time = time + timezone * 60 * 60;
+        /** 0~63无线防区 64~65系统自带的两个有线防区 66~97扩展的32个有线防区
+         *  98内置警号 99外接有线警号 100~106 无线警号
+         *  107 有线PGM 108~112 无线PGM
+         *  113~144 无线遥控器
+         *  145~176 RFID
+         **/
+        if (operateType == 1) {
+            //键盘
+            event.data.protectNo = deviceNum;
+        } else if (operatorType == 2) {
+            //遥控器
+            event.data.protectNo = deviceNum + 113;
+        } else if (operatorType == 3) {
+            //警号
+            event.data.protectNo = deviceNum + 98;
+        }else if (operatorType == 5) {
+            //短信
+            event.data.protectNo = deviceNum + 107;
+        }
+
         if (errorType == 1) {
             if (status == 1) {
                 event.data.type = 44011;

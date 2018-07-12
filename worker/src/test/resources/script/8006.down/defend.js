@@ -7,7 +7,7 @@ function execute(input, logger) {
     var list = new List();
     if (input.data.defend != undefined) {
         var defend = input.data.defendState;
-        var areaNum = 8;
+        var areaNum = 8;//8表示对所有分区操作
         var action = 0;
         if (input.data.partitionNo != undefined) {
             areaNum = input.data.partitionNo;

@@ -1,7 +1,7 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
 
-//up setTelecontrollerInfoAck
+//up setWirelessAlarmInfoAck
 function execute(input, logger) {
 
     //0成功 1失败 2正在编程     2重复添加 4未知类型 5满
@@ -30,13 +30,17 @@ function execute(input, logger) {
     }
     var list = new List();
     var part = new Map();
-    part.protectNo = input.data.identifyNum + 113;
+    part.protectNo = input.data.identifyNum + 100;
     part.barcode = input.data.barcode;
-    part.partitionNo = input.data.partNum;
-    part.battery = input.data.charge;
+    part.partitionNo = partInfo.partNum;
+    part.sirenDuration = partInfo.alarmTime;
+    part.runningState = partInfo.alarmStatus;
+    part.lightSwitch = partInfo.alarmLamp == 1;
+    part.sirenSwitch = partInfo.enabled == 1;
+    part.sirenVolume = partInfo.alarmVolume
     //调制方式：FSK ASK ZGB，忽略
-    part.modulationMode = input.data.modulationMode;
-    part.version = input.data.version;
+    part.modulationMode = partInfo.modulationMode;
+    part.version = partInfo.version;
 
     var event = new Map();
     event.type = "report";

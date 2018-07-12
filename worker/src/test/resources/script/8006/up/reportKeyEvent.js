@@ -24,8 +24,10 @@ function execute(input, logger) {
         event.data.level = 1;
         event.data.push = false;
         event.data.defend = false;
+        event.data.protectNo = keyNum + 107;
+        //todo 定义类型
         if (eventType == 1) {
-            event.data.type = 44001;//todo
+            event.data.type = 44001;
         } else if (eventType == 2){
             event.data.type = 44002;
         } else {
