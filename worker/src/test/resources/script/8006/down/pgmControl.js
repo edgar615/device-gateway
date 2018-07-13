@@ -26,11 +26,11 @@ function execute(input, logger) {
         var flag = false;
         control.defenceNum = input.data.protectNo - 107;
         if (input.data.workMode != undefined) {
-            control.workMode = workMode;
+            control.workMode = input.data.workMode;
             flag = true;
         }
-        if (input.data.autoPartId != undefined) {
-            control.triggerSrc = autoPartId;
+        if (input.data.triggerPart != undefined) {
+            control.triggerSrc = input.data.triggerPart;
             flag = true;
         }
         control.time1Flag = 0;

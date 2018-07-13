@@ -32,11 +32,11 @@
       "class": "com.github.edgar615.util.vertx.jdbc.JdbcVerticle",
       "config": {
         "mysql" :{
-          "host": "www.edgar615.com",
-          "port": 3306,
-          "database": "user",
-          "username": "user",
-          "password": "sdwaxech",
+          "host": "test.ihorn.com.cn",
+          "port": 3307,
+          "database": "device",
+          "username": "device",
+          "password": "fec40bf3aff7209a",
           "charset": "UTF-8",
           "maxPoolSize": 10,
           "connectTimeout": 10000,

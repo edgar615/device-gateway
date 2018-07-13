@@ -1,7 +1,7 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
 
-//down partControl
+//down rfidControl
 function execute(input, logger) {
 
     /**
@@ -22,16 +22,19 @@ function execute(input, logger) {
         list.add(control);
         //0内置 1外接
         control.identifyNum = input.data.protectNo - 145;
-        if (input.data.partNum != undefined) {
-            control.partitionNo = input.data.partNum;
-            flag = true;
-        }
-        if (input.data.rfidCtrlType != undefined) {
-            control.ctrlType = input.data.rfidCtrlType - 1;
+
+        var partition = [0,0,0,0,0,0,0,0];
+        if (input.data.controlPartition != undefined) {
+            control.ctrlType = 1;
+            for (var i = 0; i < input.data.controlPartition.length; i ++) {
+                partition[input.data.controlPartition[i]] = 1;
+            }
+            control.partNum = partition;
             flag = true;
         }
         var pgm = [0,0,0,0,0,0];
         if (input.data.controlPgm != undefined) {
+            control.ctrlType = 1;
             for (var i = 0; i < input.data.controlPgm.length; i ++) {
                 var pgmNo = input.data.controlPgm[i];
                 pgm[pgmNo - 107] = 1;

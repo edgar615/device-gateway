@@ -56,6 +56,7 @@ function execute(input, logger) {
         partReport.type = "report";
         partReport.command = "partReport";
         partReport.data = part;
+        partReport.data.partType = "pgm";
         list.add(partReport);
 
         if (partInfo.actionType == 1) {

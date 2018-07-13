@@ -1,7 +1,7 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
 
-//up reportTelecontrollerInfo消息
+//up reportTelecontrollerInfo
 function execute(input, logger) {
 
     var list = new List();

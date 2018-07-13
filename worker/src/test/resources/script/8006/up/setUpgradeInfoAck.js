@@ -1,7 +1,7 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
 
-//up setUpgradeInfoAck消息
+//up setUpgradeInfoAck
 function execute(input, logger) {
 
     var result = input.data.result;

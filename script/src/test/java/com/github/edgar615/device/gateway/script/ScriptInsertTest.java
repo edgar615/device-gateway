@@ -38,28 +38,28 @@ public class ScriptInsertTest {
     }
   }
 
-//  @Test
-//  public void testInsert(TestContext testContext) throws IOException {
-//    String scriptPath = "e:/iotp/device-gateway/script/src/test/resources/script"
-//                        + "/alarmF1Event.js";
-////    Reader scriptReader = Files.newBufferedReader(Paths.get(scriptPath));
-//    String script = new String(Files.readAllBytes(Paths.get(scriptPath)));
-//    System.out.println(script);
-//    JsonObject jsonObject = new JsonObject()
-//            .put("productType", "LH201")
-//            .put("messageType", "up")
-//            .put("command", "alarmF1Event")
-//            .put("scriptContent", script);
-//    AtomicBoolean check = new AtomicBoolean();
-//    vertx.eventBus().send(Consts.LOCAL_SCRIPT_ADD_ADDRESS, jsonObject, reply -> {
-//      if (reply.failed()) {
-//        reply.cause().printStackTrace();
-//        testContext.fail();
-//        return;
-//      }
-//      check.set(true);
-//    });
-//    Awaitility.await().until(() -> check.get());
-//    Assert.assertEquals(1, TransformerRegistry.instance().size());
-//  }
+  @Test
+  public void testInsert(TestContext testContext) throws IOException {
+    String scriptPath = "h:/dev/workspace/device-gateway/worker/src/test/resources/script/8006/down"
+                        + "/control.js";
+//    Reader scriptReader = Files.newBufferedReader(Paths.get(scriptPath));
+    String script = new String(Files.readAllBytes(Paths.get(scriptPath)));
+    System.out.println(script);
+    JsonObject jsonObject = new JsonObject()
+            .put("productType", "LH201")
+            .put("messageType", 1)
+            .put("command", "deviceControl")
+            .put("scriptContent", script);
+    AtomicBoolean check = new AtomicBoolean();
+    vertx.eventBus().send(Consts.LOCAL_SCRIPT_ADD_ADDRESS, jsonObject, reply -> {
+      if (reply.failed()) {
+        reply.cause().printStackTrace();
+        testContext.fail();
+        return;
+      }
+      check.set(true);
+    });
+    Awaitility.await().until(() -> check.get());
+    Assert.assertEquals(1, TransformerRegistry.instance().size());
+  }
 }

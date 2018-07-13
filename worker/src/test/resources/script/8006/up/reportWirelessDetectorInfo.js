@@ -1,7 +1,7 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
 
-//up reportWirelessDetectorInfo消息
+//up reportWirelessDetectorInfo
 function execute(input, logger) {
 
     var list = new List();
