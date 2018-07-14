@@ -20,15 +20,17 @@ function execute(input, logger) {
             deletedParts.add(i + 108);
         }
     }
-    var deletedPartSync = new Map();
-    deletedPartSync.type = "report";
-    deletedPartSync.command = "deletedPartSync";
-    deletedPartSync.data = new Map();
-    deletedPartSync.data.parts = deletedParts;
-    list.add(deletedPartSync);
+    if (deletedParts.length > 0) {
+        var deletedPartSync = new Map();
+        deletedPartSync.type = "report";
+        deletedPartSync.command = "deletedPartSync";
+        deletedPartSync.data = new Map();
+        deletedPartSync.data.parts = deletedParts;
+        list.add(deletedPartSync);
+    }
 
-    for (var i = 0; i < input.partInfo.length; i ++) {
-        var partInfo = input.partInfo[i];
+    for (var i = 0; i < input.data.partInfo.length; i ++) {
+        var partInfo = input.data.partInfo[i];
         var part = new Map();
         part.protectNo = partInfo.defenceNum + 108;
         part.barcode = partInfo.pgmID;

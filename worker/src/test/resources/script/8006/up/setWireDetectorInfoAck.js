@@ -7,10 +7,9 @@ function execute(input, logger) {
     var list = new List();
     var partInfo = input.data;
     var part = new Map();
-    part.protectNo = partInfo.defenceNum;
-    //如果是有线防区，没有条码,平台虚拟了LH0FD
-    part.productType = "LH0FD";
-    part.partitionNo = partInfo.partNum;
+    part.partType = "LH0FD";
+    part.partitionNo = partInfo.defenceNum;
+    part.protectNo = partInfo.partNum;
     part.masterUnDefend = partInfo.removaValid == 1 ? true : false;
     part.masterHomeDefend = partInfo.atHomeValid == 1 ? true : false;
     part.masterAwayDefend = partInfo.awayValid == 1 ? true : false;

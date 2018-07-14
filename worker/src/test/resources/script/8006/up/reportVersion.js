@@ -14,8 +14,8 @@ function execute(input, logger) {
     event.data.nextFirmwareVersion = input.data.bakVer.substr("LHD8006-STM32-RF-V".length);
     event.data.nextKeyboardVersion = input.data.bakKeyVer.substr("DK808-NT100-RF-V".length);
     event.data.voiceVersion = input.data.voiceVer.substr("VOICE-EN-V".length);
-    event.data.wirelessVersion = input.data.wirelessVer;
-    event.data.voiceFirmwareVersion = input.data.voiceFirmwareVer;
+    event.data.wirelessVersion = input.data.wirelessVer.substr("WLS-RNS-RF-V".length);
+    event.data.voiceFirmwareVersion = input.data.voiceFirmwareVer.substr("VOICE-STM32-V".length);
     event.data.notifyNewVersion = true;
     list.add(event);
 
@@ -24,7 +24,7 @@ function execute(input, logger) {
     report.type = "report";
     report.command = "deviceReport";
     report.data = new Map();
-    event.data.language = input.data.language;
+    report.data.language = input.data.languageNum;
     list.add(report);
 
     return list;

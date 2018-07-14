@@ -5,8 +5,8 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
-    for (var i = 0; i < input.eventlist.length; i++) {
-        var alarm = input.eventlist[i];
+    for (var i = 0; i < input.data.eventlist.length; i++) {
+        var alarm = input.data.eventlist[i];
         //设备类型 1无线 2有线 3主机 4键盘
         var deviceType = alarm.device;
         //报警类型 1防拆 2阀值

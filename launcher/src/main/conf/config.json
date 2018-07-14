@@ -10,7 +10,7 @@
           "servers": "114.55.255.20:9092",
           "auto.offset.reset": "latest",
           "up.topics": [
-            "v1.event.device.up.test"
+            "v1.event.device.up"
           ],
           "down.topics": [
             "v1.job.device.down"

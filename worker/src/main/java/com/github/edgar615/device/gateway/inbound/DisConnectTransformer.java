@@ -24,6 +24,10 @@ public class DisConnectTransformer implements LocalMessageTransformer {
     Map<String, Object> report =
             ImmutableMap.of("type", MessageType.REPORT, "command",
                             ReportCommand.DEVICE_DISCONN, "data", new HashMap<>());
+
+    Map<String, Object> keepalive =
+            ImmutableMap.of("type", MessageType.KEEPALIVE, "command",
+                            KeepaliveCommand.CONNECT, "data", new HashMap<>());
     //掉线事件
     Map<String, Object> eventData = new HashMap<>();
     eventData.putIfAbsent("originId", input.getOrDefault("traceId", UUID.randomUUID().toString()));
@@ -35,7 +39,7 @@ public class DisConnectTransformer implements LocalMessageTransformer {
     Map<String, Object> event =
             ImmutableMap.of("type", MessageType.EVENT, "command",
                     EventCommand.NEW_EVENT, "data", eventData);
-    return Lists.newArrayList(report, event);
+    return Lists.newArrayList(report, keepalive, event);
   }
 
   @Override

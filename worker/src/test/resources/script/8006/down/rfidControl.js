@@ -23,21 +23,23 @@ function execute(input, logger) {
         //0内置 1外接
         control.identifyNum = input.data.protectNo - 145;
 
-        var partition = [0,0,0,0,0,0,0,0];
         if (input.data.controlPartition != undefined) {
-            control.ctrlType = 1;
+            var partition = [1,2,4,8,16,32,64,128];
+            var bitPartition = 0;
+            control.ctrlType = 0;
             for (var i = 0; i < input.data.controlPartition.length; i ++) {
-                partition[input.data.controlPartition[i]] = 1;
+                bitPartition += partition[input.data.controlPartition[i] - 1]
             }
-            control.partNum = partition;
+            control.partNum = bitPartition;
             flag = true;
         }
-        var pgm = [0,0,0,0,0,0];
         if (input.data.controlPgm != undefined) {
+            var pgm = [1,2,3,8,16,32];
+            var bitPgm = 0;
             control.ctrlType = 1;
             for (var i = 0; i < input.data.controlPgm.length; i ++) {
                 var pgmNo = input.data.controlPgm[i];
-                pgm[pgmNo - 107] = 1;
+                bitPgm += pgm[pgmNo - 107]
             }
             control.PGM = pgm;
             flag = true;

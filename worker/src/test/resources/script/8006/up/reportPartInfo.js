@@ -5,8 +5,8 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
-    for (var i = 0; i < input.partInfo.length; i ++) {
-        var partInfo = input.partInfo[i];
+    for (var i = 0; i < input.data.partInfo.length; i ++) {
+        var partInfo = input.data.partInfo[i];
         var partition = new Map();
         partition.partitionNo = partInfo.num;
         partition.state = partInfo.open == 1 ? 1 : 2;

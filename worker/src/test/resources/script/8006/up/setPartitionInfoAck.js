@@ -13,9 +13,9 @@ function execute(input, logger) {
         logger.info("setPartitionInfoAck succeeded");
     }
     var list = new List();
-    for (var i = 0; i < input.partInfo.length; i++) {
+    for (var i = 0; i < input.data.partInfo.length; i++) {
+        var part = input.data.partInfo[i];
         var partition = new Map();
-        var part = input.partInfo[i];
         partition.partitionNo = part.num;
         partition.state = part.open == 1 ? 1 : 2;
         partition.runningState = part.alarm == 1 ? 2 : 1;

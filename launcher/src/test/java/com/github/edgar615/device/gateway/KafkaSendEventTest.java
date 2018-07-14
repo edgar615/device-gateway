@@ -31,7 +31,7 @@ public class KafkaSendEventTest {
               .addExt("from", "device")
               .addExt("productType", "LH204");
       Map<String, Object> content = new HashMap<>();
-      content.put("id", "123456789");
+      content.put("id", "0123456789AB");
       content.put("code", "horn8006m");
       content.put("pid", "horn8006");
       content.put("cmd", "keepalive");
@@ -43,7 +43,7 @@ public class KafkaSendEventTest {
       producer.send(event);
 
       try {
-        TimeUnit.SECONDS.sleep(10);
+        TimeUnit.SECONDS.sleep(15);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
@@ -51,7 +51,6 @@ public class KafkaSendEventTest {
 
       System.out.println(producer.metrics());
     }
-
 
   }
 

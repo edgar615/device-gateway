@@ -5,8 +5,8 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
-    for (var i = 0; i < input.eventlist.length; i++) {
-        var alarm = input.eventlist[i];
+    for (var i = 0; i < input.data.eventlist.length; i++) {
+        var alarm = input.data.eventlist[i];
         //事件类型，1进入编程 2退出编程
         var eventType = alarm.eventType;
         //键盘编号，用来计算分区号

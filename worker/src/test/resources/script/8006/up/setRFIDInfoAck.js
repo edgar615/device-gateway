@@ -13,6 +13,7 @@ function execute(input, logger) {
     }
 
     var part = new Map();
+    part.partType = "LH0FF";
     part.protectNo = input.data.identifyNum + 145;
     part.barcode =  input.data.cardID;
 

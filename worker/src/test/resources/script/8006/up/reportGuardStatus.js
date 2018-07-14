@@ -5,8 +5,8 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
-    for (var i = 0; i < input.eventlist.length; i ++) {
-        var alarm = input.eventlist[i];
+    for (var i = 0; i < input.data.eventlist.length; i ++) {
+        var alarm = input.data.eventlist[i];
         //1表示APP上布撤防，2表示键盘上布撤防，3表示遥控器布撤防（编号0到31），4表示RFID布撤防，5表示短信布撤防，6表示电话布撤防
         var operatorType = alarm.userNum;
         //设备变化 主要描述在键盘、遥控器、RFID布撤防时对应键盘、遥控器、RFID的编号

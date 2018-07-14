@@ -7,8 +7,8 @@ function execute(input, logger) {
     var list = new List();
     var checknum = input.data.checknum;
     //98内置警号 99外接有线警号 100~106 无线警号
-    for (var i = 0; i < input.partInfo.length; i ++) {
-        var partInfo = input.partInfo[i];
+    for (var i = 0; i < input.data.partInfo.length; i ++) {
+        var partInfo = input.data.partInfo[i];
         var part = new Map();
         part.protectNo = partInfo.defenceNum + 98;
         part.barcode = partInfo.barcode;

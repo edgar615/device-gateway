@@ -5,8 +5,8 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
-    for (var i = 0; i < input.eventlist.length; i++) {
-        var alarm = input.eventlist[i];
+    for (var i = 0; i < input.data.eventlist.length; i++) {
+        var alarm = input.data.eventlist[i];
         //1无线探测器故障，2无线遥控器故障，3无线警号故障，4主机故障，5无线键盘故障
         var operateType = alarm.device;
         //故障 1电池低压，2设备丢失，3交流故障，4通迅故障，5电话掉线，20无GSM模块，21无SIM卡，22 GSM无服务，23 GSM信号弱，24  PIN码锁定

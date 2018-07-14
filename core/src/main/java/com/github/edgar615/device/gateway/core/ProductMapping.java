@@ -1,7 +1,7 @@
-package com.github.edgar615.device.gateway.kafka;
+package com.github.edgar615.device.gateway.core;
 
 /**
- * Created by Administrator on 2018/6/8.
+ * PID code的映射，和业务有感.
  */
 public class ProductMapping {
 
@@ -17,7 +17,7 @@ public class ProductMapping {
         this.code = code;
     }
 
-    public static ProductMapping ProductMapping(String productType, String pid, String code) {
+    public static ProductMapping productMapping(String productType, String pid, String code) {
         return new ProductMapping(productType, pid, code);
     }
 

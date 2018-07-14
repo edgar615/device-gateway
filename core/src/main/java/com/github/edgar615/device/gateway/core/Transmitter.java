@@ -84,6 +84,10 @@ public class Transmitter {
     DeviceChannelRegistry.instance().register(registration(), channel);
   }
 
+  public void disConnect() {
+    DeviceChannelRegistry.instance().remove(registration());
+  }
+
   public void logInput(String type, String command, Map<String, Object> data) {
     Log log = Log.create(LOGGER)
             .setLogType("device-gateway")

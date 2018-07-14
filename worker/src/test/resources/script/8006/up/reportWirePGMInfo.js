@@ -7,6 +7,7 @@ function execute(input, logger) {
     var list = new List();
 
     var part = new Map();
+    part.partType = "LH0FE";
     part.protectNo = 107;
     part.barcode = input.data.pgmID;
     part.workMode = input.data.workMode;

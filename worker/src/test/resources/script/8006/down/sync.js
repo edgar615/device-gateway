@@ -48,7 +48,7 @@ function execute(input, logger) {
     control.type = "control";
     control.command = "queryDeviceInfo";
     control.data = new Map();
-    event.data.checksums = checksums;
+    control.data.checksums = checksumList;
     list.add(control);
 
     var syncInfoList = new List();
@@ -89,6 +89,12 @@ function execute(input, logger) {
     syncInfo.deviceType = 8;
     syncInfo.syncFlag = 1;
     syncInfoList.add(syncInfo);
+    var syncDevice = new Map();
+    syncDevice.type = "control";
+    syncDevice.command = "syncDeviceInfo";
+    syncDevice.data = new Map();
+    syncDevice.data.syncInfo = syncInfoList;
+    list.add(syncDevice);
 
     return list;
 }

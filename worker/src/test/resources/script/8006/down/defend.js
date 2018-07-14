@@ -5,7 +5,7 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
-    if (input.data.defend != undefined) {
+    if (input.data.defendState != undefined) {
         var defend = input.data.defendState;
         var areaNum = 8;//8表示对所有分区操作
         var action = 0;
@@ -24,10 +24,10 @@ function execute(input, logger) {
         }
         var control = new Map();
         control.type = "control";
-        control.command = "defenseAction";
+        control.command = "defenceAction";
         control.data = new Map();
-        event.data.areaNum = areaNum;
-        event.data.action = action;
+        control.data.areaNum = areaNum;
+        control.data.action = action;
         list.add(control);
     }
 
