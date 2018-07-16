@@ -17,15 +17,12 @@ function execute(input, logger) {
     for (var i = 0; i < input.data.partInfo.length; i ++) {
         var partInfo = input.data.partInfo[i];
         var part = new Map();
-        part.protectNo = partInfo.defenceNum + 98;
-        part.barcode = partInfo.barcode;
+        part.protectNo = partInfo.identifyNum == 0 ? 98 : 99;
+        part.partType = "LH0FC";
         part.sirenDuration = partInfo.alarmTime;
         part.runningState = partInfo.alarmStatus;
         part.sirenSwitch = partInfo.enable  == 1;
 
-        //调制方式：FSK ASK ZGB，忽略
-        part.modulationMode = partInfo.modulationMode;
-        part.version = partInfo.version;
         partReport.data.parts.add(part);
     }
     return list;

@@ -32,7 +32,7 @@ function execute(input, logger) {
     var part = new Map();
     part.protectNo = input.data.defenceNum + 108;
     part.barcode = input.data.pgmID;
-    part.partType = "LH0FC";
+    part.partType = "LH0FE";
     part.workMode = input.data.workMode;
     part.pgmTimer1 = part.time1Enable == 1;
     part.openHour1 = input.data.openHour1;
