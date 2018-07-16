@@ -3,6 +3,9 @@
     "KafkaVerticle": {
       "class": "com.github.edgar615.device.gateway.kafka.KafkaVerticle",
       "worker": true,
+      "dependencies": [
+        "ScriptVerticle"
+      ],
       "config": {
         "eventbus": {
           "group": "device-gateway",

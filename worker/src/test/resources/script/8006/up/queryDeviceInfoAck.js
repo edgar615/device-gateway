@@ -10,8 +10,8 @@ function execute(input, logger) {
     report.data = new Map();
     list.add(report);
 
-    for (var i = 0; i < input.checksums.length; i++) {
-        var checksumData = input.checksums[i];
+    for (var i = 0; i < input.data.checksums.length; i++) {
+        var checksumData = input.data.checksums[i];
         //0所有分区，1无线探测器，2有线防区，3无线遥控器，4 无线警号，5 有线警号，6 RFID, 7无线PGM ,8 有线PGM
         var deviceType = checksumData.deviceType;
         var result = checksumData.result;
