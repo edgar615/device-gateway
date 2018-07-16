@@ -35,7 +35,7 @@ function execute(input, logger) {
         partition.defendDelay = input.data.outDelay;
         var event = new Map();
         event.type = "report";
-        event.command = "deviceReport";
+        event.command = "partitionReport";
         event.data = partition;
         list.add(event);
     }

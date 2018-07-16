@@ -32,6 +32,7 @@ function execute(input, logger) {
     var part = new Map();
     part.protectNo = input.data.defenceNum + 108;
     part.barcode = input.data.pgmID;
+    part.partType = "LH0FC";
     part.workMode = input.data.workMode;
     part.pgmTimer1 = part.time1Enable == 1;
     part.openHour1 = input.data.openHour1;
@@ -45,7 +46,7 @@ function execute(input, logger) {
     part.closeHour2 = input.data.closeHour2;
     part.closeMinute2 = input.data.closeMinute2;
     part.week2 = input.data.week2;
-    part.autoPartId = input.data.triggerSrc;
+    part.triggerPart = input.data.triggerSrc;
     part.workTime = input.data.workTime;
 
     //调制方式：FSK ASK ZGB，忽略

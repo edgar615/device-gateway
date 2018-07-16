@@ -32,6 +32,7 @@ function execute(input, logger) {
     var part = new Map();
     part.protectNo = input.data.identifyNum + 100;
     part.barcode = input.data.barcode;
+    part.partType = input.data.barcode.substr(0, 5);
     part.partitionNo = input.data.partNum;
     part.sirenDuration = input.data.alarmTime;
     part.runningState = input.data.alarmStatus;

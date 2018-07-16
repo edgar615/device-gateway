@@ -40,7 +40,7 @@ function execute(input, logger) {
     var part = new Map();
     part.protectNo = partInfo.defenceNum;
     part.barcode = partInfo.barcode;
-    part.type = partInfo.type;
+    part.partType = input.data.barcode.substr(0, 5);
     part.partitionNo = partInfo.partNum;
     part.masterUnDefend = partInfo.removaValid == 1 ? true : false;
     part.masterHomeDefend = partInfo.atHomeValid == 1 ? true : false;

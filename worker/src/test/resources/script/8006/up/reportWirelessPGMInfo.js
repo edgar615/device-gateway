@@ -5,35 +5,36 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
+    var partReport = new Map();
+    partReport.type = "report";
+    partReport.command = "partReport";
+    partReport.data = new Map();
+    partReport.data.parts = new List();
+    list.add(partReport);
     //上报无线探测器校验和
-    var deviceReport = new Map();
-    deviceReport.type = "report";
-    deviceReport.command = "deviceReport";
-    deviceReport.data = new Map();
-    deviceReport.data.wireLessPgmCheckNum = input.data.checknum;
-    list.add(deviceReport);
+    //var deviceReport = new Map();
+    //deviceReport.type = "report";
+    //deviceReport.command = "deviceReport";
+    //deviceReport.data = new Map();
+    //deviceReport.data.wireLessPgmCheckNum = input.data.checknum;
+    //list.add(deviceReport);
     //107 有线PGM 108~112 无线PGM
-    var isRegst = input.data.isRegst;
-    var deletedParts = new List();
-    for (var i = 0; i < 5; i ++) {
-        if (isRegst.charAt(i) == 0) {
-            deletedParts.add(i + 108);
-        }
-    }
-    if (deletedParts.length > 0) {
-        var deletedPartSync = new Map();
-        deletedPartSync.type = "report";
-        deletedPartSync.command = "deletedPartSync";
-        deletedPartSync.data = new Map();
-        deletedPartSync.data.parts = deletedParts;
-        list.add(deletedPartSync);
-    }
+    var partRegistrySync = new Map();
+    partRegistrySync.type = "report";
+    partRegistrySync.command = "partRegistrySync";
+    partRegistrySync.data = new Map();
+    partRegistrySync.data.startIndex = 108;
+    partRegistrySync.data.endIndex = 112;
+    partRegistrySync.data.registryType = "wirelessPgm";
+    partRegistrySync.data.partRegistry = input.data.isRegst;
+    list.add(partRegistrySync);
 
     for (var i = 0; i < input.data.partInfo.length; i ++) {
         var partInfo = input.data.partInfo[i];
         var part = new Map();
         part.protectNo = partInfo.defenceNum + 108;
         part.barcode = partInfo.pgmID;
+        part.partType = partInfo.pgmID.substr(0, 5);
         part.workMode = partInfo.workMode;
         part.pgmTimer1 = part.time1Enable == 1;
         part.openHour1 = partInfo.openHour1;
@@ -47,19 +48,13 @@ function execute(input, logger) {
         part.closeHour2 = partInfo.closeHour2;
         part.closeMinute2 = partInfo.closeMinute2;
         part.week2 = partInfo.week2;
-        part.autoPartId = partInfo.triggerSrc;
+        part.triggerPart = partInfo.triggerSrc;
         part.workTime = partInfo.workTime;
 
         //调制方式：FSK ASK ZGB，忽略
         part.modulationMode = partInfo.modulationMode;
         part.version = partInfo.version;
-
-        var partReport = new Map();
-        partReport.type = "report";
-        partReport.command = "partReport";
-        partReport.data = part;
-        partReport.data.partType = "pgm";
-        list.add(partReport);
+        partReport.data.parts.add(part);
 
         if (partInfo.actionType == 1) {
             //var event = new Map();

@@ -5,29 +5,31 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
+    var partReport = new Map();
+    partReport.type = "report";
+    partReport.command = "partReport";
+    partReport.data = new Map();
+    partReport.data.parts = new List();
+    list.add(partReport);
+
     var checknum = input.data.checknum;
-    var isRegst = input.data.isRegst;
     //98内置警号 99外接有线警号 100~106 无线警号
-    var deletedParts = new List();
-    for (var i = 0; i < 7; i ++) {
-        if (isRegst.charAt(i) == 0) {
-            deletedParts.add(i + 100);
-        }
-    }
-    if (deletedParts.length > 0) {
-        var deletedPartSync = new Map();
-        deletedPartSync.type = "report";
-        deletedPartSync.command = "deletedPartSync";
-        deletedPartSync.data = new Map();
-        deletedPartSync.data.parts = deletedParts;
-        list.add(deletedPartSync);
-    }
+    var partRegistrySync = new Map();
+    partRegistrySync.type = "report";
+    partRegistrySync.command = "partRegistrySync";
+    partRegistrySync.data = new Map();
+    partRegistrySync.data.startIndex = 100;
+    partRegistrySync.data.endIndex = 106;
+    partRegistrySync.data.registryType = "wirelessAlarm";
+    partRegistrySync.data.partRegistry = input.data.isRegst;
+    list.add(partRegistrySync);
 
     for (var i = 0; i < input.data.partInfo.length; i ++) {
         var partInfo = input.data.partInfo[i];
         var part = new Map();
         part.protectNo = partInfo.defenceNum + 100;
         part.barcode = partInfo.barcode;
+        part.partType = partInfo.barcode.substr(0, 5);
         part.partitionNo = partInfo.partNum;
         part.sirenDuration = partInfo.alarmTime;
         part.runningState = partInfo.alarmStatus;
@@ -39,11 +41,7 @@ function execute(input, logger) {
         part.modulationMode = partInfo.modulationMode;
         part.version = partInfo.version;
 
-        var event = new Map();
-        event.type = "report";
-        event.command = "partReport";
-        event.data = part;
-        list.add(event);
+        partReport.data.parts.add(part);
     }
     return list;
 }

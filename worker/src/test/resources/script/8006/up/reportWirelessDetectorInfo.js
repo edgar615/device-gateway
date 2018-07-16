@@ -5,36 +5,37 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
+    var partReport = new Map();
+    partReport.type = "report";
+    partReport.command = "partReport";
+    partReport.data = new Map();
+    partReport.data.parts = new List();
+    list.add(partReport);
+
     //上报无线探测器校验和
-    var deviceReport = new Map();
-    deviceReport.type = "report";
-    deviceReport.command = "deviceReport";
-    deviceReport.data = new Map();
-    deviceReport.data.wireLessPartCheckNum = input.data.checknum;
-    list.add(deviceReport);
+    //var deviceReport = new Map();
+    //deviceReport.type = "report";
+    //deviceReport.command = "deviceReport";
+    //deviceReport.data = new Map();
+    //deviceReport.data.wireLessPartCheckNum = input.data.checknum;
+    //list.add(deviceReport);
     //64位字符串，对应1-64是否已经注册，每一位1表示已注册，0没有注册
-    var isRegst = input.data.isRegst;
-    var deletedParts = new List();
-    for (var i = 0; i < 64; i ++) {
-        if (isRegst.charAt(i) == 0) {
-            deletedParts.add(i);
-        }
-    }
-    if (deletedParts.length > 0) {
-        var deletedPartSync = new Map();
-        deletedPartSync.type = "report";
-        deletedPartSync.command = "deletedPartSync";
-        deletedPartSync.data = new Map();
-        deletedPartSync.data.parts = deletedParts;
-        list.add(deletedPartSync);
-    }
+    var partRegistrySync = new Map();
+    partRegistrySync.type = "report";
+    partRegistrySync.command = "partRegistrySync";
+    partRegistrySync.data = new Map();
+    partRegistrySync.data.startIndex = 113;
+    partRegistrySync.data.endIndex = 144;
+    partRegistrySync.data.registryType = "wirelessDetector";
+    partRegistrySync.data.partRegistry = input.data.isRegst;
+    list.add(partRegistrySync);
 
     for (var i = 0; i < input.data.partInfo.length; i ++) {
         var partInfo = input.data.partInfo[i];
         var part = new Map();
         part.protectNo = partInfo.defenceNum;
         part.barcode = partInfo.barcode;
-        part.type = partInfo.type;
+        part.partType = partInfo.barcode.substr(0, 5);
         part.partitionNo = partInfo.partNum;
         part.masterUnDefend = partInfo.removaValid == 1 ? true : false;
         part.masterHomeDefend = partInfo.atHomeValid == 1 ? true : false;
@@ -56,11 +57,7 @@ function execute(input, logger) {
         part.modulationMode = partInfo.modulationMode;
         part.version = partInfo.version;
 
-        var partReport = new Map();
-        partReport.type = "report";
-        partReport.command = "partReport";
-        partReport.data = part;
-        list.add(partReport);
+        partReport.data.parts.add(part);
 
         if (partInfo.actionType == 2) {
             var event = new Map();

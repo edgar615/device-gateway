@@ -32,6 +32,7 @@ function execute(input, logger) {
     var part = new Map();
     part.protectNo = input.data.identifyNum + 113;
     part.barcode = input.data.barcode;
+    part.partType = input.data.barcode.substr(0, 5);
     part.partitionNo = input.data.partNum;
     part.battery = input.data.charge;
     //调制方式：FSK ASK ZGB，忽略

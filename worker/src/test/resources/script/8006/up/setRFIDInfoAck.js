@@ -41,7 +41,7 @@ function execute(input, logger) {
     }
     var event = new Map();
     event.type = "report";
-    event.command = "rfidReport";
+    event.command = "partReport";
     event.data = part;
     list.add(event);
     return list;

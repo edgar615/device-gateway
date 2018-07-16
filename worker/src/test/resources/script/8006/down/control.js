@@ -1,7 +1,7 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
 
-//down deviceControl
+//down partitionControl
 function execute(input, logger) {
 
     var control = new Map();

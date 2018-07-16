@@ -38,7 +38,7 @@ function execute(input, logger) {
     var list = new List();
     var report = new Map();
     report.type = "report";
-    report.command = "deviceReport";
+    report.command = "partitionReport";
     report.data = new Map();
     report.data.partitions = partitionList;
     list.add(report);

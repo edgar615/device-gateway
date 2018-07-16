@@ -8,7 +8,7 @@ function execute(input, logger) {
     report.type = "report";
     report.command = "deviceReport";
     report.data = new Map();
-    list.add(event);
+    list.add(report);
 
     for (var i = 0; i < input.checksums.length; i++) {
         var checksumData = input.checksums[i];

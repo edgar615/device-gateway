@@ -5,32 +5,34 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
+    var partReport = new Map();
+    partReport.type = "report";
+    partReport.command = "partReport";
+    partReport.data = new Map();
+    partReport.data.parts = new List();
+    list.add(partReport);
     //上报无线探测器校验和
-    var deviceReport = new Map();
-    deviceReport.type = "report";
-    deviceReport.command = "deviceReport";
-    deviceReport.data = new Map();
-    deviceReport.data.rfidCheckNum = input.data.checknum;
-    list.add(deviceReport);
+    //var deviceReport = new Map();
+    //deviceReport.type = "report";
+    //deviceReport.command = "deviceReport";
+    //deviceReport.data = new Map();
+    //deviceReport.data.rfidCheckNum = input.data.checknum;
+    //list.add(deviceReport);
 
     //0同歩 1添加/删除 2上报遥控器状态变化
     var actionType = input.data.actionType;
+
+    //同步注册表
     var isRegst = input.data.isRegst;
-    //145~176 RFID
-    var deletedParts = new List();
-    for (var i = 0; i < 32; i ++) {
-        if (isRegst.charAt(i) == 0) {
-            deletedParts.add(i + 145);
-        }
-    }
-    if (deletedParts.length > 0) {
-        var deletedPartSync = new Map();
-        deletedPartSync.type = "report";
-        deletedPartSync.command = "deletedPartSync";
-        deletedPartSync.data = new Map();
-        deletedPartSync.data.parts = deletedParts;
-        list.add(deletedPartSync);
-    }
+    var partRegistrySync = new Map();
+    partRegistrySync.type = "report";
+    partRegistrySync.command = "partRegistrySync";
+    partRegistrySync.data = new Map();
+    partRegistrySync.data.startIndex = 145;
+    partRegistrySync.data.endIndex = 176;
+    partRegistrySync.data.registryType = "rfid";
+    partRegistrySync.data.partRegistry = input.data.isRegst;
+    list.add(partRegistrySync);
 
     for (var i = 0; i < input.data.partInfo.length; i ++) {
         var partInfo = input.data.partInfo[i];
@@ -60,12 +62,7 @@ function execute(input, logger) {
             }
             part.controlPgm = controlPgm;
         }
-        var event = new Map();
-        event.type = "report";
-        event.command = "rfidReport";
-        event.data = part;
-        list.add(event);
-
+        partReport.data.parts.add(part);
     }
     return list;
 }

@@ -46,7 +46,7 @@ function execute(input, logger) {
     part.closeHour2 = input.data.closeHour2;
     part.closeMinute2 = input.data.closeMinute2;
     part.week2 = input.data.week2;
-    part.autoPartId = input.data.triggerSrc;
+    part.triggerPart = input.data.triggerSrc;
     part.workTime = input.data.workTime;
 
     //调制方式：FSK ASK ZGB，忽略

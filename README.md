@@ -80,6 +80,7 @@ fileMd5: 文件的MD5
 report消息的command有下面几种
 
 - deviceReport 设备属性变化，调用方需要修改存储设备属性快照
+- partitionReport 分区属性变化
 - partDeleted 删除配件的回应，调用方需要删除存储的配件
 - partAdded 添加配件的回应，调用方需要添加存储的配件
 - partReport 配件属性变化，调用方需要修改存储设备属性快照(数组)

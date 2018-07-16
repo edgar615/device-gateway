@@ -1,12 +1,13 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
 
-//down deviceControl
+//down partitionControl
 function execute(input, logger) {
 
     var list = new List();
-    if (input.data.defendState != undefined) {
+    if (input.data.defendState != undefined && input.data.partitionNo != undefined) {
         var defend = input.data.defendState;
+        var areaNum = input.data.partitionNo;
         var action = 0;
         if (defend == 1) {
             action = 2;
@@ -22,7 +23,7 @@ function execute(input, logger) {
             control.type = "control";
             control.command = "defenceAction";
             control.data = new Map();
-            control.data.areaNum = 8;//所有分区
+            control.data.areaNum = areaNum;
             control.data.action = action;
             list.add(control);
         }

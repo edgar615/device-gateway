@@ -1,7 +1,7 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
 
-//down pgmControl
+//down partControl
 function execute(input, logger) {
 
     /**
