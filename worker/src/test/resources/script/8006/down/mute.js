@@ -10,8 +10,8 @@ function execute(input, logger) {
     control.type = "control";
     control.command = "closeVoice";
     control.data = new Map();
-    //1关闭主机内置警号, 2关闭主机外接有线警号,3关闭主机所有无线警号,4关闭主机所有警号
-    control.data.type = 4;
+    //0关闭主机内置警号, 1关闭主机外接有线警号,2关闭主机所有无线警号,3关闭主机所有警号
+    control.data.type = 3;
     list.add(control);
     return list;
 }

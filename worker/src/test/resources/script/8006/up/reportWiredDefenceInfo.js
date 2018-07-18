@@ -24,10 +24,6 @@ function execute(input, logger) {
         //阀值
         part.threshold = partInfo.status == 1 ? true : false;
         partReport.data.parts.add(part);
-
-        if (partInfo.actionType == 2) {
-            //事件
-        }
     }
     return list;
 }

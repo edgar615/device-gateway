@@ -10,9 +10,9 @@ function execute(input, logger) {
         control.type = "control";
         control.command = "setWirelessDetectorInfo";
         control.data = new Map();
-        event.data.defenceNum = input.data.protectNo;
-        event.data.actionType = 1;
-        event.data.barcode = "0";
+        control.data.defenceNum = input.data.protectNo;
+        control.data.actionType = 1;
+        control.data.barcode = "0";
         list.add(control);
     }
     return list;

@@ -21,14 +21,14 @@ function execute(input, logger) {
         control.data = new Map();
         list.add(control);
         //0内置 1外接
-        control.defenceNum = input.data.protectNo - 98;
+        control.data.defenceNum = input.data.protectNo - 98;
         var flag = false;
         if (input.data.sirenSwitch != undefined) {
-            control.enable = input.data.sirenSwitch;
+            control.data.enable = input.data.sirenSwitch;
             flag = true;
         }
         if (input.data.sirenDuration != undefined) {
-            control.alarmTime = input.data.sirenDuration;
+            control.data.alarmTime = input.data.sirenDuration;
             flag = true;
         }
         if (flag) {

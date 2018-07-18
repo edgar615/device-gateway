@@ -128,6 +128,10 @@ public class Transmitter {
     JsonObject device = jsonObject.copy();
     device.put("deviceIdentifier", deviceIdentifier);
     vertx.eventBus().send(Consts.LOCAL_DEVICE_ADD_ADDRESS, device, ar -> {
+      if (ar.failed()) {
+        LOGGER.error("store device failed", ar.cause());
+      } else {
+      }
     });
   }
 
@@ -136,6 +140,10 @@ public class Transmitter {
             .put("deviceIdentifier", deviceIdentifier);
     vertx.eventBus().send(Consts.LOCAL_DEVICE_DELETE_ADDRESS,
                           device, ar -> {
+              if (ar.failed()) {
+                LOGGER.error("delete device failed", ar.cause());
+              } else {
+              }
             });
     DeviceChannelRegistry.instance().remove(registration());
   }

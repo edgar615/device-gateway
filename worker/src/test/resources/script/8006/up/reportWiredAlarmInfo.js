@@ -22,8 +22,16 @@ function execute(input, logger) {
         part.sirenDuration = partInfo.alarmTime;
         part.runningState = partInfo.alarmStatus;
         part.sirenSwitch = partInfo.enable  == 1;
-
         partReport.data.parts.add(part);
+        if (partInfo.identifyNum == 0) {
+            //同步更新设备的警笛时长
+            var deviceReport = new Map();
+            deviceReport.type = "report";
+            deviceReport.command = "deviceReport";
+            deviceReport.data = new Map();
+            deviceReport.data.sirenDuration = partInfo.alarmTime;
+            list.add(deviceReport);
+        }
     }
     return list;
 }

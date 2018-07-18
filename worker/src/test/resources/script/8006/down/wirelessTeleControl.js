@@ -19,11 +19,11 @@ function execute(input, logger) {
         control.type = "control";
         control.command = "setTelecontrollerInfo";
         control.data = new Map();
-        control.actionType = 0;
-        control.defenceNum = input.data.protectNo - 113;
+        control.data.actionType = 0;
+        control.data.defenceNum = input.data.protectNo - 113;
         var flag = false;
         if (input.data.partitionNo != undefined) {
-            control.partNum = input.data.partitionNo;
+            control.data.partNum = input.data.partitionNo;
             flag = true;
         }
         if (flag) {

@@ -4,6 +4,22 @@ var List = Java.type("java.util.ArrayList");
 //up setWireDetectorInfoAck
 function execute(input, logger) {
 
+    if (input.data.result == 1) {
+        logger.error("control part failed");
+        return new List();
+    }
+    if (input.data.result == 2) {
+        logger.error("control part failed: coding");
+        return new List();
+    }
+    if (input.data.result == 5) {
+        logger.error("control part failed: full");
+        return new List();
+    }
+    if (input.data.result != 0) {
+        logger.error("control part failed: unkown result");
+    }
+
     var list = new List();
     var partInfo = input.data;
     var part = new Map();

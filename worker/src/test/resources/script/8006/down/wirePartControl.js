@@ -20,21 +20,21 @@ function execute(input, logger) {
         control.command = "setWireDetectorInfo";
         control.data = new Map();
         var flag = false;
-        control.defenceNum = input.data.protectNo;
+        control.data.defenceNum = input.data.protectNo;
         if (input.data.partitionNo != undefined) {
-            control.partNum = input.data.partitionNo;
+            control.data.partNum = input.data.partitionNo;
             flag = true;
         }
         if (input.data.masterUnDefend != undefined) {
-            control.removaValid = input.data.masterUnDefend ? 1 : 0;
+            control.data.removaValid = input.data.masterUnDefend ? 1 : 0;
             flag = true;
         }
         if (input.data.masterAwayDefend != undefined) {
-            control.awayValid = input.data.masterAwayDefend ? 1 : 0;
+            control.data.awayValid = input.data.masterAwayDefend ? 1 : 0;
             flag = true;
         }
         if (input.data.masterHomeDefend != undefined) {
-            control.atHomeValid = input.data.masterHomeDefend ? 1 : 0;
+            control.data.atHomeValid = input.data.masterHomeDefend ? 1 : 0;
             flag = true;
         }
         if (flag) {

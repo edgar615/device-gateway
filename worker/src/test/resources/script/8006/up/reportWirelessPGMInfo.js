@@ -5,6 +5,15 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
+    var partRegistrySync = new Map();
+    partRegistrySync.type = "report";
+    partRegistrySync.command = "partRegistrySync";
+    partRegistrySync.data = new Map();
+    partRegistrySync.data.startIndex = 108;
+    partRegistrySync.data.endIndex = 112;
+    partRegistrySync.data.registryType = "wirelessPgm";
+    partRegistrySync.data.partRegistry = input.data.isRegst;
+    list.add(partRegistrySync);
     var partReport = new Map();
     partReport.type = "report";
     partReport.command = "partReport";
@@ -19,16 +28,6 @@ function execute(input, logger) {
     //deviceReport.data.wireLessPgmCheckNum = input.data.checknum;
     //list.add(deviceReport);
     //107 有线PGM 108~112 无线PGM
-    var partRegistrySync = new Map();
-    partRegistrySync.type = "report";
-    partRegistrySync.command = "partRegistrySync";
-    partRegistrySync.data = new Map();
-    partRegistrySync.data.startIndex = 108;
-    partRegistrySync.data.endIndex = 112;
-    partRegistrySync.data.registryType = "wirelessPgm";
-    partRegistrySync.data.partRegistry = input.data.isRegst;
-    list.add(partRegistrySync);
-
     for (var i = 0; i < input.data.partInfo.length; i ++) {
         var partInfo = input.data.partInfo[i];
         var part = new Map();
@@ -55,20 +54,6 @@ function execute(input, logger) {
         part.modulationMode = partInfo.modulationMode;
         part.version = partInfo.version;
         partReport.data.parts.add(part);
-
-        if (partInfo.actionType == 1) {
-            //var event = new Map();
-            //event.type = "event";
-            //event.command = "new";
-            //event.data = new Map();
-            ////时间转换
-            ////event.data.time = time + timezone * 60 * 60;
-            //event.data.level = 1;
-            //event.data.push = false;
-            //event.data.defend = false;
-            //event.data.protectNo = partInfo.defenceNum;
-            //list.add(event);
-        }
     }
     return list;
 }

@@ -5,29 +5,42 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     //0成功 1失败 2键盘正在编程 3重复添加     4未知类型 5已满
-    if (input.data.result == 0) {
-        logger.info("control part succeeded");
-    }
     if (input.data.result == 1) {
-        logger.info("control part failed");
-        return
+        logger.error("control part failed");
+        return new List();
     }
     if (input.data.result == 2) {
-        logger.info("control part failed: coding");
-        return
+        logger.error("control part failed: coding");
+        return new List();
     }
     if (input.data.result == 3) {
-        logger.info("control part failed: already exists");
-        return
+        logger.error("control part failed: already exists");
+        return new List();
     }
     if (input.data.result == 4) {
-        logger.info("control part failed: undefined type");
-        return
+        logger.error("control part failed: undefined type");
+        return new List();
     }
     if (input.data.result == 5) {
-        logger.info("control part failed: full");
-        return;
+        logger.error("control part failed: full");
+        return new List();
     }
+    if (input.data.result != 0) {
+        logger.error("control part failed: unkown result");
+    }
+    if (input.data.barcode ==  "0") {
+        logger.info("delete part succeeded");
+        var list = new List();
+        var part = new Map();
+        part.protectNo = input.data.defenceNum;
+        var event = new Map();
+        event.type = "report";
+        event.command = "partDeleted";
+        event.data = part;
+        list.add(event);
+        return list;
+    }
+    logger.info("control part succeeded");
     var list = new List();
     var partInfo = input.data;
     var deviceReport = new Map();

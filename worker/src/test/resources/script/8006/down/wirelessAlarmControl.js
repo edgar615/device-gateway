@@ -19,27 +19,27 @@ function execute(input, logger) {
         control.type = "control";
         control.command = "setWirelessAlarmInfo";
         control.data = new Map();
-        control.actionType = 0;
-        control.defenceNum = input.data.protectNo - 100;
+        control.data.actionType = 0;
+        control.data.defenceNum = input.data.protectNo - 100;
         var flag = false;
         if (input.data.partitionNo != undefined) {
-            control.partNum = input.data.partitionNo;
+            control.data.partNum = input.data.partitionNo;
             flag = true;
         }
         if (input.data.sirenSwitch != undefined) {
-            control.enable = input.data.sirenSwitch;
+            control.data.enable = input.data.sirenSwitch;
             flag = true;
         }
         if (input.data.lightSwitch != undefined) {
-            control.alarmLamp = input.data.lightSwitch;
+            control.data.alarmLamp = input.data.lightSwitch;
             flag = true;
         }
         if (input.data.sirenVolume != undefined) {
-            control.alarmVolume = input.data.sirenVolume;
+            control.data.alarmVolume = input.data.sirenVolume;
             flag = true;
         }
         if (input.data.sirenDuration != undefined) {
-            control.alarmTime = input.data.sirenDuration;
+            control.data.alarmTime = input.data.sirenDuration;
             flag = true;
         }
         if (flag) {

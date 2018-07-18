@@ -10,7 +10,7 @@ function execute(input, logger) {
     control.type = "control";
     control.command = "upgrade";
     control.data = new Map();
-    event.data.type = 1;
+    control.data.type = 1;
     list.add(control);
     return list;
 }

@@ -7,8 +7,8 @@ function execute(input, logger) {
     var control = new Map();
     control.type = "control";
     control.command = "setPartitionInfo";
-    control.partInfo = new List();
     var partitionControl = new Map();
+    control.data = partitionControl;
     var flag = false;
     partitionControl.num = input.data.partitionNo;
     if (input.data.state != undefined) {
@@ -21,11 +21,11 @@ function execute(input, logger) {
         flag = true;
     }
     if (input.data.defendDelay != undefined) {
-        partitionControl.inDelay = input.data.defendDelay ? 1 : 0;
+        partitionControl.inDelay = input.data.defendDelay;
         flag = true;
     }
     if (input.data.alarmDelay != undefined) {
-        partitionControl.outDelay = input.data.alarmDelay ? 1 : 0;
+        partitionControl.outDelay = input.data.alarmDelay;
         flag = true;
     }
     var list = new List();

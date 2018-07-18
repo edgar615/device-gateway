@@ -24,11 +24,11 @@ function execute(input, logger) {
     control.type = "control";
     control.command = "setUpgradeInfo";
     control.data = new Map();
-    event.data.fileCnt = input.data.files.length;
-    event.data.scheme  = input.data.scheme;
-    event.data.domainName  = input.data.host;
-    event.data.port  = input.data.port;
-    event.data.files = upgradeFiles;
+    control.data.fileCnt = input.data.files.length;
+    control.data.scheme  = input.data.scheme;
+    control.data.domainName  = input.data.host;
+    control.data.port  = input.data.port;
+    control.data.files = upgradeFiles;
     list.add(control);
     return list;
 }

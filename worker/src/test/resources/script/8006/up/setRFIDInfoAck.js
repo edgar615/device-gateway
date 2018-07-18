@@ -5,13 +5,22 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
     var result = input.data.result;
     if (result == 1) {
-        logger.error("setPartitionInfoAck failed: invalid arg");
-    } else if (result == 2) {
-        logger.error("setPartitionInfoAck failed: coding");
-    } else {
-        logger.info("setPartitionInfoAck succeeded");
+        logger.error("setRFIDInfo failed: invalid arg");
+        return new List();
     }
-
+    if (result == 2) {
+        logger.error("setRFIDInfo failed: coding");
+        return new List();
+    }
+    if (result == 5) {
+        logger.error("setRFIDInfo failed: synchronizing");
+        return new List();
+    }
+    if (result != 0) {
+        logger.error("setRFIDInfo failed: unknown result");
+        return new List();
+    }
+    logger.info("setRFIDInfo succeeded");
     var part = new Map();
     part.partType = "LH0FF";
     part.protectNo = input.data.identifyNum + 145;

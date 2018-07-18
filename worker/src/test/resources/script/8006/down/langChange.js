@@ -24,12 +24,12 @@ function execute(input, logger) {
     control.type = "control";
     control.command = "updateLanguage";
     control.data = new Map();
-    event.data.fileCnt = files.length;
-    event.data.languageNum = input.data.language;
-    event.data.scheme = input.data.scheme;
-    event.data.domainName = input.data.host;
-    event.data.port = input.data.port;
-    event.data.files = upgradeFiles;
+    control.data.fileCnt = files.length;
+    control.data.languageNum = input.data.language;
+    control.data.scheme = input.data.scheme;
+    control.data.domainName = input.data.host;
+    control.data.port = input.data.port;
+    control.data.files = upgradeFiles;
     list.add(control);
     return list;
 }

@@ -19,32 +19,32 @@ function execute(input, logger) {
         control.type = "control";
         control.command = "setWirelessDetectorInfo";
         control.data = new Map();
-        control.actionType = 0;
-        control.defenceNum = input.data.protectNo;
+        control.data.actionType = 0;
+        control.data.defenceNum = input.data.protectNo;
         var flag = false;
         if (input.data.partitionNo != undefined) {
-            control.partNum = input.data.partitionNo;
+            control.data.partNum = input.data.partitionNo;
             flag = true;
         }
         if (input.data.masterUnDefend != undefined) {
-            control.removaValid = input.data.masterUnDefend ? 1 : 0;
+            control.data.removaValid = input.data.masterUnDefend ? 1 : 0;
             flag = true;
         }
         if (input.data.masterAwayDefend != undefined) {
-            control.awayValid = input.data.masterAwayDefend ? 1 : 0;
+            control.data.awayValid = input.data.masterAwayDefend ? 1 : 0;
             flag = true;
         }
         if (input.data.masterHomeDefend != undefined) {
-            control.atHomeValid = input.data.masterHomeDefend ? 1 : 0;
+            control.data.atHomeValid = input.data.masterHomeDefend ? 1 : 0;
             flag = true;
         }
         if (input.data.offlineSwitch != undefined) {
-            control.loseDetectSwitch = input.data.offlineSwitch ? 1 : 0;
+            control.data.loseDetectSwitch = input.data.offlineSwitch ? 1 : 0;
             flag = true;
         }
         //门磁特有
         if (input.data.welcomeSwitch != undefined) {
-            control.usherSwitch = input.data.welcomeSwitch ? 1 : 0;
+            control.data.usherSwitch = input.data.welcomeSwitch ? 1 : 0;
             flag = true;
         }
         if (flag) {

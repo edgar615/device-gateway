@@ -17,86 +17,87 @@ function execute(input, logger) {
     if (input.data.protectNo >= 107 && input.data.protectNo <= 112) {
         var control = new Map();
         control.type = "control";
+        control.data = new Map();
         if (input.data.protectNo == 107) {
             control.command = "setWirelessPGM";
+            control.data.actionType = 0;
         } else {
             control.command = "setWiredPGM";
         }
-        control.data = new Map();
         var flag = false;
-        control.defenceNum = input.data.protectNo - 107;
+        control.data.defenceNum = input.data.protectNo - 107;
         if (input.data.workMode != undefined) {
-            control.workMode = input.data.workMode;
+            control.data.workMode = input.data.workMode;
             flag = true;
         }
         if (input.data.triggerPart != undefined) {
-            control.triggerSrc = input.data.triggerPart;
+            control.data.triggerSrc = input.data.triggerPart;
             flag = true;
         }
         control.time1Flag = 0;
         if (input.data.pgmTimer1 != undefined) {
-            control.time1Flag = 1;
-            control.time1Enable = input.data.pgmTimer1 ? 1 : 0;
+            control.data.time1Flag = 1;
+            control.data.time1Enable = input.data.pgmTimer1 ? 1 : 0;
             flag = true;
         }
         if (input.data.openHour1 != undefined) {
-            control.time1Flag = 1;
-            control.openHour1 = input.data.openHour1;
+            control.data.time1Flag = 1;
+            control.data.openHour1 = input.data.openHour1;
             flag = true;
         }
         if (input.data.openMinute1 != undefined) {
-            control.time1Flag = 1;
-            control.openMinute1 = input.data.openMinute1;
+            control.data.time1Flag = 1;
+            control.data.openMinute1 = input.data.openMinute1;
             flag = true;
         }
         if (input.data.closeHour1 != undefined) {
-            control.time1Flag = 1;
-            control.closeHour1 = input.data.closeHour1;
+            control.data.time1Flag = 1;
+            control.data.closeHour1 = input.data.closeHour1;
             flag = true;
         }
         if (input.data.closeMinute1 != undefined) {
-            control.time1Flag = 1;
-            control.closeMinute1 = input.data.closeMinute1;
+            control.data.time1Flag = 1;
+            control.data.closeMinute1 = input.data.closeMinute1;
             flag = true;
         }
         if (input.data.week1 != undefined) {
-            control.time1Flag = 1;
-            control.week1 = input.data.week1;
+            control.data.time1Flag = 1;
+            control.data.week1 = input.data.week1;
             flag = true;
         }
-        control.time2Flag = 0;
+        control.data.time2Flag = 0;
         if (input.data.pgmTimer2 != undefined) {
-            control.time2Flag = 1;
-            control.time2Enable = input.data.pgmTimer2 ? 1 : 0;
+            control.data.time2Flag = 1;
+            control.data.time2Enable = input.data.pgmTimer2 ? 1 : 0;
             flag = true;
         }
         if (input.data.openHour2 != undefined) {
-            control.time2Flag = 1;
-            control.openHour2 = input.data.openHour2;
+            control.data.time2Flag = 1;
+            control.data.openHour2 = input.data.openHour2;
             flag = true;
         }
         if (input.data.openMinute2 != undefined) {
-            control.time2Flag = 1;
-            control.openMinute2 = input.data.openMinute2;
+            control.data.time2Flag = 1;
+            control.data.openMinute2 = input.data.openMinute2;
             flag = true;
         }
         if (input.data.closeHour2 != undefined) {
-            control.time2Flag = 1;
-            control.closeHour2 = input.data.closeHour2;
+            control.data.time2Flag = 1;
+            control.data.closeHour2 = input.data.closeHour2;
             flag = true;
         }
         if (input.data.closeMinute2 != undefined) {
-            control.time2Flag = 1;
-            control.closeMinute2 = input.data.closeMinute2;
+            control.data.time2Flag = 1;
+            control.data.closeMinute2 = input.data.closeMinute2;
             flag = true;
         }
         if (input.data.week2 != undefined) {
-            control.time2Flag = 1;
-            control.week2 = input.data.week2;
+            control.data.time2Flag = 1;
+            control.data.week2 = input.data.week2;
             flag = true;
         }
         if (input.data.workTime != undefined) {
-            control.workTime = input.data.workTime;
+            control.data.workTime = input.data.workTime;
             flag = true;
         }
         if (flag) {

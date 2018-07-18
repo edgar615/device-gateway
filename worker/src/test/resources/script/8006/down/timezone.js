@@ -11,7 +11,7 @@ function execute(input, logger) {
         control.type = "control";
         control.command = "setTimeZone";
         control.data = new Map();
-        event.data.timeZone = timeZone + 12;
+        control.data.timeZone = timeZone + 12;
         list.add(control);
     }
 
