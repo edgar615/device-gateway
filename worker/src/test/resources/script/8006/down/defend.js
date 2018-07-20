@@ -5,6 +5,11 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
+    var control = new Map();
+    control.type = "control";
+    control.command = "defenceAction";
+    control.data = new Map();
+    control.data.areaNum = 8;//所有分区
     if (input.data.defendState != undefined) {
         var defend = input.data.defendState;
         if (defend == 1) {
@@ -17,12 +22,6 @@ function execute(input, logger) {
         if (control.data.action == undefined) {
             logger.error("undefined defendState:" + defend);
         } else {
-            var control = new Map();
-            control.type = "control";
-            control.command = "defenceAction";
-            control.data = new Map();
-            control.data.areaNum = 8;//所有分区
-            control.data.action = action;
             list.add(control);
         }
     }

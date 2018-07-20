@@ -52,7 +52,7 @@ public class ReportOutbondHandlerTest {
     AtomicInteger check = new AtomicInteger();
     vertx.eventBus().consumer(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, msg -> {
       System.out.println(msg.body());
-      testContext.fail();
+      check.incrementAndGet();
     });
     OutboundHandler handler = new ReportOutboundHandler();
     Future<Void> future = Future.future();
@@ -60,7 +60,7 @@ public class ReportOutbondHandlerTest {
     future.setHandler(ar -> {
           check.incrementAndGet();
     });
-    Awaitility.await().until(() -> check.get() == 1);
+    Awaitility.await().until(() -> check.get() == 2);
   }
 
   @Test

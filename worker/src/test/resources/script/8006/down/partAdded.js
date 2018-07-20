@@ -5,7 +5,7 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
-    var partType = control.data.barcode.substr(0, 5);
+    var partType = input.data.barcode.substr(0, 5);
     //无线警号
     if (partType == "LH095") {
         var control = new Map();

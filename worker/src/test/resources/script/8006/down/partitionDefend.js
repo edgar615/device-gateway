@@ -5,9 +5,13 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
+    var control = new Map();
+    control.type = "control";
+    control.command = "defenceAction";
+    control.data = new Map();
     if (input.data.defendState != undefined && input.data.partitionNo != undefined) {
         var defend = input.data.defendState;
-        var areaNum = input.data.partitionNo;
+        control.data.areaNum = input.data.partitionNo;
         if (defend == 1) {
             control.data.action = 2;
         } else if (defend == 2) {
@@ -18,12 +22,6 @@ function execute(input, logger) {
         if (control.data.action == undefined) {
             logger.error("undefined defendState:" + defend);
         } else {
-            var control = new Map();
-            control.type = "control";
-            control.command = "defenceAction";
-            control.data = new Map();
-            control.data.areaNum = areaNum;
-            control.data.action = action;
             list.add(control);
         }
     }

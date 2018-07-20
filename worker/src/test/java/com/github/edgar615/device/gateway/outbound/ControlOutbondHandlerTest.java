@@ -4,13 +4,16 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 import com.github.edgar615.device.gateway.core.Consts;
+import com.github.edgar615.device.gateway.core.DeviceChannelRegistry;
 import com.github.edgar615.device.gateway.core.MessageType;
+import com.github.edgar615.device.gateway.core.ProductMappingRegistry;
 import com.github.edgar615.device.gateway.core.Transmitter;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import org.awaitility.Awaitility;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +36,14 @@ public class ControlOutbondHandlerTest {
   @Before
   public void setUp() {
     vertx = Vertx.vertx();
+    DeviceChannelRegistry.instance().register("test_type:12345678", "TEST");
+    ProductMappingRegistry.instance().register("test_type", "pid", "code");
+  }
+
+  @After
+  public void tearDown() {
+    DeviceChannelRegistry.instance().clear();
+    ProductMappingRegistry.instance().clear();
   }
 
   @Test
@@ -46,7 +57,7 @@ public class ControlOutbondHandlerTest {
     input.put("productType", "test_type");
     input.put("type", MessageType.DOWN);
     input.put("command", "device.changed");
-    input.put("deviceIdentifier", "12345678");
+    input.put("deviceIdentifier", UUID.randomUUID().toString());
     input.put("traceId", UUID.randomUUID().toString());
     input.put("data", new HashMap<>());
 
@@ -77,7 +88,6 @@ public class ControlOutbondHandlerTest {
     input.put("type", MessageType.DOWN);
     input.put("productType", "test_type");
     input.put("command", "device.changed");
-    input.put("channel", "niot");
     input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());
     input.put("data", new HashMap<>());
@@ -110,8 +120,8 @@ public class ControlOutbondHandlerTest {
 
     Map<String, Object> input = new HashMap<>();
     input.put("type", MessageType.DOWN);
+    input.put("productType", "test_type");
     input.put("command", "device.changed");
-    input.put("channel", "niot");
     input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());
     input.put("data", new HashMap<>());
