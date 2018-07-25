@@ -31,7 +31,7 @@ public class ConnectTransformer implements LocalMessageTransformer {
         eventData.putIfAbsent("time", Instant.now().getEpochSecond());
         eventData.putIfAbsent("type", 40020);
         eventData.putIfAbsent("level", 1);
-        eventData.putIfAbsent("push", true);
+//        eventData.putIfAbsent("push", true);
         eventData.putIfAbsent("defend", false);
         eventData.put("clientIp", clientIp);
         Map<String, Object> event =

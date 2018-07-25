@@ -20,6 +20,7 @@ function execute(input, logger) {
         control.command = "setWirelessAlarmInfo";
         control.data = new Map();
         control.data.actionType = 0;
+        control.data.barcode = input.data.barcode;
         control.data.defenceNum = input.data.protectNo - 100;
         var flag = false;
         if (input.data.partitionNo != undefined) {

@@ -21,6 +21,7 @@ function execute(input, logger) {
         control.data = new Map();
         control.data.actionType = 0;
         control.data.defenceNum = input.data.protectNo;
+        control.data.barcode = input.data.barcode;
         var flag = false;
         if (input.data.partitionNo != undefined) {
             control.data.partNum = input.data.partitionNo;

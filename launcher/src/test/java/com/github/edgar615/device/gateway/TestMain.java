@@ -11,7 +11,7 @@ import io.vertx.core.Launcher;
 public class TestMain {
   public static void main(String[] args) {
     new Launcher().execute("run", MainVerticle.class.getName(),
-                           "--conf=h:\\dev\\workspace\\device-gateway\\launcher\\src\\main\\conf"
+                           "--conf=e:\\iotp\\device-gateway\\launcher\\src\\main\\conf"
                            + "\\config.json");
   }
 }

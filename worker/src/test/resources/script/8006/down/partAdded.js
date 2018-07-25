@@ -6,8 +6,8 @@ function execute(input, logger) {
 
     var list = new List();
     var partType = input.data.barcode.substr(0, 5);
-    //无线警号
     if (partType == "LH095") {
+        //无线警号
         var control = new Map();
         control.type = "control";
         control.command = "setWirelessAlarmInfo";
@@ -17,10 +17,8 @@ function execute(input, logger) {
         control.data.barcode = input.data.barcode;
         control.data.partNum = input.data.partitionNo;
         list.add(control);
-    }
-
-    //无线PGM
-    if (partType == "LH096") {
+    } else if (partType == "LH696") {
+        //无线PGM
         var control = new Map();
         control.type = "control";
         control.command = "setWirelessPGM";
@@ -29,10 +27,8 @@ function execute(input, logger) {
         control.data.actionType = 1;
         control.data.pgmID = input.data.barcode;
         list.add(control);
-    }
-
-    //无线遥控器
-    if (partType == "LH091") {
+    } else if (partType == "LH791") {
+        //无线遥控器
         var control = new Map();
         control.type = "control";
         control.command = "setTelecontrollerInfo";
@@ -42,17 +38,19 @@ function execute(input, logger) {
         control.data.barcode = input.data.barcode;
         control.data.partNum = input.data.partitionNo;
         list.add(control);
+    } else {
+        //仅无线探测器
+        var control = new Map();
+        control.type = "control";
+        control.command = "setWirelessDetectorInfo";
+        control.data = new Map();
+        control.data.defenceNum = 255;
+        control.data.actionType = 1;
+        control.data.barcode = input.data.barcode;
+        control.data.partNum = input.data.partitionNo;
+        list.add(control);
     }
 
-    //仅无线探测器
-    var control = new Map();
-    control.type = "control";
-    control.command = "setWirelessDetectorInfo";
-    control.data = new Map();
-    control.data.defenceNum = 255;
-    control.data.actionType = 1;
-    control.data.barcode = input.data.barcode;
-    control.data.partNum = input.data.partitionNo;
-    list.add(control);
+
     return list;
 }

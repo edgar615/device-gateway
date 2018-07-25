@@ -35,7 +35,7 @@ function execute(input, logger) {
         part.runningState = partInfo.alarmStatus;
         part.lightSwitch = partInfo.alarmLamp == 1;
         part.sirenSwitch = partInfo.enabled == 1;
-        part.sirenVolume = partInfo.alarmVolume
+        part.sirenVolume = partInfo.alarmVolume;
 
         //调制方式：FSK ASK ZGB，忽略
         part.modulationMode = partInfo.modulationMode;

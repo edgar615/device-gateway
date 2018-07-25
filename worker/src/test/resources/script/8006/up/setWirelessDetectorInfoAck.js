@@ -31,54 +31,52 @@ function execute(input, logger) {
     if (input.data.barcode ==  "0") {
         logger.info("delete part succeeded");
         var list = new List();
-        var part = new Map();
-        part.protectNo = input.data.defenceNum;
-        var event = new Map();
-        event.type = "report";
-        event.command = "partDeleted";
-        event.data = part;
-        list.add(event);
+        var partDeleted = new Map();
+        partDeleted.type = "report";
+        partDeleted.command = "partDeleted";
+        partDeleted.data = new Map();
+        partDeleted.data.protectNo = input.data.defenceNum;
+        list.add(partDeleted);
         return list;
     }
     logger.info("control part succeeded");
     var list = new List();
-    var partInfo = input.data;
     var deviceReport = new Map();
     deviceReport.type = "report";
     deviceReport.command = "deviceReport";
     deviceReport.data = new Map();
-    deviceReport.data.wireLessPartCheckNum = partInfo.checknum;
-    list.add(event);
+    deviceReport.data.wireLessPartCheckNum = input.data.checknum;
+    list.add(deviceReport);
 
     var part = new Map();
-    part.protectNo = partInfo.defenceNum;
-    part.barcode = partInfo.barcode;
+    part.protectNo = input.data.defenceNum;
+    part.barcode = input.data.barcode;
     part.partType = input.data.barcode.substr(0, 5);
-    part.partitionNo = partInfo.partNum;
-    part.masterUnDefend = partInfo.removaValid == 1 ? true : false;
-    part.masterHomeDefend = partInfo.atHomeValid == 1 ? true : false;
-    part.masterAwayDefend = partInfo.awayValid == 1 ? true : false;
+    part.partitionNo = input.data.partNum;
+    part.masterUnDefend = input.data.removaValid == 1 ? true : false;
+    part.masterHomeDefend = input.data.atHomeValid == 1 ? true : false;
+    part.masterAwayDefend = input.data.awayValid == 1 ? true : false;
     //阀值
-    part.threshold = partInfo.status == 1 ? true : false;
+    part.threshold = input.data.status == 1 ? true : false;
     //拆动
-    part.dismantle = partInfo.tamperStatus == 1 ? true : false;
+    part.dismantle = input.data.tamperStatus == 1 ? true : false;
     //开启离线检测，出厂默认开启
-    part.offlineSwitch = partInfo.loseDetectSwitch == 1 ? true : false;
-    part.offline = partInfo.loseStatus == 1 ? true : false;
+    part.offlineSwitch = input.data.loseDetectSwitch == 1 ? true : false;
+    part.offline = input.data.loseStatus == 1 ? true : false;
     //警号
-    part.alarmSwitch = partInfo.alarmSwitch == 1 ? true : false;
+    part.alarmSwitch = input.data.alarmSwitch == 1 ? true : false;
     //迎宾，门磁特有
-    part.welcomeSwitch = partInfo.usherSwitch == 1 ? true : false;
-    part.battery = partInfo.charge;
-    part.signal = partInfo.signal;
+    part.welcomeSwitch = input.data.usherSwitch == 1 ? true : false;
+    part.battery = input.data.charge;
+    part.signal = input.data.signal;
     //调制方式：FSK ASK ZGB，忽略
-    part.modulationMode = partInfo.modulationMode;
-    part.version = partInfo.version;
+    part.modulationMode = input.data.modulationMode;
+    part.version = input.data.version;
 
-    var event = new Map();
-    event.type = "report";
-    event.command = "partReport";
-    event.data = part;
-    list.add(event);
+    var partReport = new Map();
+    partReport.type = "report";
+    partReport.command = "partReport";
+    partReport.data = part;
+    list.add(partReport);
     return list;
 }

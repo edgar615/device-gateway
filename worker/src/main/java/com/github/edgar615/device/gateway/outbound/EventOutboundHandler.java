@@ -116,7 +116,7 @@ public class EventOutboundHandler implements OutboundHandler {
                 .addExt("productType",transmitter.productType() );
         Map<String, Object> content = new HashMap<>(data);
         content.put("deviceIdentifier", transmitter.deviceIdentifier());
-        Message message = Message.create(EventCommand.UPDATE_VIDEO, removeNull(content));
+        Message message = Message.create(resource, removeNull(content));
         Event event = Event.create(head, message);
         vertx.eventBus().send(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, new JsonObject(event.toMap()));
     }
