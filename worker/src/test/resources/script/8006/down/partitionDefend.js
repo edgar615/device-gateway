@@ -13,9 +13,9 @@ function execute(input, logger) {
         var defend = input.data.defendState;
         control.data.areaNum = input.data.partitionNo;
         if (defend == 1) {
-            control.data.action = 2;
+            control.data.action = 1;
         } else if (defend == 2) {
-            control.data.action = 3;
+            control.data.action = 2;
         } else if (defend = 3) {
             control.data.action = 0;
         }

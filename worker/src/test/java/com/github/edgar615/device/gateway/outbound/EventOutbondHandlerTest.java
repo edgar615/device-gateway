@@ -61,6 +61,7 @@ public class EventOutbondHandlerTest {
     input.put("channel", "niot");
     input.put("deviceIdentifier", "12345678");
     input.put("traceId", UUID.randomUUID().toString());
+    input.put("productType", "LH010");
     input.put("data", new HashMap<>());
     Transmitter transmitter = Transmitter.create(vertx, input);
     AtomicInteger check = new AtomicInteger();

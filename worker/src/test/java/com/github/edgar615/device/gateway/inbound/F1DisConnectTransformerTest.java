@@ -48,7 +48,7 @@ public class F1DisConnectTransformerTest extends AbstractTransformerTest {
     brokerMessage.put("command", KeepaliveCommand.DIS_CONNECT);
     brokerMessage.put("data", data);
     brokerMessage.put("type", MessageType.INNER);
-    String scriptPath = "h:/dev/workspace/device-gateway/worker/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/worker/src/test/resources/script"
                         + "/disConnect.js";
     ScriptLogger logger = ScriptLogger.create();
     MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);

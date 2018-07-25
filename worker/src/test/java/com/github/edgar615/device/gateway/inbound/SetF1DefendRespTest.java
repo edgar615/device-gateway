@@ -51,7 +51,7 @@ public class SetF1DefendRespTest extends AbstractTransformerTest {
     brokerMessage.put("type", MessageType.UP);
 
     ScriptLogger logger = ScriptLogger.create();
-    String scriptPath = "h:/dev/workspace/device-gateway/worker/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/worker/src/test/resources/script"
                         + "/setF1DefendRespEvent.js";
     MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
     List<Map<String, Object>> output = transformer.execute(brokerMessage, logger);
@@ -72,7 +72,7 @@ public class SetF1DefendRespTest extends AbstractTransformerTest {
     brokerMessage.put("data", data);
     brokerMessage.put("type", MessageType.UP);
     ScriptLogger logger = ScriptLogger.create();
-    String scriptPath = "h:/dev/workspace/device-gateway/worker/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/worker/src/test/resources/script"
                         + "/setF1DefendRespEvent.js";
     MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
     List<Map<String, Object>> output = transformer.execute(brokerMessage, logger);

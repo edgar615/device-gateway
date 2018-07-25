@@ -53,7 +53,7 @@ public class F1ConnectTransformerTest extends AbstractTransformerTest {
 
     ScriptLogger logger = ScriptLogger.create();
 
-    String scriptPath = "h:/dev/workspace/device-gateway/worker/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/worker/src/test/resources/script"
                         + "/connect.js";
     MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
     List<Map<String, Object>> output = transformer.execute(brokerMessage, logger);

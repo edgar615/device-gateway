@@ -42,7 +42,7 @@ public class DeviceMessageHandlerTest extends AbstractTransformerTest {
 
   @Test
   public void testScript(TestContext testContext) throws IOException, ScriptException {
-    String scriptPath = "h:/dev/workspace/device-gateway/worker/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/worker/src/test/resources/script"
                         + "/setF1DefendRespEvent.js";
     MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
     TransformerRegistry.instance().register("a", "LHF1", "up", "setF1DefendRespEvent",  transformer);

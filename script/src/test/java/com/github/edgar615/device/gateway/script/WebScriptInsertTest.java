@@ -32,7 +32,7 @@ public class WebScriptInsertTest {
 
   @Test
   public void testInsert(TestContext testContext) throws IOException {
-    String scriptPath = "h:/dev/workspace/device-gateway/script/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/script/src/test/resources/script"
                         + "/alarmF1Event.js";
 //    Reader scriptReader = Files.newBufferedReader(Paths.get(scriptPath));
     String script = new String(Files.readAllBytes(Paths.get(scriptPath)));
@@ -47,7 +47,7 @@ public class WebScriptInsertTest {
 
   @Test
   public void testInsertConnect(TestContext testContext) throws IOException {
-    String scriptPath = "h:/dev/workspace/device-gateway/script/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/script/src/test/resources/script"
                         + "/connect.js";
 //    Reader scriptReader = Files.newBufferedReader(Paths.get(scriptPath));
     String script = new String(Files.readAllBytes(Paths.get(scriptPath)));
@@ -62,7 +62,7 @@ public class WebScriptInsertTest {
 
   @Test
   public void testInsertDisConnect(TestContext testContext) throws IOException {
-    String scriptPath = "h:/dev/workspace/device-gateway/script/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/script/src/test/resources/script"
                         + "/disConnect.js";
 //    Reader scriptReader = Files.newBufferedReader(Paths.get(scriptPath));
     String script = new String(Files.readAllBytes(Paths.get(scriptPath)));
@@ -77,7 +77,7 @@ public class WebScriptInsertTest {
 
   @Test
   public void testInsertDeviceChanged(TestContext testContext) throws IOException {
-    String scriptPath = "h:/dev/workspace/device-gateway/script/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/script/src/test/resources/script"
                         + "/f1DeviceChanged.js";
 //    Reader scriptReader = Files.newBufferedReader(Paths.get(scriptPath));
     String script = new String(Files.readAllBytes(Paths.get(scriptPath)));
@@ -92,7 +92,7 @@ public class WebScriptInsertTest {
 
   @Test
   public void testF1DefendResp(TestContext testContext) throws IOException {
-    String scriptPath = "h:/dev/workspace/device-gateway/script/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/script/src/test/resources/script"
                         + "/setF1DefendRespEvent.js";
 //    Reader scriptReader = Files.newBufferedReader(Paths.get(scriptPath));
     String script = new String(Files.readAllBytes(Paths.get(scriptPath)));

@@ -75,8 +75,7 @@ public class EventOutboundHandler implements OutboundHandler {
         data.putIfAbsent("alarm", 1);
         data.putIfAbsent("defend", false);
         transmitter.logOut(MessageType.EVENT, EventCommand.NEW_EVENT, data);
-        Message message = Message.create(EventCommand.NEW_EVENT, removeNull(data));
-        sendEvent(vertx, transmitter.nextTraceId(), message);
+        sendEvent(vertx, transmitter, EventCommand.NEW_EVENT, data);
     }
 
     private void sendUpdateImage(Vertx vertx, Transmitter transmitter, Map<String, Object> map) {
@@ -92,8 +91,7 @@ public class EventOutboundHandler implements OutboundHandler {
         }
         data.putIfAbsent("time", Instant.now().getEpochSecond());
         transmitter.logOut(MessageType.EVENT, EventCommand.UPDATE_IMAGE, data);
-        Message message = Message.create(EventCommand.UPDATE_IMAGE, removeNull(data));
-        sendEvent(vertx, transmitter.nextTraceId(), message);
+        sendEvent(vertx, transmitter, EventCommand.UPDATE_IMAGE, data);
     }
 
     private void sendUpdateVideo(Vertx vertx, Transmitter transmitter, Map<String, Object> map) {
@@ -109,13 +107,16 @@ public class EventOutboundHandler implements OutboundHandler {
         }
         data.putIfAbsent("time", Instant.now().getEpochSecond());
         transmitter.logOut(MessageType.EVENT, EventCommand.UPDATE_VIDEO, data);
-        Message message = Message.create(EventCommand.UPDATE_VIDEO, removeNull(data));
-        sendEvent(vertx, transmitter.nextTraceId(), message);
+        sendEvent(vertx, transmitter, EventCommand.UPDATE_VIDEO, data);
     }
 
-    private void sendEvent(Vertx vertx, String nextId,  Message message) {
+    private void sendEvent(Vertx vertx, Transmitter transmitter, String resource, Map<String, Object> data) {
         EventHead head =
-                EventHead.create(nextId, "v1.event.device.event", "message");
+                EventHead.create(transmitter.nextTraceId(), "v1.event.device.event", "message")
+                .addExt("productType",transmitter.productType() );
+        Map<String, Object> content = new HashMap<>(data);
+        content.put("deviceIdentifier", transmitter.deviceIdentifier());
+        Message message = Message.create(EventCommand.UPDATE_VIDEO, removeNull(content));
         Event event = Event.create(head, message);
         vertx.eventBus().send(Consts.LOCAL_KAFKA_PRODUCER_ADDRESS, new JsonObject(event.toMap()));
     }

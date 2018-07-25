@@ -32,7 +32,7 @@ function execute(input, logger) {
         }else {
             event.data.type = 43000;//未定义
         }
-        event.data.level = 200;
+        event.data.level = 1;
         event.data.push = true;
         event.data.defend = true;
         event.data.partitionNo = areaNum;

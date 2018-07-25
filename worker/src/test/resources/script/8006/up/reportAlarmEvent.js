@@ -26,7 +26,7 @@ function execute(input, logger) {
         } else {
             event.data.type = 41011;//阈值
         }
-        event.data.level = 200;
+        event.data.level = 3;
         event.data.push = true;
         event.data.defend = false;
         /** 0~63无线防区 64~65系统自带的两个有线防区 66~97扩展的32个有线防区

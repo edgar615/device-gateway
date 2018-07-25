@@ -47,7 +47,7 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
     brokerMessage.put("channel", "from_channel");
 
     ScriptLogger logger = ScriptLogger.create();
-    String scriptPath = "h:/dev/workspace/device-gateway/worker/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/worker/src/test/resources/script"
             + "/alarmF1Event.js";
     MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
     List<Map<String, Object>> output = transformer.execute(brokerMessage, logger);
@@ -75,7 +75,7 @@ public class AlarmF1EventTransformerTest extends AbstractTransformerTest {
     brokerMessage.put("channel", "from_channel");
 
     ScriptLogger logger = ScriptLogger.create();
-    String scriptPath = "h:/dev/workspace/device-gateway/worker/src/test/resources/script"
+    String scriptPath = "e:/iotp/device-gateway/worker/src/test/resources/script"
                         + "/alarmF1Event.js";
     MessageTransformer transformer = ScriptUtils.compile(vertx, scriptPath);
     List<Map<String, Object>> output = transformer.execute(brokerMessage, logger);
