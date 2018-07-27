@@ -5,13 +5,6 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
-    var partReport = new Map();
-    partReport.type = "report";
-    partReport.command = "partReport";
-    partReport.data = new Map();
-    partReport.data.parts = new List();
-    list.add(partReport);
-
     //上报无线探测器校验和
     //var deviceReport = new Map();
     //deviceReport.type = "report";
@@ -24,11 +17,21 @@ function execute(input, logger) {
     partRegistrySync.type = "report";
     partRegistrySync.command = "partRegistrySync";
     partRegistrySync.data = new Map();
-    partRegistrySync.data.startIndex = 113;
-    partRegistrySync.data.endIndex = 144;
+    partRegistrySync.data.startIndex = 0;
+    partRegistrySync.data.endIndex = 63;
     partRegistrySync.data.registryType = "wirelessDetector";
     partRegistrySync.data.partRegistry = input.data.isRegst;
     list.add(partRegistrySync);
+
+    if (input.data.partInfo.length == 0) {
+        return list;
+    }
+    var partReport = new Map();
+    partReport.type = "report";
+    partReport.command = "partReport";
+    partReport.data = new Map();
+    partReport.data.parts = new List();
+    list.add(partReport);
 
     for (var i = 0; i < input.data.partInfo.length; i ++) {
         var partInfo = input.data.partInfo[i];

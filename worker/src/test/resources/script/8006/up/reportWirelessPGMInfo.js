@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //up reportWirelessPGMInfo
 function execute(input, logger) {
 
@@ -14,24 +14,21 @@ function execute(input, logger) {
     partRegistrySync.data.registryType = "wirelessPgm";
     partRegistrySync.data.partRegistry = input.data.isRegst;
     list.add(partRegistrySync);
+
+    if (input.data.partInfo.length == 0) {
+        return list;
+    }
     var partReport = new Map();
     partReport.type = "report";
     partReport.command = "partReport";
     partReport.data = new Map();
     partReport.data.parts = new List();
     list.add(partReport);
-    //上报无线探测器校验和
-    //var deviceReport = new Map();
-    //deviceReport.type = "report";
-    //deviceReport.command = "deviceReport";
-    //deviceReport.data = new Map();
-    //deviceReport.data.wireLessPgmCheckNum = input.data.checknum;
-    //list.add(deviceReport);
     //107 有线PGM 108~112 无线PGM
     for (var i = 0; i < input.data.partInfo.length; i ++) {
         var partInfo = input.data.partInfo[i];
         var part = new Map();
-        part.protectNo = partInfo.defenceNum + 108;
+        part.protectNo = new Integer(partInfo.identifyNum + 108);
         part.barcode = partInfo.pgmID;
         part.partType = partInfo.pgmID.substr(0, 5);
         part.workMode = partInfo.workMode;

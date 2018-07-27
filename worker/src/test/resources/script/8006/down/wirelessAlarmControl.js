@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //down partControl
 function execute(input, logger) {
 
@@ -21,7 +21,7 @@ function execute(input, logger) {
         control.data = new Map();
         control.data.actionType = 0;
         control.data.barcode = input.data.barcode;
-        control.data.defenceNum = input.data.protectNo - 100;
+        control.data.identifyNum = new Integer(input.data.protectNo - 100);
         var flag = false;
         if (input.data.partitionNo != undefined) {
             control.data.partNum = input.data.partitionNo;

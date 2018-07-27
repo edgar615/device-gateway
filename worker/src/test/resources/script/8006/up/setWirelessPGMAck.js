@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //up setWirelessPGMAck
 function execute(input, logger) {
 
@@ -25,15 +25,20 @@ function execute(input, logger) {
         logger.error("control part failed: synchronizing");
         return new List();
     }
+    if (input.data.result == 6) {
+        logger.error("control part failed: full");
+        return new List();
+    }
     if (input.data.result != 0) {
         logger.error("control part failed: unkown result");
+        return new List();
     }
 
     if (input.data.pgmID == "0") {
         logger.info("delete part succeeded");
         var list = new List();
         var part = new Map();
-        part.protectNo = input.data.identifyNum + 108;
+        part.protectNo = new Integer(input.data.identifyNum + 108);
         var event = new Map();
         event.type = "report";
         event.command = "partDeleted";
@@ -45,7 +50,7 @@ function execute(input, logger) {
     logger.info("control part succeeded");
     var list = new List();
     var part = new Map();
-    part.protectNo = input.data.defenceNum + 108;
+    part.protectNo = new Integer(input.data.identifyNum + 108);
     part.barcode = input.data.pgmID;
     part.partType = "LH0FE";
     part.workMode = input.data.workMode;

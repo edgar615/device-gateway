@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //up setWiredPGMAck
 function execute(input, logger) {
 
@@ -32,7 +32,7 @@ function execute(input, logger) {
     var list = new List();
     var part = new Map();
     part.partType = "LH0FE";
-    part.protectNo = input.data.defenceNum + 108;
+    part.protectNo = new Integer(input.data.identifyNum + 108);
     part.barcode = input.data.pgmID;
     part.workMode = input.data.workMode;
     part.pgmTimer1 = part.time1Enable == 1;

@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //up reportRFIDInfo
 function execute(input, logger) {
 
@@ -38,16 +38,16 @@ function execute(input, logger) {
         var partInfo = input.data.partInfo[i];
         var part = new Map();
         part.partType = "LH0FF";
-        part.protectNo = partInfo.identifyNum + 145;
+        part.protectNo = new Integer(partInfo.identifyNum + 145);
         part.barcode = partInfo.cardID;
 
         //控制类型 0布撤防 1PGM
-        part.rfidCtrlType = partInfo.ctrlType + 1;
+        part.rfidCtrlType = new Integer(partInfo.ctrlType + 1);
         if (rfidCtrlType == 1) {
             var controlPartition = new List();
             for (var i = 1; i < 9; i ++) {
                 if ((input.data.partNum & i) == 1) {
-                    controlPartition.add(i - 1);
+                    controlPartition.add(new Integer(i - 1));
                 }
             }
             part.controlPartition = controlPartition;
@@ -57,7 +57,7 @@ function execute(input, logger) {
             var controlPgm = new List();
             for (var i = 1; i < 7; i ++) {
                 if ((partInfo.PGM & i) == 1) {
-                    controlPgm.add(i - 1);
+                    controlPgm.add(new Integer(i - 1));
                 }
             }
             part.controlPgm = controlPgm;

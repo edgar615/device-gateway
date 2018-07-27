@@ -6,7 +6,7 @@ function execute(input, logger) {
     var list = new List();
     var report = new Map();
     report.type = "report";
-    report.command = "deviceReport";
+    report.command = "deviceBalance";
     report.data = new Map();
     list.add(report);
 

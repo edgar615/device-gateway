@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //down deviceControl消息
 function execute(input, logger) {
 
@@ -11,7 +11,7 @@ function execute(input, logger) {
         control.type = "control";
         control.command = "setTimeZone";
         control.data = new Map();
-        control.data.timeZone = timeZone + 12;
+        control.data.timeZone = new Integer(timeZone + 12);
         list.add(control);
     }
 

@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //up reportTelecontrollerInfo
 function execute(input, logger) {
 
@@ -28,7 +28,7 @@ function execute(input, logger) {
     for (var i = 0; i < input.data.partInfo.length; i ++) {
         var partInfo = input.data.partInfo[i];
         var part = new Map();
-        part.protectNo = partInfo.identifyNum + 113;
+        part.protectNo = new Integer(partInfo.identifyNum + 113);
         part.barcode = partInfo.barcode;
         part.partType = partInfo.barcode.substr(0,5);
         part.partitionNo = partInfo.partNum;

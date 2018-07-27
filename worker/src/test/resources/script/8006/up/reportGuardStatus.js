@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //up reportGuardStatus
 function execute(input, logger) {
 
@@ -14,13 +14,13 @@ function execute(input, logger) {
         //分区号
         var areaNum = alarm.areaNum;
         var time = alarm.time;
-        var timezone = alarm.tz - 12;
+        var timezone = new Integer(alarm.tz - 12);
         var event = new Map();
         event.type = "event";
         event.command = "new";
         event.data = new Map();
         //时间转换
-        event.data.time  = time + timezone * 60 * 60;
+        event.data.time  = new Integer(time - timezone * 60 * 60);
         var status = alarm.status;
         if (status == 0) {
             //撤防
@@ -44,13 +44,13 @@ function execute(input, logger) {
          **/
         if (operatorType == 2) {
             //键盘
-            event.data.protectNo = areaNum + 107;
+            event.data.protectNo = new Integer(areaNum + 107);
         } else if (operatorType == 3) {
             //遥控器
-            event.data.protectNo = areaNum + 113;
+            event.data.protectNo = new Integer(areaNum + 113);
         } else if (operatorType == 4) {
             //RFID
-            event.data.protectNo = areaNum + 145;
+            event.data.protectNo = new Integer(areaNum + 145);
         }else if (operatorType == 5) {
             //短信
             event.data.operator = input.data.call;

@@ -27,7 +27,7 @@ function execute(input, logger) {
         control.data.actionType = 1;
         control.data.pgmID = input.data.barcode;
         list.add(control);
-    } else if (partType == "LH791") {
+    } else if (partType == "LH791" || partType == "LH792") {
         //无线遥控器
         var control = new Map();
         control.type = "control";

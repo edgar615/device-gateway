@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //down partControl
 function execute(input, logger) {
 
@@ -21,14 +21,14 @@ function execute(input, logger) {
         control.data = new Map();
         list.add(control);
         //0内置 1外接
-        control.identifyNum = input.data.protectNo - 145;
+        control.identifyNum = new Integer(input.data.protectNo - 145);
 
         if (input.data.controlPartition != undefined) {
             var partition = [1,2,4,8,16,32,64,128];
             var bitPartition = 0;
             control.ctrlType = 0;
             for (var i = 0; i < input.data.controlPartition.length; i ++) {
-                bitPartition += partition[input.data.controlPartition[i] - 1]
+                bitPartition += new Integer(partition[new Integer(input.data.controlPartition[i] - 1)])
             }
             control.partNum = bitPartition;
             flag = true;
@@ -39,9 +39,9 @@ function execute(input, logger) {
             control.ctrlType = 1;
             for (var i = 0; i < input.data.controlPgm.length; i ++) {
                 var pgmNo = input.data.controlPgm[i];
-                bitPgm += pgm[pgmNo - 107]
+                bitPgm += new Integer(pgm[new Integer(pgmNo - 107)])
             }
-            control.PGM = pgm;
+            control.PGM = bitPgm;
             flag = true;
         }
         if (flag) {

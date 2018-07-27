@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //up setWirelessAlarmInfoAck
 function execute(input, logger) {
 
@@ -22,17 +22,22 @@ function execute(input, logger) {
         return new List();
     }
     if (input.data.result == 5) {
+        logger.error("control part failed: synchronizing");
+        return new List();
+    }
+    if (input.data.result == 6) {
         logger.error("control part failed: full");
         return new List();
     }
     if (input.data.result != 0) {
         logger.error("control part failed: unkown result");
+        return new List();
     }
     if (input.data.barcode == "0") {
         logger.info("delete part succeeded");
         var list = new List();
         var part = new Map();
-        part.protectNo = input.data.identifyNum + 100;
+        part.protectNo = new Integer(input.data.identifyNum + 100);
         var event = new Map();
         event.type = "report";
         event.command = "partDeleted";
@@ -44,7 +49,7 @@ function execute(input, logger) {
     logger.info("control part succeeded");
     var list = new List();
     var part = new Map();
-    part.protectNo = input.data.identifyNum + 100;
+    part.protectNo = new Integer(input.data.identifyNum + 100);
     part.barcode = input.data.barcode;
     part.partType = input.data.barcode.substr(0, 5);
     part.partitionNo = input.data.partNum;

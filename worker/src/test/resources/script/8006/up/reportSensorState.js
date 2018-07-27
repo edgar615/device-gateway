@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //up reportSensorState
 function execute(input, logger) {
 
@@ -13,7 +13,7 @@ function execute(input, logger) {
         var state = alarm.state;
         var areaNum = alarm.areaNum;
         var time = alarm.time;
-        var timezone = alarm.tz - 12;
+        var timezone = new Integer(alarm.tz - 12);
 
         //事件
         var event = new Map();
@@ -21,7 +21,7 @@ function execute(input, logger) {
         event.command = "new";
         event.data = new Map();
         event.data.protectNo = areaNum;
-        event.data.time = time + timezone * 60 * 60;
+        event.data.time = new Integer(time + timezone * 60 * 60);
         if (state == 0) {
             if (status == 1) {
                 event.data.type = 44100;

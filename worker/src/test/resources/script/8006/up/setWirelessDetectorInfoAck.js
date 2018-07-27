@@ -22,11 +22,16 @@ function execute(input, logger) {
         return new List();
     }
     if (input.data.result == 5) {
+        logger.error("control part failed: synchronizing");
+        return new List();
+    }
+    if (input.data.result == 6) {
         logger.error("control part failed: full");
         return new List();
     }
     if (input.data.result != 0) {
         logger.error("control part failed: unkown result");
+        return new List();
     }
     if (input.data.barcode ==  "0") {
         logger.info("delete part succeeded");

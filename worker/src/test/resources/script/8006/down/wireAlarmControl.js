@@ -1,6 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
-
+var Integer = Java.type("java.lang.Integer");
 //down partControl
 function execute(input, logger) {
 
@@ -21,7 +21,7 @@ function execute(input, logger) {
         control.data = new Map();
         list.add(control);
         //0内置 1外接
-        control.data.defenceNum = input.data.protectNo - 98;
+        control.data.identifyNum = new Integer(input.data.protectNo - 98);
         var flag = false;
         if (input.data.sirenSwitch != undefined) {
             control.data.enable = input.data.sirenSwitch;

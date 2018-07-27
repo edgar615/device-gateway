@@ -5,13 +5,6 @@ var List = Java.type("java.util.ArrayList");
 function execute(input, logger) {
 
     var list = new List();
-    var partReport = new Map();
-    partReport.type = "report";
-    partReport.command = "partReport";
-    partReport.data = new Map();
-    partReport.data.parts = new List();
-    list.add(partReport);
-
     var checknum = input.data.checknum;
     //98内置警号 99外接有线警号 100~106 无线警号
     var partRegistrySync = new Map();
@@ -24,10 +17,20 @@ function execute(input, logger) {
     partRegistrySync.data.partRegistry = input.data.isRegst;
     list.add(partRegistrySync);
 
+    if (input.data.partInfo.length == 0) {
+        return list;
+    }
+    var partReport = new Map();
+    partReport.type = "report";
+    partReport.command = "partReport";
+    partReport.data = new Map();
+    partReport.data.parts = new List();
+    list.add(partReport);
+
     for (var i = 0; i < input.data.partInfo.length; i ++) {
         var partInfo = input.data.partInfo[i];
         var part = new Map();
-        part.protectNo = partInfo.defenceNum + 100;
+        part.protectNo = partInfo.identifyNum + 100;
         part.barcode = partInfo.barcode;
         part.partType = partInfo.barcode.substr(0, 5);
         part.partitionNo = partInfo.partNum;

@@ -1,5 +1,6 @@
 var Map = Java.type("java.util.HashMap");
 var List = Java.type("java.util.ArrayList");
+var Integer = Java.type("java.lang.Integer");
 
 //down partControl
 function execute(input, logger) {
@@ -19,13 +20,13 @@ function execute(input, logger) {
         control.type = "control";
         control.data = new Map();
         if (input.data.protectNo == 107) {
-            control.command = "setWirelessPGM";
+            control.command = "setWiredPGM";
             control.data.actionType = 0;
         } else {
-            control.command = "setWiredPGM";
+            control.command = "setWirelessPGM";
+            control.data.identifyNum = new Integer(input.data.protectNo - 108);
         }
         var flag = false;
-        control.data.defenceNum = input.data.protectNo - 107;
         if (input.data.workMode != undefined) {
             control.data.workMode = input.data.workMode;
             flag = true;
