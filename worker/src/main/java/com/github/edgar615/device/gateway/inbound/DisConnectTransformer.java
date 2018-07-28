@@ -25,17 +25,17 @@ public class DisConnectTransformer implements LocalMessageTransformer {
             ImmutableMap.of("type", MessageType.REPORT, "command",
                             ReportCommand.DEVICE_DISCONN, "data", new HashMap<>());
 
-    Map<String, Object> eventData = new HashMap<>();
-    eventData.putIfAbsent("originId", input.getOrDefault("traceId", UUID.randomUUID().toString()));
-    eventData.putIfAbsent("time", Instant.now().getEpochSecond());
-    eventData.putIfAbsent("type", 40021);
-    eventData.putIfAbsent("level", 1);
-    eventData.putIfAbsent("push", true);
-    eventData.putIfAbsent("defend", false);
-    Map<String, Object> event =
-            ImmutableMap.of("type", MessageType.EVENT, "command",
-                    EventCommand.NEW_EVENT, "data", eventData);
-    return Lists.newArrayList(report, event);
+//    Map<String, Object> eventData = new HashMap<>();
+//    eventData.putIfAbsent("originId", input.getOrDefault("traceId", UUID.randomUUID().toString()));
+//    eventData.putIfAbsent("time", Instant.now().getEpochSecond());
+//    eventData.putIfAbsent("type", 40021);
+//    eventData.putIfAbsent("level", 1);
+//    eventData.putIfAbsent("push", true);
+//    eventData.putIfAbsent("defend", false);
+//    Map<String, Object> event =
+//            ImmutableMap.of("type", MessageType.EVENT, "command",
+//                    EventCommand.NEW_EVENT, "data", eventData);
+    return Lists.newArrayList(report);
   }
 
   @Override

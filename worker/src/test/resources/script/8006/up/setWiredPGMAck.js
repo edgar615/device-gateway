@@ -47,8 +47,13 @@ function execute(input, logger) {
     part.closeHour2 = input.data.closeHour2;
     part.closeMinute2 = input.data.closeMinute2;
     part.week2 = input.data.week2;
-    part.triggerPart = input.data.triggerSrc;
     part.workTime = input.data.workTime;
+    if (input.data.triggerSrc >=0 && input.data.triggerSrc <= 97) {
+        part.triggerPart = input.data.triggerSrc;
+    }
+    if (input.data.triggerSrc >=98 && input.data.triggerSrc <= 100) {
+        part.triggerCondition = new Integer(input.data.triggerSrc - 97);
+    }
 
     //调制方式：FSK ASK ZGB，忽略
     part.modulationMode = input.data.modulationMode;

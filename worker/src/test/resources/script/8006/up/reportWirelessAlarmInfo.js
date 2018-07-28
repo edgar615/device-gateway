@@ -36,15 +36,25 @@ function execute(input, logger) {
         part.partitionNo = partInfo.partNum;
         part.sirenDuration = partInfo.alarmTime;
         part.runningState = partInfo.alarmStatus;
-        part.lightSwitch = partInfo.alarmLamp == 1;
-        part.sirenSwitch = partInfo.enabled == 1;
         part.sirenVolume = partInfo.alarmVolume;
+        if (partInfo.alarmLamp == true || partInfo.alarmLamp == 1) {
+            part.lightSwitch = true;
+        } else {
+            part.lightSwitch = false;
+        }
+        if (partInfo.enable == true || partInfo.enable == 1) {
+            part.sirenSwitch = true;
+        } else {
+            part.sirenSwitch = false;
+        }
 
         //调制方式：FSK ASK ZGB，忽略
         part.modulationMode = partInfo.modulationMode;
         part.version = partInfo.version;
-
-        partReport.data.parts.add(part);
+        if (partInfo.barcode !=  "0") {
+            //非删除
+            partReport.data.parts.add(part);
+        }
     }
     return list;
 }

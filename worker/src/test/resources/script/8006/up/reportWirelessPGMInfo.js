@@ -34,23 +34,30 @@ function execute(input, logger) {
         part.workMode = partInfo.workMode;
         part.pgmTimer1 = part.time1Enable == 1;
         part.openHour1 = partInfo.openHour1;
-        part.openMinute1 = partInfo.openMinute1;
+        part.openMin1 = partInfo.openMinute1;
         part.closeHour1 = partInfo.closeHour1;
-        part.closeMinute1 = partInfo.closeMinute1;
+        part.closeMin1 = partInfo.closeMinute1;
         part.week1 = partInfo.week1;
         part.pgmTimer2 = part.time2Enable == 1;
         part.openHour2 = partInfo.openHour2;
-        part.openMinute2 = partInfo.openMinute2;
+        part.openMin2 = partInfo.openMinute2;
         part.closeHour2 = partInfo.closeHour2;
-        part.closeMinute2 = partInfo.closeMinute2;
+        part.closeMin2 = partInfo.closeMinute2;
         part.week2 = partInfo.week2;
-        part.triggerPart = partInfo.triggerSrc;
         part.workTime = partInfo.workTime;
-
+        if (partInfo.triggerSrc >=0 && partInfo.triggerSrc <= 97) {
+            part.triggerPart = partInfo.triggerSrc;
+        }
+        if (partInfo.triggerSrc >=98 && partInfo.triggerSrc <= 100) {
+            part.triggerCondition = new Integer(partInfo.triggerSrc - 97);
+        }
         //调制方式：FSK ASK ZGB，忽略
         part.modulationMode = partInfo.modulationMode;
         part.version = partInfo.version;
-        partReport.data.parts.add(part);
+        if (partInfo.barcode !=  "0") {
+            //非删除
+            partReport.data.parts.add(part);
+        }
     }
     return list;
 }

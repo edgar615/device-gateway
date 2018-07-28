@@ -17,7 +17,7 @@ function execute(input, logger) {
         control.data.barcode = input.data.barcode;
         control.data.partNum = input.data.partitionNo;
         list.add(control);
-    } else if (partType == "LH696") {
+    } else if (partType == "LH096") {
         //无线PGM
         var control = new Map();
         control.type = "control";

@@ -26,18 +26,18 @@ public class ConnectTransformer implements LocalMessageTransformer {
                 ImmutableMap.of("type", MessageType.REPORT, "command",
                         ReportCommand.DEVICE_CONN, "data", reportData);
         //上线事件
-        Map<String, Object> eventData = new HashMap<>();
-        eventData.putIfAbsent("originId", input.getOrDefault("traceId", UUID.randomUUID().toString()));
-        eventData.putIfAbsent("time", Instant.now().getEpochSecond());
-        eventData.putIfAbsent("type", 40020);
-        eventData.putIfAbsent("level", 1);
-//        eventData.putIfAbsent("push", true);
-        eventData.putIfAbsent("defend", false);
-        eventData.put("clientIp", clientIp);
-        Map<String, Object> event =
-                ImmutableMap.of("type", MessageType.EVENT, "command",
-                        EventCommand.NEW_EVENT, "data", eventData);
-        return Lists.newArrayList(report, event);
+//        Map<String, Object> eventData = new HashMap<>();
+//        eventData.putIfAbsent("originId", input.getOrDefault("traceId", UUID.randomUUID().toString()));
+//        eventData.putIfAbsent("time", Instant.now().getEpochSecond());
+//        eventData.putIfAbsent("type", 40020);
+//        eventData.putIfAbsent("level", 1);
+////        eventData.putIfAbsent("push", true);
+//        eventData.putIfAbsent("defend", false);
+//        eventData.put("clientIp", clientIp);
+//        Map<String, Object> event =
+//                ImmutableMap.of("type", MessageType.EVENT, "command",
+//                        EventCommand.NEW_EVENT, "data", eventData);
+        return Lists.newArrayList(report);
 
     }
 

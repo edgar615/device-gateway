@@ -35,7 +35,11 @@ function execute(input, logger) {
     part.partType = "LH0FC";
     part.sirenDuration = input.data.alarmTime;
     part.runningState = input.data.alarmStatus;
-    part.sirenSwitch = input.data.enable  == 1;
+    if (input.data.enable == true || input.data.enable == 1) {
+        part.sirenSwitch = true;
+    } else {
+        part.sirenSwitch = false;
+    }
 
     var partReport = new Map();
     partReport.type = "report";

@@ -13,19 +13,23 @@ function execute(input, logger) {
     part.workMode = input.data.workMode;
     part.pgmTimer1 = part.time1Enable == 1;
     part.openHour1 = input.data.openHour1;
-    part.openMinute1 = input.data.openMinute1;
+    part.openMin1 = input.data.openMinute1;
     part.closeHour1 = input.data.closeHour1;
-    part.closeMinute1 = input.data.closeMinute1;
+    part.closeMin1 = input.data.closeMinute1;
     part.week1 = input.data.week1;
     part.pgmTimer2 = part.time2Enable == 1;
     part.openHour2 = input.data.openHour2;
-    part.openMinute2 = input.data.openMinute2;
+    part.openMin2 = input.data.openMinute2;
     part.closeHour2 = input.data.closeHour2;
-    part.closeMinute2 = input.data.closeMinute2;
+    part.closeMin2 = input.data.closeMinute2;
     part.week2 = input.data.week2;
-    part.triggerPart = input.data.triggerSrc;
     part.workTime = input.data.workTime;
-
+    if (input.data.triggerSrc >=0 && input.data.triggerSrc <= 97) {
+        part.triggerPart = input.data.triggerSrc;
+    }
+    if (input.data.triggerSrc >=98 && input.data.triggerSrc <= 100) {
+        part.triggerCondition = input.data.triggerSrc;
+    }
     //调制方式：FSK ASK ZGB，忽略
     part.modulationMode = input.data.modulationMode;
     part.version = input.data.version;

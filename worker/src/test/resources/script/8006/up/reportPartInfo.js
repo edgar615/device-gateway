@@ -14,7 +14,7 @@ function execute(input, logger) {
         partition.runningState = partInfo.alarm == 1 ? 1 : 2;
         if (partInfo.defend == 0) {
             partition.defendState = 3;
-        } else if (partInfo.defend == 2) {
+        } else if (partInfo.defend == 1) {
             partition.defendState = 1;
         }else if (partInfo.defend == 2) {
             partition.defendState = 2;

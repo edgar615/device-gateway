@@ -55,8 +55,16 @@ function execute(input, logger) {
     part.partitionNo = input.data.partNum;
     part.sirenDuration = input.data.alarmTime;
     part.runningState = input.data.alarmStatus;
-    part.lightSwitch = input.data.alarmLamp == 1;
-    part.sirenSwitch = input.data.enabled == 1;
+    if (input.data.alarmLamp == true || input.data.alarmLamp == 1) {
+        part.lightSwitch = true;
+    } else {
+        part.lightSwitch = false;
+    }
+    if (input.data.enable == true || input.data.enable == 1) {
+        part.sirenSwitch = true;
+    } else {
+        part.sirenSwitch = false;
+    }
     part.sirenVolume = input.data.alarmVolume
     //调制方式：FSK ASK ZGB，忽略
     part.modulationMode = input.data.modulationMode;

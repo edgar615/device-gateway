@@ -36,7 +36,10 @@ function execute(input, logger) {
         //调制方式：FSK ASK ZGB，忽略
         part.modulationMode = partInfo.modulationMode;
         part.version = partInfo.version;
-        partReport.data.parts.add(part);
+        if (partInfo.barcode !=  "0") {
+            //非删除
+            partReport.data.parts.add(part);
+        }
 
     }
     return list;

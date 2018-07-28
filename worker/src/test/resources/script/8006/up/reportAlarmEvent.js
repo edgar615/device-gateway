@@ -28,7 +28,7 @@ function execute(input, logger) {
         } else if (alarmType == 3)  {
             event.data.type = 42004;//SOS
         } else if (alarmType == 4)  {
-            event.data.type = 42102;//挟持
+            event.data.type = 42012;//挟持
         } else {
             logger.error("unkown alarmType");
         }

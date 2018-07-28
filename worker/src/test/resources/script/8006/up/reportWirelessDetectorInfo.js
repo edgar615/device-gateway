@@ -60,20 +60,9 @@ function execute(input, logger) {
         part.modulationMode = partInfo.modulationMode;
         part.version = partInfo.version;
 
-        partReport.data.parts.add(part);
-
-        if (partInfo.actionType == 2) {
-            var event = new Map();
-            event.type = "event";
-            event.command = "new";
-            event.data = new Map();
-            //时间转换
-            //event.data.time = time + timezone * 60 * 60;
-            event.data.level = 1;
-            event.data.push = false;
-            event.data.defend = false;
-            event.data.protectNo = partInfo.defenceNum;
-            list.add(event);
+        if (partInfo.barcode !=  "0") {
+            //非删除
+            partReport.data.parts.add(part);
         }
     }
     return list;

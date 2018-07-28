@@ -21,7 +21,11 @@ function execute(input, logger) {
         part.partType = "LH0FC";
         part.sirenDuration = partInfo.alarmTime;
         part.runningState = partInfo.alarmStatus;
-        part.sirenSwitch = partInfo.enable  == 1;
+        if (partInfo.enable == true || partInfo.enable == 1) {
+            part.sirenSwitch = true;
+        } else {
+            part.sirenSwitch = false;
+        }
         partReport.data.parts.add(part);
         if (partInfo.identifyNum == 0) {
             //同步更新设备的警笛时长

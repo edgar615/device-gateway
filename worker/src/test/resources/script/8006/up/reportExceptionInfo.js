@@ -30,83 +30,121 @@ function execute(input, logger) {
          *  113~144 无线遥控器
          *  145~176 RFID
          **/
+        event.data.type = 41000;
+        if (status == 1) {
+            event.data.push = true;
+        }
         if (operateType == 1) {
-            //键盘
+            //无线
             event.data.protectNo = deviceNum;
-        } else if (operatorType == 2) {
+            if (errorType == 1) {//低压
+                if (status == 1) {//故障
+                    event.data.type = 41031;
+                } else {//恢复
+                    event.data.type = 41030;
+                }
+            }
+            if (errorType == 2) {//离线
+                if (status == 1) {//故障
+                    event.data.type = 41041;
+                } else {//恢复
+                    event.data.type = 41040;
+                }
+            }
+        } else if (operateType == 2) {
             //遥控器
             event.data.protectNo = new Integer(deviceNum + 113);
-        } else if (operatorType == 3) {
+            if (errorType == 1) {//低压
+                if (status == 1) {//故障
+                    event.data.type = 41031;
+                } else {//恢复
+                    event.data.type = 41030;
+                }
+            }
+        } else if (operateType == 3) {
             //警号
             event.data.protectNo = new Integer(deviceNum + 98);
-        }else if (operatorType == 5) {
-            //短信
-            event.data.protectNo = new Integer(deviceNum + 107);
-        }
-
-        if (errorType == 1) {
-            if (status == 1) {
-                event.data.type = 44011;
-            } else {
-                event.data.type = 44012;
+        }else if (operateType == 4) {
+            //主机
+            if (errorType == 1) {
+                if (status == 1) {
+                    event.data.type = 43101;
+                } else {
+                    event.data.type = 43102;
+                }
             }
-        } else if (errorType == 2) {
-            if (status == 1) {
-                event.data.type = 44013;
-            } else {
-                event.data.type = 44014;
+            if (errorType == 2) {
+                if (status == 1) {
+                    event.data.type = 43103;
+                } else {
+                    event.data.type = 43104;
+                }
             }
-        } else if (errorType == 3) {
-            if (status == 1) {
-                event.data.type = 44015;
-            } else {
-                event.data.type = 44016;
+            if (errorType == 3) {
+                if (status == 1) {
+                    event.data.type = 43105;
+                } else {
+                    event.data.type = 43106;
+                }
             }
-        } else if (errorType == 4) {
-            if (status == 4) {
-                event.data.type = 44017;
-            } else {
-                event.data.type = 44018;
+            if (errorType == 4) {
+                if (status == 1) {
+                    event.data.type = 43107;
+                } else {
+                    event.data.type = 43108;
+                }
             }
-        } else if (errorType == 5) {
-            if (status == 1) {
-                event.data.type = 44019;
-            } else {
-                event.data.type = 44020;
+            if (errorType == 5) {
+                if (status == 1) {
+                    event.data.type = 43109;
+                } else {
+                    event.data.type = 43110;
+                }
             }
-        } else if (errorType == 20) {
-            if (status == 1) {
-                event.data.type = 44021;
-            } else {
-                event.data.type = 44022;
+            if (errorType == 6) {
+                if (status == 1) {
+                    event.data.type = 43111;
+                } else {
+                    event.data.type = 43112;
+                }
             }
-        } else if (errorType == 21) {
-            if (status == 1) {
-                event.data.type = 44023;
-            } else {
-                event.data.type = 44024;
+            if (errorType == 7) {
+                if (status == 1) {
+                    event.data.type = 43113;
+                } else {
+                    event.data.type = 43114;
+                }
             }
-        } else if (errorType == 22) {
-            if (status == 1) {
-                event.data.type = 44025;
-            } else {
-                event.data.type = 44026;
+            if (errorType == 8) {
+                if (status == 1) {
+                    event.data.type = 43115;
+                } else {
+                    event.data.type = 43116;
+                }
             }
-        } else if (errorType == 23) {
-            if (status == 1) {
-                event.data.type = 44027;
-            } else {
-                event.data.type = 44028;
+            if (errorType == 9) {
+                if (status == 1) {
+                    event.data.type = 43117;
+                } else {
+                    event.data.type = 43118;
+                }
             }
-        } else if (errorType == 24) {
-            if (status == 1) {
-                event.data.type = 44029;
-            } else {
-                event.data.type = 44030;
+        }else if (operateType == 5) {
+            //键盘
+            if (errorType == 1) {
+                if (status == 1) {//故障
+                    event.data.type = 43013;
+                } else {//恢复
+                    event.data.type = 43014;
+                }
             }
-        } else {
-            event.data.type = 42000;
-            logger.error("undefined:" + errorType);
+            if (errorType == 2) {//丢失
+                if (status == 1) {//故障
+                    event.data.type = 43015;
+                } else {//恢复
+                    event.data.type = 43016;
+                }
+            }
         }
         list.add(event);
     }

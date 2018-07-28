@@ -25,16 +25,16 @@ function execute(input, logger) {
         event.data.push = false;
         event.data.defend = false;
         event.data.protectNo = new Integer(keyNum + 107);
-        //todo 定义类型
         if (eventType == 1) {
-            event.data.type = 44001;
+            event.data.type = 43011;
+            list.add(event);
         } else if (eventType == 2){
-            event.data.type = 44002;
+            event.data.type = 43012;
+            list.add(event);
         } else {
-            event.data.type = 42000;
             logger.error("undefined: " + eventType);
         }
-        list.add(event);
+
     }
     return list;
 }

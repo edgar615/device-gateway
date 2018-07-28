@@ -24,18 +24,24 @@ function execute(input, logger) {
             control.data.actionType = 0;
         } else {
             control.command = "setWirelessPGM";
+            control.data.actionType = 0;
             control.data.identifyNum = new Integer(input.data.protectNo - 108);
+            control.data.pgmID = input.data.barcode;
         }
         var flag = false;
         if (input.data.workMode != undefined) {
             control.data.workMode = input.data.workMode;
             flag = true;
         }
-        if (input.data.triggerPart != undefined) {
+        if (input.data.triggerPart != undefined && input.data.triggerPart >=0 && input.data.triggerPart <= 97) {
             control.data.triggerSrc = input.data.triggerPart;
             flag = true;
         }
-        control.time1Flag = 0;
+        if (input.data.triggerCondition != undefined && input.data.triggerCondition >=1 && input.data.triggerCondition <= 3) {
+            control.data.triggerSrc = new Integer(input.data.triggerCondition + 97);
+            flag = true;
+        }
+        control.data.time1Flag = 0;
         if (input.data.pgmTimer1 != undefined) {
             control.data.time1Flag = 1;
             control.data.time1Enable = input.data.pgmTimer1 ? 1 : 0;
@@ -46,9 +52,9 @@ function execute(input, logger) {
             control.data.openHour1 = input.data.openHour1;
             flag = true;
         }
-        if (input.data.openMinute1 != undefined) {
+        if (input.data.openMin1 != undefined) {
             control.data.time1Flag = 1;
-            control.data.openMinute1 = input.data.openMinute1;
+            control.data.openMinute1 = input.data.openMin1;
             flag = true;
         }
         if (input.data.closeHour1 != undefined) {
@@ -56,9 +62,9 @@ function execute(input, logger) {
             control.data.closeHour1 = input.data.closeHour1;
             flag = true;
         }
-        if (input.data.closeMinute1 != undefined) {
+        if (input.data.closeMin1 != undefined) {
             control.data.time1Flag = 1;
-            control.data.closeMinute1 = input.data.closeMinute1;
+            control.data.closeMinute1 = input.data.closeMin1;
             flag = true;
         }
         if (input.data.week1 != undefined) {
@@ -77,9 +83,9 @@ function execute(input, logger) {
             control.data.openHour2 = input.data.openHour2;
             flag = true;
         }
-        if (input.data.openMinute2 != undefined) {
+        if (input.data.openMin2 != undefined) {
             control.data.time2Flag = 1;
-            control.data.openMinute2 = input.data.openMinute2;
+            control.data.openMinute2 = input.data.openMin2;
             flag = true;
         }
         if (input.data.closeHour2 != undefined) {
@@ -87,9 +93,9 @@ function execute(input, logger) {
             control.data.closeHour2 = input.data.closeHour2;
             flag = true;
         }
-        if (input.data.closeMinute2 != undefined) {
+        if (input.data.closeMin2 != undefined) {
             control.data.time2Flag = 1;
-            control.data.closeMinute2 = input.data.closeMinute2;
+            control.data.closeMinute2 = input.data.closeMin2;
             flag = true;
         }
         if (input.data.week2 != undefined) {
