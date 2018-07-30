@@ -14,9 +14,21 @@ function execute(input, logger) {
         var file = input.data.files[i];
         var upgradeFile = new Map();
         upgradeFiles.add(upgradeFile);
-        upgradeFile.fileType = file.name;
-        upgradeFile.filePath  = file.filePath;
-        upgradeFile.fileLen  = file.fileLength;
+        //升级文件类型,0x01表示主机固件,0x02表示键盘固件,0x03表示语音文件,0x04表示无线模块固件,0x05表示语音模块固件
+        if (file.name == "nextFirmwareVersion") {
+            upgradeFile.fileType = 1;
+        }
+        if (file.name == "voiceVersion") {
+            upgradeFile.fileType = 3;
+        }
+        if (file.name == "wirelessVersion") {
+            upgradeFile.fileType = 4;
+        }
+        if (file.name == "voiceFirmwareVersion") {
+            upgradeFile.fileType = 5;
+        }
+        upgradeFile.filePath  = file.filePath + "@" + file.version;
+        upgradeFile.fileLen  = file.fileSize;
         upgradeFile.fileMd5  = file.fileMd5;
     }
 

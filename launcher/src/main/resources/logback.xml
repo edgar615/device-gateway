@@ -13,6 +13,19 @@
             <pattern>%date %level [%thread]  %msg%n</pattern>
         </encoder>
     </appender>
+    <appender name="METRIC_FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/log/metrics.%d{yyyy-MM-dd.HH}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date %msg%n</pattern>
+        </encoder>
+    </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are by default assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -23,8 +36,11 @@
             </pattern>
         </encoder>
     </appender>
+    <logger name="com.github.edgar615.device.gateway.worker.MetricVerticle" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="METRIC_FILE" />
+    </logger>
     <root level="INFO">
         <appender-ref ref="FILE"/>
-        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

@@ -29,83 +29,90 @@ import java.util.stream.Collectors;
  */
 public class DeviceMessageHandler {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DeviceMessageHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeviceMessageHandler.class);
 
-  private final List<OutboundHandler> outboundHandlers
-          = Lists.newArrayList(ServiceLoader.load(OutboundHandler.class));
+    private final List<OutboundHandler> outboundHandlers
+            = Lists.newArrayList(ServiceLoader.load(OutboundHandler.class));
 
-  private final Vertx vertx;
+    private final Vertx vertx;
 
-  public DeviceMessageHandler(Vertx vertx) {
-    this.vertx = vertx;
-  }
+    private final GatewayMetrics gatewayMetrics;
 
-  public void handle(Map<String, Object> input, Handler<AsyncResult<Void>> resultHandler) {
-    //将input转换为output
-    // 因为在执行脚本的过程中，对于异常的脚本要记录日志，所以这里没有使用lambda表达式，而是使用传统的方式
-    List<Map<String, Object>> output = new ArrayList<>();
-    Transmitter transmitter = Transmitter.create(vertx, input);
-    String productType = (String) input.get("productType");
-    String command = (String) input.get("command");
-    String messageType = (String) input.get("type");
-    transmitter.logInput(messageType, command, (Map<String, Object>) input.get("data"));
-    List<LocalMessageTransformer> deviceTransformers
-            = TransformerRegistry.instance().deviceTransformers(productType, messageType, command);
-    if (deviceTransformers.isEmpty()) {
-      transmitter.info("no script");
-      resultHandler.handle(Future.succeededFuture());
-      return;
+    public DeviceMessageHandler(Vertx vertx) {
+        this.vertx = vertx;
+        gatewayMetrics = new GatewayMetrics();
     }
-    for (LocalMessageTransformer transformer : deviceTransformers) {
-      long start = System.currentTimeMillis();
-      ScriptLogger scriptLogger = ScriptLogger.create();
-      try {
-        List<Map<String, Object>> result = transformer.execute(input, scriptLogger);
-        if (result != null) {
-          //todo 根据不同的类型检查result中的数据支付合法
-          output.addAll(result);
+
+    public void handle(Map<String, Object> input, Handler<AsyncResult<Void>> resultHandler) {
+        //将input转换为output
+        // 因为在执行脚本的过程中，对于异常的脚本要记录日志，所以这里没有使用lambda表达式，而是使用传统的方式
+        gatewayMetrics.messageCounter(input);
+        long handleStart = System.currentTimeMillis();
+        List<Map<String, Object>> output = new ArrayList<>();
+        Transmitter transmitter = Transmitter.create(vertx, input);
+        String productType = (String) input.get("productType");
+        String command = (String) input.get("command");
+        String messageType = (String) input.get("type");
+        transmitter.logInput(messageType, command, (Map<String, Object>) input.get("data"));
+        List<LocalMessageTransformer> deviceTransformers
+                = TransformerRegistry.instance().deviceTransformers(productType, messageType, command);
+        if (deviceTransformers.isEmpty()) {
+            transmitter.info("no script");
+            resultHandler.handle(Future.succeededFuture());
+            return;
         }
-        long duration = System.currentTimeMillis() - start;
-        scriptLogger.messages().forEach(msg -> {
-          if (msg.type() == 1) {
-            transmitter.info(msg.message(),
-                             ImmutableMap.of("script", transformer.registration()));
-          } else {
-            transmitter.error(msg.message(),
-                             ImmutableMap.of("script", transformer.registration()));
-          }
-        });
-        transmitter.info("execute script succeeded",
-                         ImmutableMap.of("script", transformer.registration(), "duration", duration));
-      } catch (Exception e) {
-        transmitter.error("execute script failed, cause:" + e.getMessage(),
-                          ImmutableMap.of("script", transformer.registration(), "duration", System.currentTimeMillis() - start));
-      }
-    }
-
-    //处理output
-    List<Future> futures = outboundHandlers.stream()
-            .map(h -> {
-              Future<Void> future = Future.future();
-              try {
-                h.handle(vertx, transmitter, output, future);
-              } catch (Exception e) {
-                transmitter.error("outbound handled failed, cause:" + e.getMessage());
-                if (!future.isComplete()) {
-                  future.fail(e);
+        for (LocalMessageTransformer transformer : deviceTransformers) {
+            long scriptStart = System.currentTimeMillis();
+            ScriptLogger scriptLogger = ScriptLogger.create();
+            try {
+                List<Map<String, Object>> result = transformer.execute(input, scriptLogger);
+                if (result != null) {
+                    //todo 根据不同的类型检查result中的数据支付合法
+                    output.addAll(result);
                 }
-              }
-              return future;
-            }).collect(Collectors.toList());
-    CompositeFuture.all(futures)
-            .setHandler(ar -> {
-              if (ar.failed()) {
-                resultHandler.handle(Future.failedFuture(ar.cause()));
-              } else {
-                resultHandler.handle(Future.succeededFuture());
-              }
-            });
+                scriptLogger.messages().forEach(msg -> {
+                    if (msg.type() == 1) {
+                        transmitter.info(msg.message(),
+                                ImmutableMap.of("script", transformer.registration()));
+                    } else {
+                        transmitter.error(msg.message(),
+                                ImmutableMap.of("script", transformer.registration()));
+                    }
+                });
+                transmitter.info("execute script succeeded",
+                        ImmutableMap.of("script", transformer.registration(), "duration", System.currentTimeMillis() - scriptStart));
+            } catch (Exception e) {
+                transmitter.error("execute script failed, cause:" + e.getMessage(),
+                        ImmutableMap.of("script", transformer.registration(), "duration", System.currentTimeMillis() - scriptStart));
+            } finally {
+                gatewayMetrics.scriptTimer(transformer.registration(), System.currentTimeMillis() - scriptStart);
+            }
+        }
 
-  }
+        //处理output
+        List<Future> futures = outboundHandlers.stream()
+                .map(h -> {
+                    Future<Void> future = Future.future();
+                    try {
+                        h.handle(vertx, transmitter, output, future);
+                    } catch (Exception e) {
+                        transmitter.error("outbound handled failed, cause:" + e.getMessage());
+                        if (!future.isComplete()) {
+                            future.fail(e);
+                        }
+                    }
+                    return future;
+                }).collect(Collectors.toList());
+        CompositeFuture.all(futures)
+                .setHandler(ar -> {
+                    gatewayMetrics.messageTimer(input, System.currentTimeMillis() - handleStart);
+                    if (ar.failed()) {
+                        resultHandler.handle(Future.failedFuture(ar.cause()));
+                    } else {
+                        resultHandler.handle(Future.succeededFuture());
+                    }
+                });
+
+    }
 
 }

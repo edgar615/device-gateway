@@ -5,6 +5,7 @@ var Integer = Java.type("java.lang.Integer");
 function execute(input, logger) {
 
     var list = new List();
+    var reportDefendState = [0,0,0,0,0,0,0,0];
     for (var i = 0; i < input.data.eventlist.length; i ++) {
         var alarm = input.data.eventlist[i];
         //1表示APP上布撤防，2表示键盘上布撤防，3表示遥控器布撤防（编号0到31），4表示RFID布撤防，5表示短信布撤防，6表示电话布撤防
@@ -25,10 +26,13 @@ function execute(input, logger) {
         if (status == 0) {
             //撤防
             event.data.type = 43003;
+            reportDefendState[areaNum] = 3;
         } else if (status == 1) {
             event.data.type = 43001;//外出
+            reportDefendState[areaNum] = 1;
         } else if (status == 2) {
             event.data.type = 43002;//在家
+            reportDefendState[areaNum] = 2;
         }else {
             event.data.type = 43000;//未定义
         }
@@ -60,5 +64,23 @@ function execute(input, logger) {
         }
         list.add(event);
     }
+    var partitions = new List();
+    for (var i = 0; i < 8; i ++) {
+        if (reportDefendState[i] == 1 || reportDefendState[i] == 2 || reportDefendState[i] == 3) {
+            var partition = new Map();
+            partition.defendState = reportDefendState[i];
+            partition.partitionNo = new Integer(i);
+            partitions.add(partition)
+        }
+    }
+    if (partitions.length > 0) {
+        var partitionReport = new Map();
+        partitionReport.type = "report";
+        partitionReport.command = "partitionReport";
+        partitionReport.data = new Map();
+        partitionReport.data.partitions = partitions;
+        list.add(partitionReport);
+    }
+
     return list;
 }

@@ -77,6 +77,13 @@
       "config": {
       }
     },
+    "MetricVerticle": {
+      "class": "com.github.edgar615.device.gateway.worker.MetricVerticle",
+      "dependencies": [
+      ],
+      "config": {
+      }
+    },
     "HeartbeatVerticle": {
       "class": "com.github.edgar615.device.gateway.heartbeat.HeartbeatVerticle",
       "config": {

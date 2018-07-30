@@ -62,7 +62,7 @@ function execute(input, logger) {
         //有线防区同步激活配件
         if (deviceType == 2) {
             var partActive = new Map();
-            partActive.type = "deviceReport";
+            partActive.type = "report";
             partActive.command = "partActive";
             partActive.data = new Map();
             partActive.data.partType = "LH0FD";

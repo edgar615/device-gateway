@@ -1,15 +1,10 @@
 package com.github.edgar615.device.gateway.worker;
 
-import com.github.edgar615.device.gateway.core.*;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableMap;
-
-import com.github.edgar615.util.event.Event;
-import com.github.edgar615.util.event.EventHead;
-import com.github.edgar615.util.event.Message;
-import com.github.edgar615.util.eventbus.Helper;
-import com.github.edgar615.util.log.Log;
+import com.github.edgar615.device.gateway.core.Consts;
+import com.github.edgar615.device.gateway.core.KeepaliveCommand;
+import com.github.edgar615.device.gateway.core.MessageType;
 import com.github.edgar615.util.vertx.JsonUtils;
+import com.google.common.base.Splitter;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonArray;
@@ -52,15 +47,6 @@ public class WorkerVerticle extends AbstractVerticle {
       String deviceIdentifier = idSplitter.get(1);
       String productType = idSplitter.get(0);
       Long time = jsonObject.getLong("time", Instant.now().getEpochSecond());
-//      Log.create(LOGGER)
-//              .setLogType("device-gateway")
-//              .setEvent("connect")
-//              .setMessage("[{}] [{}] [{}]")
-//              .setTraceId(id)
-//              .addArg(id)
-//              .addArg(Helper.toHeadString(event))
-//              .addArg(Helper.toActionString(event))
-//              .info();
       Map<String, Object> brokerMessage = new HashMap<>();
       brokerMessage.put("productType", productType);
       brokerMessage.put("topic", "__inner");
@@ -85,15 +71,6 @@ public class WorkerVerticle extends AbstractVerticle {
         List<String> idSplitter = Splitter.on(":").splitToList(id);
         String deviceIdentifier = idSplitter.get(1);
         String productType = idSplitter.get(0);
-//        Log.create(LOGGER)
-//                .setLogType("device-gateway")
-//                .setEvent("disConnect")
-//                .setMessage("[{}] [{}] [{}]")
-//                .setTraceId(id)
-//                .addArg(id)
-//                .addArg(Helper.toHeadString(event))
-//                .addArg(Helper.toActionString(event))
-//                .info();
         Map<String, Object> brokerMessage = new HashMap<>();
         brokerMessage.put("productType", productType);
         brokerMessage.put("topic", "__inner");
