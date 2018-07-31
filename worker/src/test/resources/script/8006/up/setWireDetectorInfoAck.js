@@ -31,7 +31,13 @@ function execute(input, logger) {
     part.masterAwayDefend = partInfo.awayValid == 1 ? true : false;
     //阀值
     part.threshold = partInfo.status == 1 ? true : false;
-
+    //名称
+    if (partInfo.name != undefined) {
+        part.unicodeName = "";
+        for (var j = 0; j < partInfo.name.length; j ++) {
+            part.unicodeName += "\\u" + partInfo.name[j];
+        }
+    }
     var event = new Map();
     event.type = "report";
     event.command = "partReport";

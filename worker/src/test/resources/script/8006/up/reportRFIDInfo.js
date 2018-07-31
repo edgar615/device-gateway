@@ -62,6 +62,13 @@ function execute(input, logger) {
             }
             part.controlPgm = controlPgm;
         }
+        //名称
+        if (partInfo.name != undefined) {
+            part.unicodeName = "";
+            for (var j = 0; j < partInfo.name.length; j ++) {
+                part.unicodeName += "\\u" + partInfo.name[j];
+            }
+        }
         partReport.data.parts.add(part);
     }
     return list;

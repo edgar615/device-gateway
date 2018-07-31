@@ -54,6 +54,13 @@ function execute(input, logger) {
         //调制方式：FSK ASK ZGB，忽略
         part.modulationMode = partInfo.modulationMode;
         part.version = partInfo.version;
+        //名称
+        if (partInfo.name != undefined) {
+            part.unicodeName = "";
+            for (var j = 0; j < partInfo.name.length; j ++) {
+                part.unicodeName += "\\u" + partInfo.name[j];
+            }
+        }
         if (partInfo.barcode !=  "0") {
             //非删除
             partReport.data.parts.add(part);

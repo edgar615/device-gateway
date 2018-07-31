@@ -37,6 +37,15 @@ function execute(input, logger) {
             control.data.atHomeValid = input.data.masterHomeDefend ? 1 : 0;
             flag = true;
         }
+        if (input.data.unicodeName != undefined) {
+            var nameList = new List();
+            var nameArray = input.data.unicodeName.split("\\u").slice(1);
+            for (var j = 0; j < nameArray.length; j ++) {
+                nameList.add(nameArray[j]);
+            }
+            control.data.name = nameList;
+            flag = true;
+        }
         if (flag) {
             list.add(control);
         }

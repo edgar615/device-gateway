@@ -33,6 +33,13 @@ function execute(input, logger) {
     //调制方式：FSK ASK ZGB，忽略
     part.modulationMode = input.data.modulationMode;
     part.version = input.data.version;
+    //名称
+    if (input.data.name != undefined) {
+        part.unicodeName = "";
+        for (var j = 0; j < input.data.name.length; j ++) {
+            part.unicodeName += "\\u" + input.data.name[j];
+        }
+    }
     var partReport = new Map();
     partReport.type = "report";
     partReport.command = "partReport";

@@ -23,7 +23,25 @@ function execute(input, logger) {
         part.masterAwayDefend = partInfo.awayValid == 1 ? true : false;
         //阀值
         part.threshold = partInfo.status == 1 ? true : false;
+        //名称
+        if (partInfo.name != undefined) {
+            part.unicodeName = "";
+            for (var j = 0; j < partInfo.name.length; j ++) {
+                part.unicodeName += "\\u" + partInfo.name[j];
+            }
+        }
         partReport.data.parts.add(part);
+
+        //有线防区同步激活配件
+        if (input.data.actionType == 2) {
+            var partActive = new Map();
+            partActive.type = "report";
+            partActive.command = "partActive";
+            partActive.data = new Map();
+            partActive.data.partType = "LH0FD";
+            partActive.data.protectNo = partInfo.defenceNum;
+            list.add(partActive);
+        }
     }
     return list;
 }
