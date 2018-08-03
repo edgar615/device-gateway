@@ -68,8 +68,17 @@
       "config": {
       }
     },
+    "KeepAliveVerticle": {
+      "class": "com.github.edgar615.device.gateway.worker.KeepAliveVerticle",
+      "dependencies": [
+        "WorkerVerticle"
+      ],
+      "config": {
+      }
+    },
     "WorkerVerticle": {
       "class": "com.github.edgar615.device.gateway.worker.WorkerVerticle",
+      "instances": 8,
       "dependencies": [
         "KafkaVerticle",
         "RedisVerticle"
