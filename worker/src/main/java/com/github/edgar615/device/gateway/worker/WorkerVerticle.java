@@ -54,6 +54,7 @@ public class WorkerVerticle extends AbstractVerticle {
         e.printStackTrace();
       }
     });
+	startFuture.complete();
   }
 
 }

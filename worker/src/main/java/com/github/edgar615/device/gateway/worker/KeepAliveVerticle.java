@@ -50,7 +50,7 @@ public class KeepAliveVerticle extends AbstractVerticle {
       brokerMessage.put("command", KeepaliveCommand.CONNECT);
       brokerMessage.put("data", new HashMap<>());
       brokerMessage.put("type", MessageType.KEEPALIVE);
-      vertx.eventBus().send(Consts.LOCAL_EVENT_HANDLER, brokerMessage);
+      vertx.eventBus().send(Consts.LOCAL_EVENT_HANDLER, new JsonObject(brokerMessage));
     });
 
     //掉线
@@ -72,7 +72,7 @@ public class KeepAliveVerticle extends AbstractVerticle {
         brokerMessage.put("command", KeepaliveCommand.DIS_CONNECT);
         brokerMessage.put("data", new HashMap<>());
         brokerMessage.put("type", MessageType.KEEPALIVE);
-        vertx.eventBus().send(Consts.LOCAL_EVENT_HANDLER, brokerMessage);
+        vertx.eventBus().send(Consts.LOCAL_EVENT_HANDLER, new JsonObject(brokerMessage));
       }
     });
 
